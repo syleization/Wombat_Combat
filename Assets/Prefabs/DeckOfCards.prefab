@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &198858
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 403732}
+  - 114: {fileID: 11468932}
+  m_Layer: 0
+  m_Name: DeckOfCards
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &403732
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 198858}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11468932
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 198858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 561b1a583c861da4f8aa8319ebab44a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deck:
+  - {fileID: 125440, guid: ba5675e7a02ad164481cb848dd91a6a7, type: 2}
+  - {fileID: 192918, guid: d0168a7d29af6304b8f955fe95e3b735, type: 2}
+  - {fileID: 174340, guid: 51f0a7c538d6cdd42aabe204609d2de3, type: 2}
+  - {fileID: 110296, guid: 7fe4c1a8e5b7ab94eaf60171c5c9381f, type: 2}
+  - {fileID: 114566, guid: ae4a5ca09449be747a64cf94cb575a61, type: 2}
+  - {fileID: 123084, guid: a1f272d30483e574d9e03e3e274b45e8, type: 2}
+  - {fileID: 138838, guid: 172d7c23589b6f54a871827f1e2de596, type: 2}
+  - {fileID: 103554, guid: bfa65adc61af53b4ba00fc77bd69f1f5, type: 2}
+  - {fileID: 113260, guid: 2f6696061d7643140add675a96db51c6, type: 2}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 198858}
+  m_IsPrefabParent: 1
