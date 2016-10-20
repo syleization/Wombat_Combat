@@ -25,7 +25,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 452156}
   m_Layer: 0
-  m_Name: Trampolne
+  m_Name: Trap_Trampolne
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
