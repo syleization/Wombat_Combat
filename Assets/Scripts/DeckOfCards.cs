@@ -8,8 +8,10 @@ public class DeckOfCards : MonoBehaviour
 
     private List<GameObject> cards = new List<GameObject>();
     private List<GameObject> hand = new List<GameObject>();
+    private const int maxHandSize = 6;
     private int cardsDealt = 0;
     private bool showReset = false;
+    public bool isHoldingCard = false; // should eventually be in a hand manager or game manager
 
     void ResetDeck()
     {
@@ -36,6 +38,7 @@ public class DeckOfCards : MonoBehaviour
 
         int card = Random.Range(0, cards.Count - 1);
         GameObject go = GameObject.Instantiate(cards[card]) as GameObject;
+
         cards.RemoveAt(card);
 
         if (cards.Count == 0)
@@ -90,18 +93,41 @@ public class DeckOfCards : MonoBehaviour
 
     void MoveDealtCard()
     {
-        GameObject newCard = DealCard();
-        // check card is null or not
-        if (newCard == null)
+        if (cardsDealt < maxHandSize)
         {
-            Debug.Log("Out of Cards");
-            showReset = true;
-            return;
-        }
+            GameObject newCard = DealCard();
+            // check card is null or not
+            if (newCard == null)
+            {
+                Debug.Log("Out of Cards");
+                showReset = true;
+                return;
+            }
 
-        //newCard.transform.position = Vector3.zero;
-        newCard.transform.position = new Vector3((float)cardsDealt / 4, (float)cardsDealt / -4, (float)cardsDealt / -4); // place card 1/4 up on all axis from last
-        hand.Add(newCard); // add card to hand
-        cardsDealt++;
+            //newCard.transform.position = Vector3.zero;
+            newCard.transform.position = new Vector3(((float)cardsDealt * 2) - 5, -5, (float)cardsDealt * -1); // place card 1/4 up on all axis from last
+            hand.Add(newCard); // add card to hand
+            cardsDealt++;
+        }
+    }
+
+    public int GetHandSize()
+    {
+        return cardsDealt;
+    }
+
+    public void ResetHandCardPositions(CardPopUp cardMoved)
+    {
+        for (int i = 0; i < cardsDealt - 1; ++i)
+        {
+            if(hand[i] == cardMoved.gameObject)
+            {
+                // If the current card is the card that is moving then swap its position in the hand to the end
+                GameObject temp = hand[i];
+                hand[i] = hand[cardsDealt - 1];
+                hand[cardsDealt - 1] = temp;
+            }
+            hand[i].transform.position = new Vector3(((float)i * 2) - 5, -5, (float)i * -1);
+        }
     }
 }
