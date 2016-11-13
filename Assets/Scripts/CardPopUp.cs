@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CardPopUp : MonoBehaviour
 {
-    DeckOfCards Deck;
+    Card Card;
 
     Ray ray;
     RaycastHit hit;
@@ -17,12 +17,12 @@ public class CardPopUp : MonoBehaviour
 
     void Start()
     {
-        Deck = FindObjectOfType<DeckOfCards>();
+        Card = GetComponent<Card>();
     }
 
     void OnMouseEnter()
     {
-        if (cardIsDown && MouseIsWithinBounds() && !Deck.isHoldingCard)
+        if (cardIsDown && MouseIsWithinBounds() && !Card.owner.IsHoldingCard && Card.IsInHand)
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
@@ -38,7 +38,7 @@ public class CardPopUp : MonoBehaviour
 
     void OnMouseExit()
     {
-        if(!cardIsDown && !waitingForCard && !Deck.isHoldingCard)
+        if(!cardIsDown && !waitingForCard && !Card.owner.IsHoldingCard && Card.IsInHand)
         {
             waitingForCard = true;
             StartCoroutine(WaitToPutCardDown(waitTime));
@@ -56,7 +56,7 @@ public class CardPopUp : MonoBehaviour
 
     void ChangeYPosition(float amount)
     {
-        this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount);
+        this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
     }
 
     IEnumerator WaitToPutCardDown(float time)

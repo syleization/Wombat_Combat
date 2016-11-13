@@ -4,29 +4,25 @@ using System.Collections.Generic;
 
 public class DeckOfCards : MonoBehaviour
 {
-    public List<GameObject> deck = new List<GameObject>();
+    public List<Card> deck = new List<Card>();
 
-    private List<GameObject> cards = new List<GameObject>();
-    private List<GameObject> hand = new List<GameObject>();
-    private const int maxHandSize = 6;
-    private int cardsDealt = 0;
+    private List<Card> cards = new List<Card>();
+    public Player owner;
     private bool showReset = false;
-    public bool isHoldingCard = false; // should eventually be in a hand manager or game manager
 
     void ResetDeck()
     {
-        cardsDealt = 0;
-        for (int i = 0; i < hand.Count; i++)
+        for (int i = 0; i < owner.Hand.CardsInHand.Count; i++)
         {
-            Destroy(hand[i]);
+            Destroy(owner.Hand.CardsInHand[i]);
         }
-        hand.Clear();
+        owner.Hand.CardsInHand.Clear();
         cards.Clear();
         cards.AddRange(deck);
         showReset = false;
     }
 
-    GameObject DealCard()
+    Card DealCard()
     {
         if (cards.Count == 0)
         {
@@ -37,7 +33,8 @@ public class DeckOfCards : MonoBehaviour
         }
 
         int card = Random.Range(0, cards.Count - 1);
-        GameObject go = GameObject.Instantiate(cards[card]) as GameObject;
+
+        Card go = Instantiate<Card>(cards[card]);
 
         cards.RemoveAt(card);
 
@@ -56,12 +53,11 @@ public class DeckOfCards : MonoBehaviour
 
     void GameOver()
     {
-        cardsDealt = 0;
-        for (int v = 0; v < hand.Count; v++)
+        for (int v = 0; v < owner.Hand.CardsInHand.Count; v++)
         {
-            Destroy(hand[v]);
+            Destroy(owner.Hand.CardsInHand[v]);
         }
-        hand.Clear();
+        owner.Hand.CardsInHand.Clear();
         cards.Clear();
         cards.AddRange(deck);
     }
@@ -89,13 +85,48 @@ public class DeckOfCards : MonoBehaviour
         {
             GameOver();
         }
+
+        // EndTurn button
+        if (GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndTurn"))
+        {
+            TurnManager.Instance.EndTurn();
+        }
+
+        // Merge Button
+        if(owner.Field.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
+        {
+            // Add new power card to hand
+            Card newCard;
+            switch (owner.Field.IsMergable())
+            {
+                case CardType.Attack:
+                    newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_WomboCombo);
+                    break;
+                case CardType.Defence:
+                    newCard = Instantiate<Card>(GlobalSettings.Instance.Defence_GooglyEyes);
+                    break;
+                case CardType.Trap:
+                    newCard = Instantiate<Card>(GlobalSettings.Instance.Trap_WombatCage);
+                    break;
+                default:
+                    Debug.Log("Error in Merge");
+                    newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_DonkeyKick);
+                    break;
+            }
+            newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
+            newCard.CurrentArea = "Hand";
+            owner.Hand.CardsInHand.Add(newCard);
+
+            // Clear field of used cards
+            owner.Field.ClearField();
+        }
     }
 
     void MoveDealtCard()
     {
-        if (cardsDealt < maxHandSize)
+        if (owner.Hand.CardsInHand.Count < owner.CurrentMaxHandSize)
         {
-            GameObject newCard = DealCard();
+            Card newCard = DealCard();
             // check card is null or not
             if (newCard == null)
             {
@@ -105,29 +136,9 @@ public class DeckOfCards : MonoBehaviour
             }
 
             //newCard.transform.position = Vector3.zero;
-            newCard.transform.position = new Vector3(((float)cardsDealt * 2) - 5, -5, (float)cardsDealt * -1); // place card 1/4 up on all axis from last
-            hand.Add(newCard); // add card to hand
-            cardsDealt++;
-        }
-    }
-
-    public int GetHandSize()
-    {
-        return cardsDealt;
-    }
-
-    public void ResetHandCardPositions(CardPopUp cardMoved)
-    {
-        for (int i = 0; i < cardsDealt - 1; ++i)
-        {
-            if(hand[i] == cardMoved.gameObject)
-            {
-                // If the current card is the card that is moving then swap its position in the hand to the end
-                GameObject temp = hand[i];
-                hand[i] = hand[cardsDealt - 1];
-                hand[cardsDealt - 1] = temp;
-            }
-            hand[i].transform.position = new Vector3(((float)i * 2) - 5, -5, (float)i * -1);
+            newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
+            newCard.CurrentArea = "Hand";
+            owner.Hand.CardsInHand.Add(newCard); // add card to hand
         }
     }
 }

@@ -13,7 +13,8 @@ GameObject:
   - 65: {fileID: 6506178}
   - 54: {fileID: 5464086}
   - 114: {fileID: 11443758}
-  m_Layer: 9
+  - 114: {fileID: 11451102}
+  m_Layer: 10
   m_Name: Card - GE
   m_TagString: Card
   m_Icon: {fileID: 0}
@@ -27,7 +28,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 137858}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.52918, y: -4.012976, z: -5}
+  m_LocalPosition: {x: -1, y: -5, z: -0.02}
   m_LocalScale: {x: 0.56800276, y: 0.56800276, z: 0.56800276}
   m_Children: []
   m_Father: {fileID: 0}
@@ -70,6 +71,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 041b336aa29910840be91dcf9222d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11451102
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 137858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1e109fbd947e5548b94f0ffcf859de5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 0}
+  CurrentArea: Hand
+  IsPowerCard: 1
+  IsInHand: 0
+  Type: 1
 --- !u!114 &11490476
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -81,7 +98,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c1833082ef32440b0e65aad105cd2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInHand: 1
   cardIsDown: 1
 --- !u!212 &21289816
 SpriteRenderer:

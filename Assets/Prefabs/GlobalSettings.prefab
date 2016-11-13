@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &136294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 468290}
+  - 114: {fileID: 11460510}
+  m_Layer: 0
+  m_Name: GlobalSettings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &468290
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 136294}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.372547, y: -1.9209689, z: 0.55180216}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11460510
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 136294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d67bc2d53b1fd84c972a1979f39a8d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LeftPlayer: {fileID: 0}
+  TopPlayer: {fileID: 0}
+  RightPlayer: {fileID: 0}
+  BottomPlayer: {fileID: 0}
+  CardBodyStandardColor:
+    serializedVersion: 2
+    rgba: 0
+  CardRibbonsStandardColor:
+    serializedVersion: 2
+    rgba: 0
+  CardGlowColor:
+    serializedVersion: 2
+    rgba: 0
+  Attack_WombatCharge: {fileID: 11411764, guid: 28776808b7216d742bfa9be77de4994b,
+    type: 2}
+  Attack_DonkeyKick: {fileID: 11406160, guid: f80fbe87a11b1ad4a83456cf56fde1de, type: 2}
+  Attack_WomboCombo: {fileID: 11474586, guid: f5215b0ae3e3d3d488339d8ded3c8ee2, type: 2}
+  Defence_Bite: {fileID: 11435824, guid: c3cacf3f9cdd9634c9c29034cefc0592, type: 2}
+  Defence_Bark: {fileID: 11411834, guid: 9d85e58e9e080164391f3a29ef5b6b9f, type: 2}
+  Defence_GooglyEyes: {fileID: 11451102, guid: 5832fe601c789f2439e23c5bd6d4366e, type: 2}
+  Trap_Trampoline: {fileID: 11478438, guid: 9ac8896198f289d4e99be543de4bb863, type: 2}
+  Trap_Sinkhole: {fileID: 11485620, guid: e5201b7b1692dca4b8fad4fcbae9987a, type: 2}
+  Trap_WombatCage: {fileID: 11404028, guid: db0532369341a7d42b01ef2ca01e10d4, type: 2}
+  CurrentTurn: 0
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 136294}
+  m_IsPrefabParent: 1

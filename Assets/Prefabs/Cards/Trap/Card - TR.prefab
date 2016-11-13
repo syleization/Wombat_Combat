@@ -13,7 +13,8 @@ GameObject:
   - 54: {fileID: 5425422}
   - 65: {fileID: 6570684}
   - 114: {fileID: 11475164}
-  m_Layer: 9
+  - 114: {fileID: 11485620}
+  m_Layer: 10
   m_Name: Card - TR
   m_TagString: Card
   m_Icon: {fileID: 0}
@@ -70,7 +71,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c1833082ef32440b0e65aad105cd2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInHand: 1
   cardIsDown: 1
 --- !u!114 &11475164
 MonoBehaviour:
@@ -83,6 +83,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 041b336aa29910840be91dcf9222d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11485620
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 195112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1e109fbd947e5548b94f0ffcf859de5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 0}
+  CurrentArea: 
+  IsPowerCard: 0
+  IsInHand: 0
+  Type: 2
 --- !u!212 &21252382
 SpriteRenderer:
   m_ObjectHideFlags: 1
