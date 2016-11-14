@@ -17,7 +17,8 @@ public class Hand : MonoBehaviour
                 CardsInHand[i] = CardsInHand[cardsDealt - 1];
                 CardsInHand[cardsDealt - 1] = temp;
             }
-            CardsInHand[i].transform.position = new Vector3(((float)i * 2) - 5, -5, (float)i * -0.01f);
+            //CardsInHand[i].transform.position = new Vector3(((float)i * 2) - 5, -5, (float)i * -0.01f);
+            DeckOfCards.TransformDealtCardToHand(CardsInHand[i], i);
         }
     }
 
@@ -32,5 +33,10 @@ public class Hand : MonoBehaviour
         }
         Debug.Log("Card being sent to field that isnt in hand");
         return -1; // error
+    }
+
+    public static bool IsYourHand(Card card, GameObject hit)
+    {
+        return hit == card.owner.Hand.gameObject ? true : false; // if the hand the raycast hit is yours
     }
 }

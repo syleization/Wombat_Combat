@@ -8,12 +8,10 @@ public class TurnManager : MonoBehaviour
 {
     // for Singleton Pattern
     public static TurnManager Instance;
-    private Turns CurrentTurn; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
-    private Player PlayerBottom;
+    private static Turns CurrentTurn; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
 
     void Start()
     {
-        PlayerBottom = FindObjectOfType<Player>(); // TEMPORARY
         switch(Random.Range(0, 4))
         {
             case 0: CurrentTurn = Turns.LeftPlayer;
@@ -33,20 +31,45 @@ public class TurnManager : MonoBehaviour
 
     void SetTurnBools()
     {
-        PlayerBottom.IsTurn = true;        //TEMPORARY
-        //switch(CurrentTurn)
-        //{
-        //    case Turns.LeftPlayer: PlayerLeft.IsTurn = false; PlayerTop.IsTurn = true;
-        //        break;
-        //    case Turns.TopPlayer: PlayerTop.IsTurn = false; PlayerRight.IsTurn = true;
-        //        break;
-        //    case Turns.RightPlayer: PlayerRight.IsTurn = false; PlayerBottom.IsTurn = true;
-        //        break;
-        //    case Turns.BottomPlayer: PlayerBottom.IsTurn = false; PlayerLeft.IsTurn = true;
-        //        break;
-        //    default:
-        //        break;
-        //}
+        switch (CurrentTurn)
+        {
+            case Turns.LeftPlayer:
+                GlobalSettings.Players[0].IsTurn = false; GlobalSettings.Players[1].IsTurn = true;
+                CurrentTurn = Turns.TopPlayer;
+                break;
+            case Turns.TopPlayer:
+                GlobalSettings.Players[1].IsTurn = false; GlobalSettings.Players[2].IsTurn = true;
+                CurrentTurn = Turns.RightPlayer;
+                break;
+            case Turns.RightPlayer:
+                GlobalSettings.Players[2].IsTurn = false; GlobalSettings.Players[3].IsTurn = true;
+                CurrentTurn = Turns.BottomPlayer;
+                break;
+            case Turns.BottomPlayer:
+                GlobalSettings.Players[3].IsTurn = false; GlobalSettings.Players[0].IsTurn = true;
+                CurrentTurn = Turns.LeftPlayer;
+                break;
+            default:
+                break;
+        }
+        Debug.Log(CurrentTurn.ToString());
+    }
+
+    public static Player GetCurrentPlayer()
+    {
+        foreach(Player p in GlobalSettings.Players)
+        {
+            if(p.IsTurn == true)
+            {
+                return p;
+            }
+        }
+        Debug.Log("ERROR[TurnManager::GetCurrentPlayer] | It is currently the turn of no one");
+        return null;
+    }
+    void OnGUI()
+    {
+        GUI.Box(new Rect(Screen.width - 200, Screen.height - 30, 200, 30), "Turn: " + CurrentTurn.ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString());
     }
     //private Player _whoseTurn;
     //public Player whoseTurn
@@ -81,81 +104,33 @@ public class TurnManager : MonoBehaviour
         Instance = this;
     }
 
-    //void Start()
-    //{
-    //    OnGameStart();
-    //}
-
-    //public void OnGameStart()
-    //{
-    //    //Debug.Log("In TurnManager.OnGameStart()");
-
-    //    CardLogic.CardsCreatedThisGame.Clear();
-    //    CreatureLogic.CreaturesCreatedThisGame.Clear();
-
-    //    foreach (Player p in Player.Players)
-    //    {
-    //        p.ManaThisTurn = 0;
-    //        p.ManaLeft = 0;
-    //        p.LoadCharacterInfoFromAsset();
-    //        p.TransmitInfoAboutPlayerToVisual();
-    //        p.PArea.PDeck.CardsInDeck = p.deck.cards.Count;
-    //        // move both portraits to the center
-    //        p.PArea.Portrait.transform.position = p.PArea.handVisual.OtherCardDrawSourceTransform.position;
-    //    }
-
-    //    Sequence s = DOTween.Sequence();
-    //    s.Append(Player.Players[0].PArea.Portrait.transform.DOMove(Player.Players[0].PArea.PortraitPosition.position, 1f).SetEase(Ease.InQuad));
-    //    s.Insert(0f, Player.Players[1].PArea.Portrait.transform.DOMove(Player.Players[1].PArea.PortraitPosition.position, 1f).SetEase(Ease.InQuad));
-    //    s.PrependInterval(3f);
-    //    s.OnComplete(() =>
-    //    {
-    //        // determine who starts the game.
-    //        int rnd = Random.Range(0, 2);  // 2 is exclusive boundary
-    //                                       // Debug.Log(Player.Players.Length);
-    //        Player whoGoesFirst = Player.Players[rnd];
-    //        // Debug.Log(whoGoesFirst);
-    //        Player whoGoesSecond = whoGoesFirst.otherPlayer;
-    //        // Debug.Log(whoGoesSecond);
-
-    //        // draw 4 cards for first player and 5 for second player
-    //        int initDraw = 4;
-    //        for (int i = 0; i < initDraw; i++)
-    //        {
-    //            // second player draws a card
-    //            whoGoesSecond.DrawACard(true);
-    //            // first player draws a card
-    //            whoGoesFirst.DrawACard(true);
-    //        }
-    //        // add one more card to second player`s hand
-    //        whoGoesSecond.DrawACard(true);
-    //        //new GivePlayerACoinCommand(null, whoGoesSecond).AddToQueue();
-    //        whoGoesSecond.DrawACoin();
-    //        new StartATurnCommand(whoGoesFirst).AddToQueue();
-    //    });
-    //}
-
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Space))
-    //        EndTurn();
-    //}
-
     public void EndTurn()
     {
-        // stop timer
-        //timer.StopTimer();
-        // send all commands in the end of current player`s turn
-        //whoseTurn.OnTurnEnd();
 
-        //new StartATurnCommand(whoseTurn.otherPlayer).AddToQueue();
-        PlayerBottom.IsTurn = !PlayerBottom.IsTurn;
+        Player currentPlayer = GetCurrentPlayer();
+        SetTurnBools();
+        // Move cards from field back to hand
+        // Needs to be used because the cardsinfield count changes within the loop
+        int originalFieldCount = currentPlayer.Field.CardsInField.Count;
+        for (int i = 0; i < originalFieldCount; ++i) 
+        {
+            // Since cards are removed each loop the current card will always be the first element in the field
+            Card currentCard = currentPlayer.Field.GetCard(0);
+            if (currentCard != null)
+            {
+                CardPopUp popup = currentCard.GetComponent<CardPopUp>();
+                currentCard.CurrentArea = "Hand";
+                currentCard.IsInHand = true;
+                popup.cardIsDown = true;
+                currentPlayer.Hand.CardsInHand.Add(currentCard);
+                currentPlayer.Field.CardsInField.Remove(currentCard);
+
+                DeckOfCards.TransformDealtCardToHand(currentCard, currentCard.owner.Hand.CardsInHand.Count - 1);
+            }
+        }
+
     }
 
-    //public void StopTheTimer()
-    //{
-    //    timer.StopTimer();
-    //}
 
 }
 

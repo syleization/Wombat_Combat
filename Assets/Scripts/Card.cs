@@ -29,7 +29,7 @@ public class Card : MonoBehaviour
     //}
     void Start()
     {
-        owner = FindObjectOfType<Player>();
+        owner = TurnManager.GetCurrentPlayer();
         IsInHand = true;
         if(Type == CardType.Attack)
         {

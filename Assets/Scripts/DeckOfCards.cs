@@ -4,22 +4,60 @@ using System.Collections.Generic;
 
 public class DeckOfCards : MonoBehaviour
 {
+    const int DeckSize = 80;
     public List<Card> deck = new List<Card>();
 
     private List<Card> cards = new List<Card>();
-    public Player owner;
+    private Player owner;
     private bool showReset = false;
+
+    void Start()
+    {
+        for(int i = 0; i < DeckSize; ++i)
+        {
+            deck.Add(GetRandomBasicCard());
+        }
+        ResetDeck();
+    }
+
+    Card GetRandomBasicCard()
+    {
+        switch(Random.Range(0, 5))
+        {
+            case 0:
+                return GlobalSettings.Instance.Attack_DonkeyKick;
+            case 1:
+                return GlobalSettings.Instance.Attack_WombatCharge;
+            case 2:
+                return GlobalSettings.Instance.Defence_Bark;
+            case 3:
+                return GlobalSettings.Instance.Defence_Bite;
+            case 4:
+                return GlobalSettings.Instance.Trap_Sinkhole;
+            case 5:
+                return GlobalSettings.Instance.Trap_Trampoline;
+            default:
+                Debug.Log("ERROR[DeckOfCards::GetRandomBasicCard] | Random range isnt returning a valid value");
+                break;
+        }
+        return null;
+    }
 
     void ResetDeck()
     {
-        for (int i = 0; i < owner.Hand.CardsInHand.Count; i++)
+        owner = TurnManager.GetCurrentPlayer();
+        if (owner != null)
         {
-            Destroy(owner.Hand.CardsInHand[i]);
+            for (int i = 0; i < owner.Hand.CardsInHand.Count; i++)
+            {
+                Destroy(owner.Hand.CardsInHand[i]);
+            }
+            owner.Hand.CardsInHand.Clear();
         }
-        owner.Hand.CardsInHand.Clear();
         cards.Clear();
         cards.AddRange(deck);
         showReset = false;
+        
     }
 
     Card DealCard()
@@ -35,7 +73,7 @@ public class DeckOfCards : MonoBehaviour
         int card = Random.Range(0, cards.Count - 1);
 
         Card go = Instantiate<Card>(cards[card]);
-
+        go.owner = TurnManager.GetCurrentPlayer();
         cards.RemoveAt(card);
 
         if (cards.Count == 0)
@@ -46,18 +84,17 @@ public class DeckOfCards : MonoBehaviour
         return go;
     }
 
-    void Start()
-    {
-        ResetDeck();
-    }
-
     void GameOver()
     {
-        for (int v = 0; v < owner.Hand.CardsInHand.Count; v++)
+        owner = TurnManager.GetCurrentPlayer();
+        if (owner != null)
         {
-            Destroy(owner.Hand.CardsInHand[v]);
+            for (int v = 0; v < owner.Hand.CardsInHand.Count; v++)
+            {
+                Destroy(owner.Hand.CardsInHand[v].gameObject);
+            }
+            owner.Hand.CardsInHand.Clear();
         }
-        owner.Hand.CardsInHand.Clear();
         cards.Clear();
         cards.AddRange(deck);
     }
@@ -81,7 +118,7 @@ public class DeckOfCards : MonoBehaviour
             }
         }
         // GameOver button
-        if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 20), "GameOver"))
+        if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 20), "ClearHand"))
         {
             GameOver();
         }
@@ -93,7 +130,7 @@ public class DeckOfCards : MonoBehaviour
         }
 
         // Merge Button
-        if(owner.Field.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
+        if(owner != null && owner.Field.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
         {
             // Add new power card to hand
             Card newCard;
@@ -113,7 +150,9 @@ public class DeckOfCards : MonoBehaviour
                     newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_DonkeyKick);
                     break;
             }
-            newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
+            //newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
+            newCard.owner = TurnManager.GetCurrentPlayer();
+            TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
             newCard.CurrentArea = "Hand";
             owner.Hand.CardsInHand.Add(newCard);
 
@@ -124,6 +163,7 @@ public class DeckOfCards : MonoBehaviour
 
     void MoveDealtCard()
     {
+        owner = TurnManager.GetCurrentPlayer();
         if (owner.Hand.CardsInHand.Count < owner.CurrentMaxHandSize)
         {
             Card newCard = DealCard();
@@ -136,9 +176,35 @@ public class DeckOfCards : MonoBehaviour
             }
 
             //newCard.transform.position = Vector3.zero;
-            newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
+            //newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
+            TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
             newCard.CurrentArea = "Hand";
             owner.Hand.CardsInHand.Add(newCard); // add card to hand
         }
+    }
+
+    public static void TransformDealtCardToHand(Card newCard, int Spacing)
+    {
+        if (newCard.owner.tag == "LeftPlayer")
+        {
+            newCard.transform.position = new Vector3(newCard.owner.Hand.transform.position.x, ((float)Spacing * 2) - 5, (float)Spacing * -0.01f);
+        }
+        else if (newCard.owner.tag == "TopPlayer")
+        {
+            newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
+        }
+        else if (newCard.owner.tag == "RightPlayer")
+        {
+            newCard.transform.position = new Vector3(newCard.owner.Hand.transform.position.x, ((float)Spacing * 2) - 5, (float)Spacing * -0.01f);
+        }
+        else if (newCard.owner.tag == "BottomPlayer")
+        {
+            newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
+        }
+        else
+        {
+            Debug.Log("ERROR[DeckOfCards::TransformDealtCardToHand] | A player isnt tagged correctly");
+        }
+        newCard.transform.rotation = new Quaternion(newCard.owner.Hand.transform.rotation.x, newCard.owner.Hand.transform.rotation.y, newCard.owner.Hand.transform.rotation.z, newCard.owner.Hand.transform.rotation.w);
     }
 }

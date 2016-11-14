@@ -22,7 +22,7 @@ public class CardPopUp : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (cardIsDown && MouseIsWithinBounds() && !Card.owner.IsHoldingCard && Card.IsInHand)
+        if (cardIsDown && MouseIsWithinBounds() && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner.tag == "BottomPlayer")
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
@@ -30,7 +30,7 @@ public class CardPopUp : MonoBehaviour
                 if (hit.collider.tag == "Card")
                 {
                     cardIsDown = false;
-                    ChangeYPosition(heightChange);
+                    PopUp(heightChange);
                 }
             }
         }
@@ -38,7 +38,7 @@ public class CardPopUp : MonoBehaviour
 
     void OnMouseExit()
     {
-        if(!cardIsDown && !waitingForCard && !Card.owner.IsHoldingCard && Card.IsInHand)
+        if(!cardIsDown && !waitingForCard && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner.tag == "BottomPlayer")
         {
             waitingForCard = true;
             StartCoroutine(WaitToPutCardDown(waitTime));
@@ -54,15 +54,36 @@ public class CardPopUp : MonoBehaviour
             Input.mousePosition.y < Screen.height;
     }
 
-    void ChangeYPosition(float amount)
+    void PopUp(float amount)
     {
-        this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
+        // If it was 4 non AI players
+        //if(Card.owner.tag == "LeftPlayer")
+        //{
+        //    this.transform.position = new Vector3(transform.position.x + amount, transform.position.y, transform.position.z - amount * 0.01f);
+        //}
+        //else if (Card.owner.tag == "TopPlayer")
+        //{
+        //    this.transform.position = new Vector3(transform.position.x, transform.position.y - amount, transform.position.z - amount * 0.01f);
+        //}
+        //else if (Card.owner.tag == "RightPlayer")
+        //{
+        //    this.transform.position = new Vector3(transform.position.x - amount, transform.position.y, transform.position.z - amount * 0.01f);
+        //}
+        //else if (Card.owner.tag == "BottomPlayer")
+        //{
+        //    this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
+        //}
+        //else
+        //{
+        //    Debug.Log("ERROR | A player isnt tagged correctly");
+        //}
+          this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
     }
 
     IEnumerator WaitToPutCardDown(float time)
     {
         yield return new WaitForSeconds(time);
-        ChangeYPosition(-heightChange);
+        PopUp(-heightChange);
         cardIsDown = true;
         waitingForCard = false;
     }

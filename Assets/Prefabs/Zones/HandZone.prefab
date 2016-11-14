@@ -11,6 +11,7 @@ GameObject:
   - 212: {fileID: 21236048}
   - 54: {fileID: 5460488}
   - 65: {fileID: 6592104}
+  - 114: {fileID: 11463628}
   m_Layer: 8
   m_Name: HandZone
   m_TagString: Hand
@@ -57,6 +58,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 7.5, y: 10.5, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &11463628
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 163956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61731e99be8d9a747b30ce91cfb6cfca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CardsInHand: []
 --- !u!212 &21236048
 SpriteRenderer:
   m_ObjectHideFlags: 1

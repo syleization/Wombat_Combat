@@ -7,6 +7,10 @@ TagManager:
   - Card
   - Hand
   - Field
+  - LeftPlayer
+  - TopPlayer
+  - RightPlayer
+  - BottomPlayer
   layers:
   - Default
   - TransparentFX

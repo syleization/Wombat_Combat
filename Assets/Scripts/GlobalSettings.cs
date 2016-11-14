@@ -29,19 +29,17 @@ public class GlobalSettings : MonoBehaviour
     //public Button EndTurnButton;
     //public GameObject GameOverCanvas;
 
-    public Dictionary<AreaPosition, Player> Players = new Dictionary<AreaPosition, Player>();
-    public int CurrentTurn;
+    public static List<Player> Players = new List<Player>();
 
     // SINGLETON
     public static GlobalSettings Instance;
 
     void Awake()
     {
-        Players.Add(AreaPosition.Left, LeftPlayer);
-        Players.Add(AreaPosition.Top, TopPlayer);
-        Players.Add(AreaPosition.Right, RightPlayer);
-        Players.Add(AreaPosition.Bottom, BottomPlayer);
-        CurrentTurn = 1;
+        Players.Add(LeftPlayer);
+        Players.Add(TopPlayer);
+        Players.Add(RightPlayer);
+        Players.Add(BottomPlayer);
         Instance = this;
     }
 

@@ -50,8 +50,7 @@ public class CardMove : MonoBehaviour
             // This raycast goes past the card to see the hand
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
             {
-                Debug.Log(hit.collider.tag.ToString());
-                if (hit.collider.tag == "Hand")
+                if (hit.collider.tag == "Hand" && Hand.IsYourHand(Card, hit.collider.gameObject))
                 {
                     if (Card.CurrentArea == "Field")
                     {
@@ -87,6 +86,10 @@ public class CardMove : MonoBehaviour
                         SnapBackToOrigin();
                     }
                 }
+                else
+                {
+                    SnapBackToOrigin();
+                }
             }
             else // it hit nothing so return the card back to its previous place
             {
@@ -109,7 +112,8 @@ public class CardMove : MonoBehaviour
 
     void SnapBackToHand()
     {
-        transform.position = new Vector3((((float)Card.owner.Hand.CardsInHand.Count - 1) * 2) - 5, -5, ((float)Card.owner.Hand.CardsInHand.Count - 1) * -0.01f);
+        //transform.position = new Vector3((((float)Card.owner.Hand.CardsInHand.Count - 1) * 2) - 5, -5, ((float)Card.owner.Hand.CardsInHand.Count - 1) * -0.01f);
+        DeckOfCards.TransformDealtCardToHand(Card, Card.owner.Hand.CardsInHand.Count - 1);
         Card.owner.IsHoldingCard = false;
         CardPopUp.cardIsDown = true;
         Card.owner.Hand.ResetHandCardPositions(Card, Card.owner.Hand.CardsInHand.Count);
