@@ -8,7 +8,23 @@ public class Player : MonoBehaviour
     public int CurrentMaxHandSize;
     public bool IsHoldingCard;
     public bool IsTurn;
-    public int CurrentHealth;
+    private int PlayersCurrentHealth;
+    public int CurrentHealth
+    {
+        get
+        {
+            return PlayersCurrentHealth;
+        }
+        set
+        {
+            PlayersCurrentHealth = value;
+
+            if(PlayersCurrentHealth < 0)
+            {
+                PlayersCurrentHealth = 0;
+            }
+        }
+    }
     private const int MaxHealth = 15;
 
     void Awake()

@@ -8,10 +8,27 @@ public enum Stage { Merge, Play }
 public class TurnManager : MonoBehaviour
 {
     // for Singleton Pattern
-    public static TurnManager Instance;
-    private static Turns CurrentTurn; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
-    private static Stage CurrentStage;
-    public static Turns currentTurn
+    private static TurnManager TheInstance;
+
+    private TurnManager() { }
+
+    public static TurnManager Instance
+    {
+        get
+        {
+            if(TheInstance == null)
+            {
+                TheInstance = new TurnManager();
+            }
+
+            return TheInstance;
+        }
+    }
+
+
+    private Turns CurrentTurn; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
+    private Stage CurrentStage;
+    public Turns currentTurn
     {
         get
         {
@@ -19,7 +36,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public static Stage currentStage
+    public Stage currentStage
     {
         get
         {
@@ -34,7 +51,7 @@ public class TurnManager : MonoBehaviour
 
     void Awake()
     {
-        Instance = this;
+        TheInstance = this;
     }
 
     void Start()
@@ -103,10 +120,9 @@ public class TurnManager : MonoBehaviour
 
         GetPlayerToTheRightOf(CurrentTurn).IsTurn = true;
         UpdateCurrentTurn();
-        Debug.Log(CurrentTurn.ToString());
     }
 
-    public static Player GetCurrentPlayer()
+    public Player GetCurrentPlayer()
     {
         foreach(Player p in GlobalSettings.Players)
         {
@@ -119,7 +135,7 @@ public class TurnManager : MonoBehaviour
         return null;
     }
 
-    private static void UpdateCurrentTurn()
+    private void UpdateCurrentTurn()
     {
         Player temp = GetCurrentPlayer();
 
@@ -142,7 +158,7 @@ public class TurnManager : MonoBehaviour
     }
 
     // These Gets assume more than one player is active
-    public static Player GetPlayerToTheRightOf(Turns player)
+    public Player GetPlayerToTheRightOf(Turns player)
     {
         switch (player)
         {
@@ -204,7 +220,7 @@ public class TurnManager : MonoBehaviour
         return null;
     }
 
-    public static Player GetPlayerToTheLeftOf(Turns player)
+    public Player GetPlayerToTheLeftOf(Turns player)
     {
         switch (player)
         {

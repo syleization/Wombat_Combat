@@ -8,24 +8,10 @@ public class Field : MonoBehaviour
     public List<Card> CardsInField = new List<Card>();
     private static int MaxFieldSize;
 
+
     void Awake()
     {
         MaxFieldSize = 2;
-    }
-
-    void OnGUI()
-    {
-        ////TEMPORARY - should probably be replaces by artist created sprites attached to the field game object
-        //if(TurnManager.currentStage == Stage.Merge)
-        //{
-        //    // Create rectanges as spaces for where he cards would be placed
-        //    GUI.Box(new Rect(Screen.width / 4 - 3, Screen.height / 2 - 85, 140, 200), "+");
-        //    GUI.Box(new Rect(Screen.width / 2 + 25, Screen.height / 2 - 85, 140, 200), "+");
-        //}
-        //else if(TurnManager.currentStage == Stage.Play)
-        //{
-        //   GUI.Box(new Rect(Screen.width / 2 - 70, Screen.height / 2 - 85, 140, 200), "+");
-        //}
     }
 
     public static void ChangeMaxFieldSize(Stage currentStage)
@@ -64,7 +50,7 @@ public class Field : MonoBehaviour
                 CardsInField[1].transform.position = new Vector3(transform.position.x + 2.5f, transform.position.y, 0);
             }
         }
-        else if(MaxFieldSize == 1)
+        else if(MaxFieldSize == 1) // Happens when a card is played during the play stage
         {
             if (GetCard(0) != null) // if first card in the list exists
             {

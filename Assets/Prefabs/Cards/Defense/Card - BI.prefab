@@ -76,6 +76,7 @@ MonoBehaviour:
   IsPowerCard: 0
   IsInHand: 0
   Type: 1
+  SubType: 4
 --- !u!114 &11478556
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -99,6 +99,7 @@ MonoBehaviour:
   IsPowerCard: 1
   IsInHand: 0
   Type: 0
+  SubType: 2
 --- !u!212 &21206418
 SpriteRenderer:
   m_ObjectHideFlags: 1

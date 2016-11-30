@@ -45,7 +45,7 @@ public class DeckOfCards : MonoBehaviour
         }
 
         // Merge Button
-        if (TurnManager.currentStage == Stage.Merge && owner != null && owner.Field.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
+        if (TurnManager.Instance.currentStage == Stage.Merge && owner != null && owner.Field.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
         {
             // Add new power card to hand
             Card newCard;
@@ -66,7 +66,7 @@ public class DeckOfCards : MonoBehaviour
                     break;
             }
             //newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
-            newCard.owner = TurnManager.GetCurrentPlayer();
+            newCard.owner = TurnManager.Instance.GetCurrentPlayer();
             TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
             newCard.CurrentArea = "Hand";
             owner.Hand.CardsInHand.Add(newCard);
@@ -101,7 +101,7 @@ public class DeckOfCards : MonoBehaviour
 
     void ResetDeck()
     {
-        owner = TurnManager.GetCurrentPlayer();
+        owner = TurnManager.Instance.GetCurrentPlayer();
         if (owner != null)
         {
             for (int i = 0; i < owner.Hand.CardsInHand.Count; i++)
@@ -129,7 +129,7 @@ public class DeckOfCards : MonoBehaviour
         int card = Random.Range(0, cards.Count - 1);
 
         Card go = Instantiate<Card>(cards[card]);
-        go.owner = TurnManager.GetCurrentPlayer();
+        go.owner = TurnManager.Instance.GetCurrentPlayer();
         cards.RemoveAt(card);
 
         if (cards.Count == 0)
@@ -142,7 +142,7 @@ public class DeckOfCards : MonoBehaviour
 
     void GameOver()
     {
-        owner = TurnManager.GetCurrentPlayer();
+        owner = TurnManager.Instance.GetCurrentPlayer();
         if (owner != null)
         {
             for (int v = 0; v < owner.Hand.CardsInHand.Count; v++)
@@ -157,7 +157,7 @@ public class DeckOfCards : MonoBehaviour
 
     void MoveDealtCard()
     {
-        owner = TurnManager.GetCurrentPlayer();
+        owner = TurnManager.Instance.GetCurrentPlayer();
         if (owner.Hand.CardsInHand.Count < owner.CurrentMaxHandSize)
         {
             Card newCard = DealCard();

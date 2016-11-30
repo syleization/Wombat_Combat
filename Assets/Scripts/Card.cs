@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 
 public enum CardType { Attack, Defence, Trap, None }
-
+public enum CardSubType { DonkeyKick, WombatCharge, WomboCombo, Bark, Bite, GooglyEyes, Trampoline, Sinkhole, WombatCage, None}
 public class Card : MonoBehaviour
 {
     public Player owner;
@@ -12,6 +12,7 @@ public class Card : MonoBehaviour
     public bool IsPowerCard;
     public bool IsInHand;
     public CardType Type;
+    public CardSubType SubType;
     private bool CanTarget;
 
     bool GetCanTarget() { return CanTarget; }
@@ -29,7 +30,7 @@ public class Card : MonoBehaviour
     //}
     void Start()
     {
-        owner = TurnManager.GetCurrentPlayer();
+        owner = TurnManager.Instance.GetCurrentPlayer();
         IsInHand = true;
         if(Type == CardType.Attack)
         {

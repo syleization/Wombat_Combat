@@ -72,8 +72,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
-  isPowerCard: 0
+  CurrentArea: 
+  IsPowerCard: 0
+  IsInHand: 0
   Type: 0
+  SubType: 1
 --- !u!114 &11415334
 MonoBehaviour:
   m_ObjectHideFlags: 1

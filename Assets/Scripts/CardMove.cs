@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 public class CardMove : MonoBehaviour
 {
@@ -75,6 +76,11 @@ public class CardMove : MonoBehaviour
                             Card.owner.Field.CardsInField.Add(Card);
                             // Remove card from previous spot
                             Card.owner.Hand.CardsInHand.Remove(Card);
+
+                            if(TurnManager.Instance.currentStage == Stage.Play)
+                            {
+                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card.owner.Field.GetCard(0));
+                            }
                         }
                         // Move card to the field positions
                         SnapBackToField();
@@ -123,5 +129,57 @@ public class CardMove : MonoBehaviour
         Card.owner.Field.ResetFieldCardPositions();
         Card.owner.IsHoldingCard = false;
         CardPopUp.cardIsDown = true;
+    }
+
+    void PlayCard(Player player, Card cardUsed)
+    {
+        CardSubType subTypeOfCard = cardUsed.SubType;
+
+        if (cardUsed.Type == CardType.Attack)
+        {
+            if(subTypeOfCard == CardSubType.DonkeyKick)
+            {
+                CardActions.DonkeyKick();
+                cardUsed.owner.Field.ClearField();
+            }
+            else if(subTypeOfCard == CardSubType.WombatCharge)
+            {
+                Debug.Log("WOMBAT CHARGE");
+            }
+            else if(subTypeOfCard == CardSubType.WomboCombo)
+            {
+                Debug.Log("WOMBO COMBO");
+            }
+        }
+        else if (cardUsed.Type == CardType.Defence)
+        {
+            if (subTypeOfCard == CardSubType.Bark)
+            {
+                Debug.Log("BARK");
+            }
+            else if (subTypeOfCard == CardSubType.Bite)
+            {
+                Debug.Log("BITE");
+            }
+            else if (subTypeOfCard == CardSubType.GooglyEyes)
+            {
+                Debug.Log("GOOGLY EYES");
+            }
+        }
+        else if (cardUsed.Type == CardType.Trap)
+        {
+            if (subTypeOfCard == CardSubType.Sinkhole)
+            {
+                Debug.Log("SINK HOLE");
+            }
+            else if (subTypeOfCard == CardSubType.Trampoline)
+            {
+                Debug.Log("TRAMPOLINE");
+            }
+            else if (subTypeOfCard == CardSubType.WombatCage)
+            {
+                Debug.Log("WOMBAT CAGE");
+            }
+        }
     }
 }

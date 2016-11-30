@@ -35,7 +35,22 @@ public class GlobalSettings : MonoBehaviour
     public static List<Player> Players = new List<Player>();
 
     // SINGLETON
-    public static GlobalSettings Instance;
+    private static GlobalSettings TheInstance;
+
+    private GlobalSettings() {}
+
+    public static GlobalSettings Instance
+    {
+        get
+        {
+            if(TheInstance == null)
+            {
+                TheInstance = new GlobalSettings();
+            }
+
+            return TheInstance;
+        }
+    }
 
     void Awake()
     {
@@ -43,7 +58,7 @@ public class GlobalSettings : MonoBehaviour
         Players.Add(TopPlayer);
         Players.Add(RightPlayer);
         Players.Add(BottomPlayer);
-        Instance = this;
+        TheInstance = this;
 
         switch(TypeOfGame)
         {
