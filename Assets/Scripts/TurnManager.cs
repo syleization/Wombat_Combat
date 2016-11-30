@@ -3,12 +3,39 @@ using System.Collections;
 using UnityEngine.UI;
 
 public enum Turns { LeftPlayer, TopPlayer, RightPlayer, BottomPlayer }
+public enum Stage { Merge, Play }
 // this class will take care of switching turns and counting down time until the turn expires
 public class TurnManager : MonoBehaviour
 {
     // for Singleton Pattern
     public static TurnManager Instance;
     private static Turns CurrentTurn; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
+    private static Stage CurrentStage;
+    public static Turns currentTurn
+    {
+        get
+        {
+            return CurrentTurn;
+        }
+    }
+
+    public static Stage currentStage
+    {
+        get
+        {
+            return CurrentStage;
+        }
+        set
+        {
+            CurrentStage = value;
+        }
+    }
+
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -36,6 +63,37 @@ public class TurnManager : MonoBehaviour
         SetTurnBools();
     }
 
+    void OnGUI()
+    {
+        // Creates a box in the bottom right showing whose turn it is and what their health is
+        GUI.Box(new Rect(Screen.width - 200, Screen.height - 30, 200, 30), "Turn: " + CurrentTurn.ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString());
+        // Creates a box in the top middle to show the current stage
+        GUI.Box(new Rect(Screen.width / 2 - 50, 0, 100, 30), "Stage: " + CurrentStage.ToString());
+
+        // Sifts through the stages and the last stage has an end turn button instead of an end stage button
+        if (CurrentStage == Stage.Merge && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndStage"))
+        {
+            // Do some kind of transition to visually show the stage has changed
+            CurrentStage = Stage.Play;
+            Field.SendFieldBackToHand(GetCurrentPlayer());
+            Field.ChangeMaxFieldSize(CurrentStage);
+        }
+        else if (CurrentStage == Stage.Play && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndTurn"))
+        {
+            // Do some kind of end of turn transition to visually show it
+            CurrentStage = Stage.Merge;
+            Instance.EndTurn();
+            Field.ChangeMaxFieldSize(CurrentStage);
+        }
+    }
+
+    public void EndTurn()
+    {
+        Player currentPlayer = GetCurrentPlayer();
+        SetTurnBools();
+        Field.SendFieldBackToHand(currentPlayer);
+    }
+
     void SetTurnBools()
     {
         foreach (Player p in GlobalSettings.Players)
@@ -59,11 +117,6 @@ public class TurnManager : MonoBehaviour
         }
         Debug.Log("ERROR[TurnManager::GetCurrentPlayer] | It is currently the turn of no one");
         return null;
-    }
-
-    public static Turns GetCurrentTurn()
-    {
-        return CurrentTurn;
     }
 
     private static void UpdateCurrentTurn()
@@ -212,71 +265,6 @@ public class TurnManager : MonoBehaviour
         Debug.Log("[TurnManager::GetPlayerToTheLeftOf] Invalid parameter");
         return null;
     }
-
-    void OnGUI()
-    {
-        GUI.Box(new Rect(Screen.width - 200, Screen.height - 30, 200, 30), "Turn: " + CurrentTurn.ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString());
-    }
-    //private Player _whoseTurn;
-    //public Player whoseTurn
-    //{
-    //    get
-    //    {
-    //        return _whoseTurn;
-    //    }
-
-    //    set
-    //    {
-    //        _whoseTurn = value;
-    //        timer.StartTimer();
-
-    //        GlobalSettings.Instance.EnableEndTurnButtonOnStart(_whoseTurn);
-
-    //        TurnMaker tm = whoseTurn.GetComponent<TurnMaker>();
-    //        // player`s method OnTurnStart() will be called in tm.OnTurnStart();
-    //        tm.OnTurnStart();
-    //        if (tm is PlayerTurnMaker)
-    //        {
-    //            whoseTurn.HighlightPlayableCards();
-    //        }
-    //        // remove highlights for opponent.
-    //        whoseTurn.otherPlayer.HighlightPlayableCards(true);
-
-    //    }
-    //}
-
-    void Awake()
-    {
-        Instance = this;
-    }
-
-    public void EndTurn()
-    {
-
-        Player currentPlayer = GetCurrentPlayer();
-        SetTurnBools();
-        // Move cards from field back to hand
-        // Needs to be used because the cardsinfield count changes within the loop
-        int originalFieldCount = currentPlayer.Field.CardsInField.Count;
-        for (int i = 0; i < originalFieldCount; ++i) 
-        {
-            // Since cards are removed each loop the current card will always be the first element in the field
-            Card currentCard = currentPlayer.Field.GetCard(0);
-            if (currentCard != null)
-            {
-                CardPopUp popup = currentCard.GetComponent<CardPopUp>();
-                currentCard.CurrentArea = "Hand";
-                currentCard.IsInHand = true;
-                popup.cardIsDown = true;
-                currentPlayer.Hand.CardsInHand.Add(currentCard);
-                currentPlayer.Field.CardsInField.Remove(currentCard);
-
-                DeckOfCards.TransformDealtCardToHand(currentCard, currentCard.owner.Hand.CardsInHand.Count - 1);
-            }
-        }
-
-    }
-
 
 }
 

@@ -20,6 +20,62 @@ public class DeckOfCards : MonoBehaviour
         ResetDeck();
     }
 
+    void OnGUI()
+    {
+        if (!showReset)
+        {
+            // Deal button
+            if (GUI.Button(new Rect(10, 10, 100, 20), "Deal"))
+            {
+                MoveDealtCard();
+            }
+        }
+        else
+        {
+            // Reset button
+            if (GUI.Button(new Rect(10, 10, 100, 20), "Reset"))
+            {
+                ResetDeck();
+            }
+        }
+        // GameOver button
+        if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 20), "ClearHand"))
+        {
+            GameOver();
+        }
+
+        // Merge Button
+        if (TurnManager.currentStage == Stage.Merge && owner != null && owner.Field.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
+        {
+            // Add new power card to hand
+            Card newCard;
+            switch (owner.Field.IsMergable())
+            {
+                case CardType.Attack:
+                    newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_WomboCombo);
+                    break;
+                case CardType.Defence:
+                    newCard = Instantiate<Card>(GlobalSettings.Instance.Defence_GooglyEyes);
+                    break;
+                case CardType.Trap:
+                    newCard = Instantiate<Card>(GlobalSettings.Instance.Trap_WombatCage);
+                    break;
+                default:
+                    Debug.Log("Error in Merge");
+                    newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_DonkeyKick);
+                    break;
+            }
+            //newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
+            newCard.owner = TurnManager.GetCurrentPlayer();
+            TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
+            newCard.CurrentArea = "Hand";
+            owner.Hand.CardsInHand.Add(newCard);
+
+            // Clear field of used cards
+            owner.Field.ClearField();
+        }
+    }
+
     Card GetRandomBasicCard()
     {
         switch(Random.Range(0, 5))
@@ -97,68 +153,6 @@ public class DeckOfCards : MonoBehaviour
         }
         cards.Clear();
         cards.AddRange(deck);
-    }
-
-    void OnGUI()
-    {
-        if (!showReset)
-        {
-            // Deal button
-            if (GUI.Button(new Rect(10, 10, 100, 20), "Deal"))
-            {
-                MoveDealtCard();
-            }
-        }
-        else
-        {
-            // Reset button
-            if (GUI.Button(new Rect(10, 10, 100, 20), "Reset"))
-            {
-                ResetDeck();
-            }
-        }
-        // GameOver button
-        if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 20), "ClearHand"))
-        {
-            GameOver();
-        }
-
-        // EndTurn button
-        if (GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndTurn"))
-        {
-            TurnManager.Instance.EndTurn();
-        }
-
-        // Merge Button
-        if(owner != null && owner.Field.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
-        {
-            // Add new power card to hand
-            Card newCard;
-            switch (owner.Field.IsMergable())
-            {
-                case CardType.Attack:
-                    newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_WomboCombo);
-                    break;
-                case CardType.Defence:
-                    newCard = Instantiate<Card>(GlobalSettings.Instance.Defence_GooglyEyes);
-                    break;
-                case CardType.Trap:
-                    newCard = Instantiate<Card>(GlobalSettings.Instance.Trap_WombatCage);
-                    break;
-                default:
-                    Debug.Log("Error in Merge");
-                    newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_DonkeyKick);
-                    break;
-            }
-            //newCard.transform.position = new Vector3(((float)owner.Hand.CardsInHand.Count * 2) - 5, -5, (float)owner.Hand.CardsInHand.Count * -0.01f); // place card 1/4 up on all axis from last
-            newCard.owner = TurnManager.GetCurrentPlayer();
-            TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
-            newCard.CurrentArea = "Hand";
-            owner.Hand.CardsInHand.Add(newCard);
-
-            // Clear field of used cards
-            owner.Field.ClearField();
-        }
     }
 
     void MoveDealtCard()

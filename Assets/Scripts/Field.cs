@@ -6,7 +6,39 @@ public class Field : MonoBehaviour
 {
     // As of now the functionality only supports one field - this may be enough though
     public List<Card> CardsInField = new List<Card>();
-    private int MaxFieldSize = 2;
+    private static int MaxFieldSize;
+
+    void Awake()
+    {
+        MaxFieldSize = 2;
+    }
+
+    void OnGUI()
+    {
+        ////TEMPORARY - should probably be replaces by artist created sprites attached to the field game object
+        //if(TurnManager.currentStage == Stage.Merge)
+        //{
+        //    // Create rectanges as spaces for where he cards would be placed
+        //    GUI.Box(new Rect(Screen.width / 4 - 3, Screen.height / 2 - 85, 140, 200), "+");
+        //    GUI.Box(new Rect(Screen.width / 2 + 25, Screen.height / 2 - 85, 140, 200), "+");
+        //}
+        //else if(TurnManager.currentStage == Stage.Play)
+        //{
+        //   GUI.Box(new Rect(Screen.width / 2 - 70, Screen.height / 2 - 85, 140, 200), "+");
+        //}
+    }
+
+    public static void ChangeMaxFieldSize(Stage currentStage)
+    {
+        if(currentStage == Stage.Merge)
+        {
+            MaxFieldSize = 2;
+        }
+        else if(currentStage == Stage.Play)
+        {
+            MaxFieldSize = 1;
+        }
+    }
 
     public bool CanBePlaced()
     {
@@ -20,14 +52,25 @@ public class Field : MonoBehaviour
 
     public void ResetFieldCardPositions()
     {
-        if(GetCard(0) != null) // if first card in the list exists
+        if (MaxFieldSize == 2)
         {
-            // Move to the left spot in the field
-            CardsInField[0].transform.position = new Vector3(transform.position.x - 2.5f, transform.position.y, 0);
+            if (GetCard(0) != null) // if first card in the list exists
+            {
+                // Move to the left spot in the field
+                CardsInField[0].transform.position = new Vector3(transform.position.x - 2.5f, transform.position.y, 0);
+            }
+            if (GetCard(1) != null) // if the second card in the list exists
+            {
+                CardsInField[1].transform.position = new Vector3(transform.position.x + 2.5f, transform.position.y, 0);
+            }
         }
-        if(GetCard(1) != null) // if the second card in the list exists
+        else if(MaxFieldSize == 1)
         {
-            CardsInField[1].transform.position = new Vector3(transform.position.x + 2.5f, transform.position.y, 0);
+            if (GetCard(0) != null) // if first card in the list exists
+            {
+                // Move to the middle spot in the field
+                CardsInField[0].transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+            }
         }
     }
 
@@ -44,5 +87,28 @@ public class Field : MonoBehaviour
             Destroy(c.gameObject);
         }
         CardsInField.Clear();
+    }
+
+    public static void SendFieldBackToHand(Player currentPlayer)
+    {
+        // Move cards from field back to hand
+        // Needs to be used because the cardsinfield count changes within the loop
+        int originalFieldCount = currentPlayer.Field.CardsInField.Count;
+        for (int i = 0; i < originalFieldCount; ++i)
+        {
+            // Since cards are removed each loop the current card will always be the first element in the field
+            Card currentCard = currentPlayer.Field.GetCard(0);
+            if (currentCard != null)
+            {
+                CardPopUp popup = currentCard.GetComponent<CardPopUp>();
+                currentCard.CurrentArea = "Hand";
+                currentCard.IsInHand = true;
+                popup.cardIsDown = true;
+                currentPlayer.Hand.CardsInHand.Add(currentCard);
+                currentPlayer.Field.CardsInField.Remove(currentCard);
+
+                DeckOfCards.TransformDealtCardToHand(currentCard, currentCard.owner.Hand.CardsInHand.Count - 1);
+            }
+        }
     }
 }

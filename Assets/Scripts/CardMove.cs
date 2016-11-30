@@ -112,7 +112,6 @@ public class CardMove : MonoBehaviour
 
     void SnapBackToHand()
     {
-        //transform.position = new Vector3((((float)Card.owner.Hand.CardsInHand.Count - 1) * 2) - 5, -5, ((float)Card.owner.Hand.CardsInHand.Count - 1) * -0.01f);
         DeckOfCards.TransformDealtCardToHand(Card, Card.owner.Hand.CardsInHand.Count - 1);
         Card.owner.IsHoldingCard = false;
         CardPopUp.cardIsDown = true;
