@@ -12,6 +12,13 @@ public class TurnManager : MonoBehaviour
 
     void Start()
     {
+        int random;
+        do
+        {
+            random = Random.Range(0, 4);
+
+        } while (GlobalSettings.Players[random].gameObject.activeSelf == false);
+
         switch(Random.Range(0, 4))
         {
             case 0: CurrentTurn = Turns.LeftPlayer;
@@ -31,27 +38,13 @@ public class TurnManager : MonoBehaviour
 
     void SetTurnBools()
     {
-        switch (CurrentTurn)
+        foreach (Player p in GlobalSettings.Players)
         {
-            case Turns.LeftPlayer:
-                GlobalSettings.Players[0].IsTurn = false; GlobalSettings.Players[1].IsTurn = true;
-                CurrentTurn = Turns.TopPlayer;
-                break;
-            case Turns.TopPlayer:
-                GlobalSettings.Players[1].IsTurn = false; GlobalSettings.Players[2].IsTurn = true;
-                CurrentTurn = Turns.RightPlayer;
-                break;
-            case Turns.RightPlayer:
-                GlobalSettings.Players[2].IsTurn = false; GlobalSettings.Players[3].IsTurn = true;
-                CurrentTurn = Turns.BottomPlayer;
-                break;
-            case Turns.BottomPlayer:
-                GlobalSettings.Players[3].IsTurn = false; GlobalSettings.Players[0].IsTurn = true;
-                CurrentTurn = Turns.LeftPlayer;
-                break;
-            default:
-                break;
+            p.IsTurn = false;
         }
+
+        GetPlayerToTheRightOf(CurrentTurn).IsTurn = true;
+        UpdateCurrentTurn();
         Debug.Log(CurrentTurn.ToString());
     }
 
@@ -67,6 +60,159 @@ public class TurnManager : MonoBehaviour
         Debug.Log("ERROR[TurnManager::GetCurrentPlayer] | It is currently the turn of no one");
         return null;
     }
+
+    public static Turns GetCurrentTurn()
+    {
+        return CurrentTurn;
+    }
+
+    private static void UpdateCurrentTurn()
+    {
+        Player temp = GetCurrentPlayer();
+
+        if(temp == GlobalSettings.Players[0])
+        {
+            CurrentTurn = Turns.LeftPlayer;
+        }
+        else if (temp == GlobalSettings.Players[1])
+        {
+            CurrentTurn = Turns.TopPlayer;
+        }
+        else if(temp == GlobalSettings.Players[2])
+        {
+            CurrentTurn = Turns.RightPlayer;
+        }
+        else if (temp == GlobalSettings.Players[3])
+        {
+            CurrentTurn = Turns.BottomPlayer;
+        }
+    }
+
+    // These Gets assume more than one player is active
+    public static Player GetPlayerToTheRightOf(Turns player)
+    {
+        switch (player)
+        {
+            case Turns.LeftPlayer:
+                if(GlobalSettings.Players[3].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[3];
+                }
+                else if(GlobalSettings.Players[2].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[2];
+                }
+                else
+                {
+                    return GlobalSettings.Players[1];
+                }
+
+            case Turns.TopPlayer:
+                if (GlobalSettings.Players[0].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[0];
+                }
+                else if (GlobalSettings.Players[3].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[3];
+                }
+                else
+                {
+                    return GlobalSettings.Players[2];
+                }
+            case Turns.RightPlayer:
+                if (GlobalSettings.Players[1].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[1];
+                }
+                else if (GlobalSettings.Players[0].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[0];
+                }
+                else
+                {
+                    return GlobalSettings.Players[3];
+                }
+            case Turns.BottomPlayer:
+                if (GlobalSettings.Players[2].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[2];
+                }
+                else if (GlobalSettings.Players[1].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[1];
+                }
+                else
+                {
+                    return GlobalSettings.Players[0];
+                }
+        }
+        Debug.Log("[TurnManager::GetPlayerToTheRightOf] Invalid parameter");
+        return null;
+    }
+
+    public static Player GetPlayerToTheLeftOf(Turns player)
+    {
+        switch (player)
+        {
+            case Turns.LeftPlayer:
+                if (GlobalSettings.Players[1].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[1];
+                }
+                else if (GlobalSettings.Players[2].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[2];
+                }
+                else
+                {
+                    return GlobalSettings.Players[3];
+                }
+
+            case Turns.TopPlayer:
+                if (GlobalSettings.Players[2].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[2];
+                }
+                else if (GlobalSettings.Players[3].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[3];
+                }
+                else
+                {
+                    return GlobalSettings.Players[0];
+                }
+            case Turns.RightPlayer:
+                if (GlobalSettings.Players[3].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[3];
+                }
+                else if (GlobalSettings.Players[0].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[0];
+                }
+                else
+                {
+                    return GlobalSettings.Players[1];
+                }
+            case Turns.BottomPlayer:
+                if (GlobalSettings.Players[0].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[0];
+                }
+                else if (GlobalSettings.Players[1].gameObject.activeSelf)
+                {
+                    return GlobalSettings.Players[1];
+                }
+                else
+                {
+                    return GlobalSettings.Players[2];
+                }
+        }
+        Debug.Log("[TurnManager::GetPlayerToTheLeftOf] Invalid parameter");
+        return null;
+    }
+
     void OnGUI()
     {
         GUI.Box(new Rect(Screen.width - 200, Screen.height - 30, 200, 30), "Turn: " + CurrentTurn.ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString());

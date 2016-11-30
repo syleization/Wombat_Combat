@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public enum AreaPosition { Left, Top, Right, Bottom }
+public enum GameType { TwoPlayer, ThreePlayer, FourPlayer }
 public class GlobalSettings : MonoBehaviour
 {
+    [Header("Game Settings")]
+    public GameType TypeOfGame;
     [Header("Players")]
     public Player LeftPlayer;
     public Player TopPlayer;
@@ -41,6 +44,19 @@ public class GlobalSettings : MonoBehaviour
         Players.Add(RightPlayer);
         Players.Add(BottomPlayer);
         Instance = this;
+
+        switch(TypeOfGame)
+        {
+            case GameType.TwoPlayer:
+                Players[0].gameObject.SetActive(false);
+                Players[2].gameObject.SetActive(false);
+                break;
+            case GameType.ThreePlayer:
+                Players[2].gameObject.SetActive(false);
+                break;
+            default: // Do Nothing if the game is starting at four players
+                break;
+        }
     }
 
     //public bool CanControlThisPlayer(AreaPosition owner)

@@ -1601,6 +1601,14 @@ Prefab:
       propertyPath: RightPlayer
       value: 
       objectReference: {fileID: 1035913645}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: PlayersToStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: TypeOfGame
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
   m_IsPrefabParent: 0
