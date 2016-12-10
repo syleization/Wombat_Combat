@@ -39,4 +39,32 @@ public class Hand : MonoBehaviour
     {
         return hit == card.owner.Hand.gameObject ? true : false; // if the hand the raycast hit is yours
     }
+
+    public static Player GetOwner(GameObject hit)
+    {
+        foreach(Player player in GlobalSettings.Players)
+        {
+            // if the gameobject the card was let go on is the hand of the player
+            Debug.Log("TEST");
+            if(hit == player.transform.GetChild(0).gameObject)
+            {
+                return player;
+            }
+        }
+        Debug.Log("[Hand::GetOwner] Invalid Return path");
+        return null;
+    }
+
+    public bool HasDefenceCards()
+    {
+        foreach(Card card in CardsInHand)
+        {
+            if(card.Type == CardType.Defence)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

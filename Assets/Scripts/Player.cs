@@ -4,7 +4,6 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
     public Hand Hand;
-    public Field Field;
     public int CurrentMaxHandSize;
     public bool IsHoldingCard;
     public bool IsTurn;
@@ -29,7 +28,6 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        Field = FindObjectOfType<Field>();
         Hand = GetComponentInChildren<Hand>();
         CurrentMaxHandSize = 7;
         CurrentHealth = MaxHealth;

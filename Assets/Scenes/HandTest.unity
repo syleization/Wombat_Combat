@@ -148,6 +148,7 @@ GameObject:
   - 92: {fileID: 103748118}
   - 124: {fileID: 103748117}
   - 81: {fileID: 103748116}
+  - 114: {fileID: 103748121}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -222,6 +223,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &103748121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 103748115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02c26d335f99acc4b8606df829b6996d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &155898292
 Prefab:
   m_ObjectHideFlags: 0
@@ -1607,7 +1619,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
       propertyPath: TypeOfGame
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: Damage_DonkeyKick
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: Damage_WombatCharge
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: Damage_WomboCombo
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}

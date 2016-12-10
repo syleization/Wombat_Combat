@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public enum Turns { LeftPlayer, TopPlayer, RightPlayer, BottomPlayer }
-public enum Stage { Merge, Play }
+public enum Stage { Merge, Play, Reaction }
 // this class will take care of switching turns and counting down time until the turn expires
 public class TurnManager : MonoBehaviour
 {
@@ -72,6 +72,7 @@ public class TurnManager : MonoBehaviour
             case 2: CurrentTurn = Turns.RightPlayer;
                 break;
             case 3: CurrentTurn = Turns.BottomPlayer;
+                // Rotate for bottom player is 0.0f which is how it starts off anyway
                 break;
             default:
                 break;
@@ -93,14 +94,18 @@ public class TurnManager : MonoBehaviour
             // Do some kind of transition to visually show the stage has changed
             CurrentStage = Stage.Play;
             Field.SendFieldBackToHand(GetCurrentPlayer());
-            Field.ChangeMaxFieldSize(CurrentStage);
+            Field.Instance.ChangeMaxFieldSize(CurrentStage);
         }
         else if (CurrentStage == Stage.Play && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndTurn"))
         {
             // Do some kind of end of turn transition to visually show it
             CurrentStage = Stage.Merge;
             Instance.EndTurn();
-            Field.ChangeMaxFieldSize(CurrentStage);
+            Field.Instance.ChangeMaxFieldSize(CurrentStage);
+        }
+        else if(CurrentStage == Stage.Reaction && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "Don'tReact"))
+        {
+            CardActions.DontReact();
         }
     }
 
@@ -282,5 +287,27 @@ public class TurnManager : MonoBehaviour
         return null;
     }
 
+    public Turns GetTurnEnumOfPlayer(Player player)
+    {
+        if(player == GlobalSettings.Instance.LeftPlayer)
+        {
+            return Turns.LeftPlayer;
+        }
+        else if (player == GlobalSettings.Instance.TopPlayer)
+        {
+            return Turns.TopPlayer;
+        }
+        else if (player == GlobalSettings.Instance.RightPlayer)
+        {
+            return Turns.RightPlayer;
+        }
+        else if (player == GlobalSettings.Instance.BottomPlayer)
+        {
+            return Turns.BottomPlayer;
+        }
+
+        Debug.Log("[TurnManager::GetTurnEnumOfPlayer] Invalid parameter");
+        return Turns.BottomPlayer;
+    }
 }
 

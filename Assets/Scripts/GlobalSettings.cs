@@ -14,10 +14,6 @@ public class GlobalSettings : MonoBehaviour
     public Player TopPlayer;
     public Player RightPlayer;
     public Player BottomPlayer;
-    [Header("Colors")]
-    public Color32 CardBodyStandardColor;
-    public Color32 CardRibbonsStandardColor;
-    public Color32 CardGlowColor;
     [Header("Prefabs and Assets")]
     public Card Attack_WombatCharge;
     public Card Attack_DonkeyKick;
@@ -28,9 +24,10 @@ public class GlobalSettings : MonoBehaviour
     public Card Trap_Trampoline;
     public Card Trap_Sinkhole;
     public Card Trap_WombatCage;
-    [Header("Other")]
-    //public Button EndTurnButton;
-    //public GameObject GameOverCanvas;
+    [Header("Damages")]
+    public int Damage_DonkeyKick;
+    public int Damage_WombatCharge;
+    public int Damage_WomboCombo;
 
     public static List<Player> Players = new List<Player>();
 
@@ -74,27 +71,19 @@ public class GlobalSettings : MonoBehaviour
         }
     }
 
-    //public bool CanControlThisPlayer(AreaPosition owner)
-    //{
-    //    bool PlayersTurn = (TurnManager.Instance.whoseTurn == Players[owner]);
-    //    bool NotDrawingAnyCards = !Command.CardDrawPending();
-    //    return Players[owner].PArea.AllowedToControlThisPlayer && Players[owner].PArea.ControlsON && PlayersTurn && NotDrawingAnyCards;
-    //}
+    public int GetDamageAmountOf(CardSubType type)
+    {
+        switch(type)
+        {
+            case CardSubType.DonkeyKick:
+                return Damage_DonkeyKick;
+            case CardSubType.WombatCharge:
+                return Damage_WombatCharge;
+            case CardSubType.WomboCombo:
+                return Damage_WomboCombo;
+        }
 
-    //public bool CanControlThisPlayer(Player ownerPlayer)
-    //{
-    //    bool PlayersTurn = (TurnManager.Instance.whoseTurn == ownerPlayer);
-    //    bool NotDrawingAnyCards = !Command.CardDrawPending();
-    //    return ownerPlayer.PArea.AllowedToControlThisPlayer && ownerPlayer.PArea.ControlsON && PlayersTurn && NotDrawingAnyCards;
-    //}
-
-    //public void EnableEndTurnButtonOnStart(Player P)
-    //{
-    //    if (P == LowPlayer && CanControlThisPlayer(AreaPosition.Low) ||
-    //        P == TopPlayer && CanControlThisPlayer(AreaPosition.Top))
-    //        EndTurnButton.interactable = true;
-    //    else
-    //        EndTurnButton.interactable = false;
-
-    //}
+        Debug.Log("[GlobalSettings::GetDamageAmountOf] Invalid parameter");
+        return -1;
+    }
 }

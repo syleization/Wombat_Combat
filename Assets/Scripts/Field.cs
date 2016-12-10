@@ -7,16 +7,31 @@ public class Field : MonoBehaviour
     // As of now the functionality only supports one field - this may be enough though
     public List<Card> CardsInField = new List<Card>();
     private static int MaxFieldSize;
+    private static Field TheInstance;
 
+    private Field() { }
+
+    public static Field Instance
+    {
+        get
+        {
+            if (TheInstance == null)
+            {
+                TheInstance = FindObjectOfType<Field>();
+            }
+
+            return TheInstance;
+        }
+    }
 
     void Awake()
     {
         MaxFieldSize = 2;
     }
 
-    public static void ChangeMaxFieldSize(Stage currentStage)
+    public void ChangeMaxFieldSize(Stage currentStage)
     {
-        if(currentStage == Stage.Merge)
+        if(currentStage == Stage.Merge || currentStage == Stage.Reaction)
         {
             MaxFieldSize = 2;
         }
@@ -79,11 +94,11 @@ public class Field : MonoBehaviour
     {
         // Move cards from field back to hand
         // Needs to be used because the cardsinfield count changes within the loop
-        int originalFieldCount = currentPlayer.Field.CardsInField.Count;
+        int originalFieldCount = Field.Instance.CardsInField.Count;
         for (int i = 0; i < originalFieldCount; ++i)
         {
             // Since cards are removed each loop the current card will always be the first element in the field
-            Card currentCard = currentPlayer.Field.GetCard(0);
+            Card currentCard = Field.Instance.GetCard(0);
             if (currentCard != null)
             {
                 CardPopUp popup = currentCard.GetComponent<CardPopUp>();
@@ -91,7 +106,7 @@ public class Field : MonoBehaviour
                 currentCard.IsInHand = true;
                 popup.cardIsDown = true;
                 currentPlayer.Hand.CardsInHand.Add(currentCard);
-                currentPlayer.Field.CardsInField.Remove(currentCard);
+                Field.Instance.CardsInField.Remove(currentCard);
 
                 DeckOfCards.TransformDealtCardToHand(currentCard, currentCard.owner.Hand.CardsInHand.Count - 1);
             }

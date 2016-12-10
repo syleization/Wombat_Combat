@@ -15,7 +15,7 @@ public class Card : MonoBehaviour
     public CardSubType SubType;
     private bool CanTarget;
 
-    bool GetCanTarget() { return CanTarget; }
+    public bool GetCanTarget() { return CanTarget; }
 
     //public bool CanBePlayed
     //{
@@ -32,7 +32,7 @@ public class Card : MonoBehaviour
     {
         owner = TurnManager.Instance.GetCurrentPlayer();
         IsInHand = true;
-        if(Type == CardType.Attack)
+        if(Type == CardType.Attack && SubType != CardSubType.DonkeyKick)
         {
             CanTarget = true;
         }

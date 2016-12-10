@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ControllingCameraAspectScript : MonoBehaviour {
-
+public class ControllingCameraAspectScript : MonoBehaviour
+{
     // Use this for initialization
     void Start()
     {
@@ -46,4 +46,6 @@ public class ControllingCameraAspectScript : MonoBehaviour {
             camera.rect = rect;
         }
     }
+
+
 }

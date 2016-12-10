@@ -45,11 +45,11 @@ public class DeckOfCards : MonoBehaviour
         }
 
         // Merge Button
-        if (TurnManager.Instance.currentStage == Stage.Merge && owner != null && owner.Field.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
+        if (TurnManager.Instance.currentStage == Stage.Merge && owner != null && Field.Instance.IsMergable() != CardType.None && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
         {
             // Add new power card to hand
             Card newCard;
-            switch (owner.Field.IsMergable())
+            switch (Field.Instance.IsMergable())
             {
                 case CardType.Attack:
                     newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_WomboCombo);
@@ -72,7 +72,7 @@ public class DeckOfCards : MonoBehaviour
             owner.Hand.CardsInHand.Add(newCard);
 
             // Clear field of used cards
-            owner.Field.ClearField();
+            Field.Instance.ClearField();
         }
     }
 
