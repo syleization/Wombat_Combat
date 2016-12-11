@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CardActions : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class CardActions : MonoBehaviour
     // It is basically a hub for static functions
     static private Player Thrower;
     static private Player Reactor;
+    static private List<Card> BarkedCards = new List<Card>();
     private CardActions() { }
 
     static public Player theThrower
@@ -56,20 +58,33 @@ public class CardActions : MonoBehaviour
 
     public static void Bark(Player thrower, Player reactor)
     {
-        Debug.Log(reactor.ToString() + "'s dingo scares the wombat back into " + thrower.ToString() + "'s hand!");
+        Debug.Log(reactor.ToString() + "'s dingo scares the wombat back into " + thrower.ToString() + "'s hand at the end of the turn!");
         Card card = Field.Instance.GetCard(0);
-        thrower.Hand.CardsInHand.Add(card);
+        BarkedCards.Add(card);
         Field.Instance.CardsInField.Remove(card);
         Field.Instance.ClearField();
-        card.CurrentArea = "Hand";
-        card.IsInHand = true;
-        DeckOfCards.TransformDealtCardToHand(card, thrower.Hand.CardsInHand.Count - 1);
+        card.gameObject.SetActive(false);
         TurnManager.Instance.currentStage = Stage.Play;
+    }
+
+    public static void PlaceBarkedCards(Player thrower)
+    {
+        if (BarkedCards.Count > 0)
+        {
+            foreach (Card card in BarkedCards)
+            {
+                card.gameObject.SetActive(true);
+                thrower.Hand.CardsInHand.Add(card);
+                card.CurrentArea = "Hand";
+                card.IsInHand = true;
+                DeckOfCards.TransformDealtCardToHand(card, thrower.Hand.CardsInHand.Count - 1);
+            }
+        }
     }
 
     public static void Bite(Player killer)
     {
-        Debug.Log(killer.ToString() + "'s wolverine bite the wombat and it ran away!");
+        Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");
         Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
     }
@@ -83,17 +98,17 @@ public class CardActions : MonoBehaviour
         React(reactor, thrower);
     }
 
-    public static void Trampoline()
+    public static void Trampoline(Player thrower, Player reactor)
+    {
+        
+    }
+
+    public static void Sinkhole(Player thrower, Player reactor)
     {
 
     }
 
-    public static void Sinkhole()
-    {
-
-    }
-
-    public static void WombatCage()
+    public static void WombatCage(Player thrower, Player reactor)
     {
 
     }

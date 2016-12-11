@@ -108,6 +108,9 @@ public class TurnManager : MonoBehaviour
         {
             // Do some kind of end of turn transition to visually show it
             CurrentStage = Stage.Merge;
+
+            // If a bark was used against the player put those cards back into their hand
+            CardActions.PlaceBarkedCards(TurnManager.Instance.GetCurrentPlayer());
             Instance.EndTurn();
             Field.Instance.ChangeMaxFieldSize(CurrentStage);
         }
