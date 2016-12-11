@@ -7,6 +7,14 @@ public class Player : MonoBehaviour
     public int CurrentMaxHandSize;
     public bool IsHoldingCard;
     public bool IsTurn;
+    private string PlayersName;
+    public string Name
+    {
+        set
+        {
+            PlayersName = value;
+        }
+    }
     private int PlayersCurrentHealth;
     public int CurrentHealth
     {
@@ -37,4 +45,10 @@ public class Player : MonoBehaviour
     {
         return IsTurn ? true : false;
     }
+
+    public override string ToString()
+    {
+        return PlayersName;
+    }
+    
 }

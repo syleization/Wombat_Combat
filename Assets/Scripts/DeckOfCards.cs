@@ -185,7 +185,7 @@ public class DeckOfCards : MonoBehaviour
         }
         else if (newCard.owner.tag == "TopPlayer")
         {
-            newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
+            newCard.transform.position = new Vector3((-(float)Spacing * 2) + 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
         }
         else if (newCard.owner.tag == "RightPlayer")
         {

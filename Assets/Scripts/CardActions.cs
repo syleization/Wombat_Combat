@@ -62,6 +62,7 @@ public class CardActions : MonoBehaviour
         Field.Instance.CardsInField.Remove(card);
         Field.Instance.ClearField();
         card.CurrentArea = "Hand";
+        card.IsInHand = true;
         DeckOfCards.TransformDealtCardToHand(card, thrower.Hand.CardsInHand.Count - 1);
         TurnManager.Instance.currentStage = Stage.Play;
     }
@@ -76,7 +77,9 @@ public class CardActions : MonoBehaviour
     public static void GooglyEyes(Player thrower, Player reactor)
     {
         Debug.Log(reactor.ToString() + "'s dingo convinced the wombat to attack " + thrower.ToString());
-        Field.Instance.CardsInField.Remove(Field.Instance.GetCard(1));
+        Card card = Field.Instance.GetCard(1);
+        Field.Instance.CardsInField.Remove(card);
+        Destroy(card.gameObject);
         React(reactor, thrower);
     }
 

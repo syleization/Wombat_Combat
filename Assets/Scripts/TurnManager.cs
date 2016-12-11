@@ -79,12 +79,20 @@ public class TurnManager : MonoBehaviour
         }
 
         SetTurnBools();
+
+        if (GlobalSettings.Instance.TypeOfGame == GameType.TwoPlayer && CurrentTurn == Turns.BottomPlayer)
+        {
+            Camera main = FindObjectOfType<Camera>();
+
+            main.transform.Rotate(0.0f, 0.0f, main.transform.rotation.z + 180.0f);
+        }
+
     }
 
     void OnGUI()
     {
         // Creates a box in the bottom right showing whose turn it is and what their health is
-        GUI.Box(new Rect(Screen.width - 200, Screen.height - 30, 200, 30), "Turn: " + CurrentTurn.ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString());
+        GUI.Box(new Rect(Screen.width - 200, Screen.height - 30, 200, 30), "Turn: " + GetCurrentPlayer().ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString());
         // Creates a box in the top middle to show the current stage
         GUI.Box(new Rect(Screen.width / 2 - 50, 0, 100, 30), "Stage: " + CurrentStage.ToString());
 
@@ -125,6 +133,13 @@ public class TurnManager : MonoBehaviour
 
         GetPlayerToTheRightOf(CurrentTurn).IsTurn = true;
         UpdateCurrentTurn();
+
+        if (GlobalSettings.Instance.TypeOfGame == GameType.TwoPlayer)
+        {
+            Camera main = FindObjectOfType<Camera>();
+
+            main.transform.Rotate(0.0f, 0.0f, main.transform.rotation.z + 180.0f);
+        }
     }
 
     public Player GetCurrentPlayer()

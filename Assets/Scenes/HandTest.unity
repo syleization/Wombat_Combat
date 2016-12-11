@@ -1633,6 +1633,22 @@ Prefab:
       propertyPath: Damage_WomboCombo
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: BottomPlayerName
+      value: Nathan
+      objectReference: {fileID: 0}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: TopPlayerName
+      value: Cyle
+      objectReference: {fileID: 0}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: RightPlayerName
+      value: Shayne
+      objectReference: {fileID: 0}
+    - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
+      propertyPath: LeftPlayerName
+      value: Alex
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
   m_IsPrefabParent: 0

@@ -45,7 +45,6 @@ public class Hand : MonoBehaviour
         foreach(Player player in GlobalSettings.Players)
         {
             // if the gameobject the card was let go on is the hand of the player
-            Debug.Log("TEST");
             if(hit == player.transform.GetChild(0).gameObject)
             {
                 return player;

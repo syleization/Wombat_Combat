@@ -11,9 +11,13 @@ public class GlobalSettings : MonoBehaviour
     public GameType TypeOfGame;
     [Header("Players")]
     public Player LeftPlayer;
+    public string LeftPlayerName;
     public Player TopPlayer;
+    public string TopPlayerName;
     public Player RightPlayer;
+    public string RightPlayerName;
     public Player BottomPlayer;
+    public string BottomPlayerName;
     [Header("Prefabs and Assets")]
     public Card Attack_WombatCharge;
     public Card Attack_DonkeyKick;
@@ -28,7 +32,6 @@ public class GlobalSettings : MonoBehaviour
     public int Damage_DonkeyKick;
     public int Damage_WombatCharge;
     public int Damage_WomboCombo;
-
     public static List<Player> Players = new List<Player>();
 
     // SINGLETON
@@ -55,6 +58,12 @@ public class GlobalSettings : MonoBehaviour
         Players.Add(TopPlayer);
         Players.Add(RightPlayer);
         Players.Add(BottomPlayer);
+
+        LeftPlayer.Name = LeftPlayerName;
+        TopPlayer.Name = TopPlayerName;
+        RightPlayer.Name = RightPlayerName;
+        BottomPlayer.Name = BottomPlayerName;
+
         TheInstance = this;
 
         switch(TypeOfGame)
