@@ -92,7 +92,8 @@ public class TurnManager : MonoBehaviour
     void OnGUI()
     {
         // Creates a box in the bottom right showing whose turn it is and what their health is
-        GUI.Box(new Rect(Screen.width - 200, Screen.height - 30, 200, 30), "Turn: " + GetCurrentPlayer().ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString());
+        GUI.Box(new Rect(Screen.width - 250, Screen.height - 30, 250, 30), 
+            "Turn: " + GetCurrentPlayer().ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString() + " | Actions: " + GetCurrentPlayer().CurrentActions.ToString());
         // Creates a box in the top middle to show the current stage
         GUI.Box(new Rect(Screen.width / 2 - 50, 0, 100, 30), "Stage: " + CurrentStage.ToString());
 
@@ -133,8 +134,9 @@ public class TurnManager : MonoBehaviour
         {
             p.IsTurn = false;
         }
-
-        GetPlayerToTheRightOf(CurrentTurn).IsTurn = true;
+        Player newTurn = GetPlayerToTheRightOf(CurrentTurn);
+        newTurn.IsTurn = true;
+        newTurn.CurrentActions = Player.MaxActions;
         UpdateCurrentTurn();
 
         if (GlobalSettings.Instance.TypeOfGame == GameType.TwoPlayer)

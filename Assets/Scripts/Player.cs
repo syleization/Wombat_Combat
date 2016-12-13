@@ -33,12 +33,35 @@ public class Player : MonoBehaviour
         }
     }
     private const int MaxHealth = 15;
+    public const int MaxActions = 4;
+    public int PlayersCurrentActions;
+    public int CurrentActions
+    {
+        get
+        {
+            return PlayersCurrentActions;
+        }
+        set
+        {
+            PlayersCurrentActions = value;
+
+            if(PlayersCurrentActions < 0)
+            {
+                PlayersCurrentActions = 0;
+            }
+            else if(PlayersCurrentActions > MaxActions)
+            {
+                PlayersCurrentActions = MaxActions;
+            }
+        }
+    }
 
     void Awake()
     {
         Hand = GetComponentInChildren<Hand>();
         CurrentMaxHandSize = 7;
         CurrentHealth = MaxHealth;
+        CurrentActions = MaxActions;
     }
     
     public bool HasPermission()

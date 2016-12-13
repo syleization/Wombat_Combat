@@ -42,18 +42,21 @@ public class CardActions : MonoBehaviour
             Debug.Log("Wombat donkey kicks towards " + rightOfThrowingPlayer.ToString() + "!");
             React(thrower, rightOfThrowingPlayer);
         }
+        --thrower.CurrentActions;
     }
 
     public static void WombatCharge(Player thrower, Player target)
     {
         Debug.Log("Wombat charges towards " + target.ToString() + "!");
         React(thrower, target);
+        --thrower.CurrentActions;
     }
 
     public static void WomboCombo(Player thrower, Player target)
     {
         Debug.Log("Two wombats jump at " + target.ToString() + "!");
         React(thrower, target);
+        --thrower.CurrentActions;
     }
 
     public static void Bark(Player thrower, Player reactor)
@@ -65,6 +68,7 @@ public class CardActions : MonoBehaviour
         Field.Instance.ClearField();
         card.gameObject.SetActive(false);
         TurnManager.Instance.currentStage = Stage.Play;
+        --thrower.CurrentActions;
     }
 
     public static void PlaceBarkedCards(Player thrower)
@@ -87,6 +91,7 @@ public class CardActions : MonoBehaviour
         Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");
         Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
+        --killer.CurrentActions;
     }
 
     public static void GooglyEyes(Player thrower, Player reactor)
@@ -96,6 +101,7 @@ public class CardActions : MonoBehaviour
         Field.Instance.CardsInField.Remove(card);
         Destroy(card.gameObject);
         React(reactor, thrower);
+        --thrower.CurrentActions;
     }
 
     public static void Trampoline(Player thrower, Player reactor)
@@ -115,7 +121,7 @@ public class CardActions : MonoBehaviour
 
     static void React(Player thrower, Player reactor)
     {
-        if(reactor.Hand.HasDefenceCards())
+        if(reactor.Hand.HasDefenceCards() && reactor.CurrentActions > 0)
         {
             TurnManager.Instance.currentStage = Stage.Reaction;
             Field.Instance.ChangeMaxFieldSize(Stage.Reaction);
