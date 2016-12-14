@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
+    public bool IsSinkholeActive = false;
     public Hand Hand;
     public int CurrentMaxHandSize;
     public bool IsHoldingCard;

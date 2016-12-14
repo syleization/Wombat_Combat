@@ -80,7 +80,7 @@ public class TurnManager : MonoBehaviour
 
         SetTurnBools();
 
-        HideCards.Instance.HideCardsOfOtherPlayers();
+        HideCards.Instance.HideCardsOfOtherPlayers(GetCurrentPlayer());
 
         if (GlobalSettings.Instance.TypeOfGame == GameType.TwoPlayer && CurrentTurn == Turns.BottomPlayer)
         {
@@ -104,7 +104,7 @@ public class TurnManager : MonoBehaviour
         {
             // Do some kind of transition to visually show the stage has changed
             CurrentStage = Stage.Play;
-            Field.SendFieldBackToHand(GetCurrentPlayer());
+            Field.Instance.SendFieldBackToHand(GetCurrentPlayer());
             Field.Instance.ChangeMaxFieldSize(CurrentStage);
         }
         else if (CurrentStage == Stage.Play && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndTurn"))
@@ -127,9 +127,15 @@ public class TurnManager : MonoBehaviour
     {
         Player currentPlayer = GetCurrentPlayer();
         SetTurnBools();
-        Field.SendFieldBackToHand(currentPlayer);
-        HideCards.Instance.HideCardsOfOtherPlayers();
-        HideCards.Instance.ShowCardsOfCurrentPlayer();
+        Field.Instance.SendFieldBackToHand(currentPlayer);
+        HideCards.Instance.HideCardsOfOtherPlayers(GetCurrentPlayer());
+        HideCards.Instance.ShowCardsOfPlayer(GetCurrentPlayer());
+
+        // if they have a sinkhole active take it away
+        if(currentPlayer.IsSinkholeActive)
+        {
+            currentPlayer.IsSinkholeActive = false;
+        }
     }
 
     void SetTurnBools()

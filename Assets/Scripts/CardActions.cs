@@ -6,12 +6,13 @@ public class CardActions : MonoBehaviour
 {
     // Not a singleton, but no instance of this class should ever be constructed
     // It is basically a hub for static functions
-    static private Player Thrower;
-    static private Player Reactor;
-    static private List<Card> BarkedCards = new List<Card>();
+    private static Player Thrower;
+    private static Player Reactor;
+    private static List<Card> BarkedCards = new List<Card>();
     private CardActions() { }
 
-    static public Player theThrower
+
+    public static Player theThrower
     {
         get
         {
@@ -19,7 +20,7 @@ public class CardActions : MonoBehaviour
         }
     }
 
-    static public Player theReactor
+    public static Player theReactor
     {
         get
         {
@@ -29,6 +30,7 @@ public class CardActions : MonoBehaviour
 
     public static void DonkeyKick(Player thrower)
     {
+        --thrower.CurrentActions;
         Player leftOfThrowingPlayer = TurnManager.Instance.GetPlayerToTheLeftOf(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
         Player rightOfThrowingPlayer = TurnManager.Instance.GetPlayerToTheRightOf(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
 
@@ -42,25 +44,25 @@ public class CardActions : MonoBehaviour
             Debug.Log("Wombat donkey kicks towards " + rightOfThrowingPlayer.ToString() + "!");
             React(thrower, rightOfThrowingPlayer);
         }
-        --thrower.CurrentActions;
     }
 
     public static void WombatCharge(Player thrower, Player target)
     {
+        --thrower.CurrentActions;
         Debug.Log("Wombat charges towards " + target.ToString() + "!");
         React(thrower, target);
-        --thrower.CurrentActions;
     }
 
     public static void WomboCombo(Player thrower, Player target)
     {
+        --thrower.CurrentActions;
         Debug.Log("Two wombats jump at " + target.ToString() + "!");
         React(thrower, target);
-        --thrower.CurrentActions;
     }
 
     public static void Bark(Player thrower, Player reactor)
     {
+        --thrower.CurrentActions;
         Debug.Log(reactor.ToString() + "'s dingo scares the wombat back into " + thrower.ToString() + "'s hand at the end of the turn!");
         Card card = Field.Instance.GetCard(0);
         BarkedCards.Add(card);
@@ -68,7 +70,7 @@ public class CardActions : MonoBehaviour
         Field.Instance.ClearField();
         card.gameObject.SetActive(false);
         TurnManager.Instance.currentStage = Stage.Play;
-        --thrower.CurrentActions;
+        HideCards.Instance.HideCardsOfPlayer(reactor);
     }
 
     public static void PlaceBarkedCards(Player thrower)
@@ -83,51 +85,104 @@ public class CardActions : MonoBehaviour
                 card.IsInHand = true;
                 DeckOfCards.TransformDealtCardToHand(card, thrower.Hand.CardsInHand.Count - 1);
             }
+
+            BarkedCards.Clear();
         }
     }
 
     public static void Bite(Player killer)
     {
+        --killer.CurrentActions;
         Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");
         Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
-        --killer.CurrentActions;
+        HideCards.Instance.HideCardsOfPlayer(killer);
     }
 
     public static void GooglyEyes(Player thrower, Player reactor)
     {
-        Debug.Log(reactor.ToString() + "'s dingo convinced the wombat to attack " + thrower.ToString());
-        Card card = Field.Instance.GetCard(1);
-        Field.Instance.CardsInField.Remove(card);
-        Destroy(card.gameObject);
-        React(reactor, thrower);
         --thrower.CurrentActions;
+        Debug.Log(reactor.ToString() + "'s dingo convinced the wombat to attack " + thrower.ToString());
+        Field.Instance.RemoveCard(1);
+        HideCards.Instance.HideCardsOfPlayer(reactor);
+        React(reactor, thrower);
     }
 
     public static void Trampoline(Player thrower, Player reactor)
     {
-        
+        Turns reactorTurn = TurnManager.Instance.GetTurnEnumOfPlayer(reactor);
+
+        switch(Random.Range(0, 4))
+        {
+            case 0:
+                Debug.Log(reactor.ToString() + "'s trampoline broke!");
+                DealDamage(thrower, reactor);
+                break;
+            case 1:
+                Player left = TurnManager.Instance.GetPlayerToTheLeftOf(reactorTurn);
+                Debug.Log(reactor.ToString() + "'s trampoline bounced the wombat towards " + left.ToString());
+                TrampolineBounce(reactor, left);
+                break;
+            case 2:
+                Player right = TurnManager.Instance.GetPlayerToTheRightOf(reactorTurn);
+                Debug.Log(reactor.ToString() + "'s trampoline bounced the wombat towards " + right.ToString());
+                TrampolineBounce(reactor, right);
+                break;
+            case 3:
+                Debug.Log(reactor.ToString() + "'s trampoline bounced the wombat towards " + Thrower.ToString());
+                TrampolineBounce(reactor, thrower);
+                break;
+        }
+    }
+
+    private static void TrampolineBounce(Player thrower, Player target)
+    {
+        Field.Instance.RemoveCard(1);
+        React(thrower, target);
     }
 
     public static void Sinkhole(Player thrower, Player reactor)
     {
-
+        reactor.IsSinkholeActive = true;
+        Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
+        Field.Instance.ClearField();
+        TurnManager.Instance.currentStage = Stage.Play;
+        HideCards.Instance.HideCardsOfPlayer(reactor);
     }
 
     public static void WombatCage(Player thrower, Player reactor)
     {
-
+        Debug.Log(reactor.ToString() + " trapped " + thrower.ToString() + "'s wombat and stole it!");
+        Card thrownCard = Field.Instance.GetCard(0);
+        Field.Instance.CardsInField.Remove(thrownCard);
+        reactor.Hand.CardsInHand.Add(thrownCard);
+        thrownCard.CurrentArea = "Hand";
+        thrownCard.IsInHand = true;
+        thrownCard.owner = reactor;
+        DeckOfCards.TransformDealtCardToHand(thrownCard, reactor.Hand.CardsInHand.Count - 1);
+        Field.Instance.ClearField();
+        TurnManager.Instance.currentStage = Stage.Play;
+        HideCards.Instance.HideCardsOfPlayer(reactor);
     }
 
     static void React(Player thrower, Player reactor)
     {
-        if(reactor.Hand.HasDefenceCards() && reactor.CurrentActions > 0)
+        
+        if(reactor.IsSinkholeActive == true)
+        {
+            Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
+            Field.Instance.ClearField();
+            TurnManager.Instance.currentStage = Stage.Play;
+        }
+        else if (reactor.Hand.HasDefenceCards() && reactor.CurrentActions > 0)
         {
             TurnManager.Instance.currentStage = Stage.Reaction;
             Field.Instance.ChangeMaxFieldSize(Stage.Reaction);
 
             Thrower = thrower;
             Reactor = reactor;
+
+            HideCards.Instance.ShowCardsOfPlayer(reactor);
         }
         else
         {
@@ -146,8 +201,9 @@ public class CardActions : MonoBehaviour
         TurnManager.Instance.currentStage = Stage.Play;
     }
 
-    static public void DontReact()
+    public static void DontReact()
     {
+        HideCards.Instance.HideCardsOfPlayer(Reactor);
         DealDamage(Thrower, Reactor);
     }
 }

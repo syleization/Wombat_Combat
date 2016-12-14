@@ -90,7 +90,7 @@ public class Field : MonoBehaviour
         CardsInField.Clear();
     }
 
-    public static void SendFieldBackToHand(Player currentPlayer)
+    public void SendFieldBackToHand(Player currentPlayer)
     {
         // Move cards from field back to hand
         // Needs to be used because the cardsinfield count changes within the loop
@@ -111,5 +111,12 @@ public class Field : MonoBehaviour
                 DeckOfCards.TransformDealtCardToHand(currentCard, currentCard.owner.Hand.CardsInHand.Count - 1);
             }
         }
+    }
+
+    public void RemoveCard(int index)
+    {
+        Card card = Instance.GetCard(index);
+        Instance.CardsInField.Remove(card);
+        Destroy(card.gameObject);
     }
 }

@@ -151,7 +151,7 @@ public class CardMove : MonoBehaviour
         // if a player is reacting to a wombat being thrown at them and they are the one moving the card
         else if (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor)
         {
-            if (Card.owner.CurrentActions > 0)
+            if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence || Card.Type == CardType.Trap))
             {
                 // Check if you are releasing the card back to the hand
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -184,6 +184,10 @@ public class CardMove : MonoBehaviour
                 {
                     SnapBackToOrigin();
                 }
+            }
+            else
+            {
+                SnapBackToOrigin();
             }
         }
     }
@@ -253,15 +257,15 @@ public class CardMove : MonoBehaviour
         {
             if (subTypeOfCard == CardSubType.Sinkhole)
             {
-                Debug.Log("SINK HOLE");
+                CardActions.Sinkhole(CardActions.theThrower, CardActions.theReactor);
             }
             else if (subTypeOfCard == CardSubType.Trampoline)
             {
-                Debug.Log("TRAMPOLINE");
+                CardActions.Trampoline(CardActions.theThrower, CardActions.theReactor);
             }
             else if (subTypeOfCard == CardSubType.WombatCage)
             {
-                Debug.Log("WOMBAT CAGE");
+                CardActions.WombatCage(CardActions.theThrower, CardActions.theReactor);
             }
         }
     }

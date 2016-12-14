@@ -1659,7 +1659,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
       propertyPath: TypeOfGame
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
       propertyPath: Damage_DonkeyKick

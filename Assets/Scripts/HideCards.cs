@@ -19,11 +19,11 @@ public class HideCards : MonoBehaviour
         TheInstance = this;
     }
 
-    public void HideCardsOfOtherPlayers()
+    public void HideCardsOfOtherPlayers(Player notHidden)
     {
         foreach(Player player in GlobalSettings.Players)
         {
-            if(player.IsTurn == false && player.isActiveAndEnabled)
+            if(player != notHidden && player.isActiveAndEnabled)
             {
                 foreach(Card card in player.Hand.CardsInHand)
                 {
@@ -34,14 +34,21 @@ public class HideCards : MonoBehaviour
         }
     }
 
-    public void ShowCardsOfCurrentPlayer()
+    public void ShowCardsOfPlayer(Player player)
     {
-        Player current = TurnManager.Instance.GetCurrentPlayer();
-
-        foreach(Card card in current.Hand.CardsInHand)
+        foreach(Card card in player.Hand.CardsInHand)
         {
             SpriteRenderer cardSprite = card.gameObject.GetComponent<SpriteRenderer>();
             cardSprite.sprite = card.OriginalSprite;
+        }
+    }
+
+    public void HideCardsOfPlayer(Player player)
+    {
+        foreach (Card card in player.Hand.CardsInHand)
+        {
+            SpriteRenderer cardSprite = card.gameObject.GetComponent<SpriteRenderer>();
+            cardSprite.sprite = CardBack;
         }
     }
 }
