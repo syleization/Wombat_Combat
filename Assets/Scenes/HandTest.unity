@@ -336,6 +336,46 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 852653f7a0f02f24ea1c3e2e69f1efc8, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &678213751
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 678213753}
+  - 114: {fileID: 678213752}
+  m_Layer: 0
+  m_Name: HideCards
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &678213752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 678213751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40f5eb835423d64ca01d25b5c9cc648, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CardBack: {fileID: 21300000, guid: f6f96d1c4fb8d524c9ee9ceadd089bab, type: 3}
+--- !u!4 &678213753
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 678213751}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.372547, y: -1.9209689, z: 0.55180216}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
 --- !u!1001 &787310832
 Prefab:
   m_ObjectHideFlags: 0
@@ -1619,7 +1659,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
       propertyPath: TypeOfGame
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11460510, guid: 687559848a2ff0044a21dfd25c3cd155, type: 2}
       propertyPath: Damage_DonkeyKick

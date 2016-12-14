@@ -80,6 +80,8 @@ public class TurnManager : MonoBehaviour
 
         SetTurnBools();
 
+        HideCards.Instance.HideCardsOfOtherPlayers();
+
         if (GlobalSettings.Instance.TypeOfGame == GameType.TwoPlayer && CurrentTurn == Turns.BottomPlayer)
         {
             Camera main = FindObjectOfType<Camera>();
@@ -126,6 +128,8 @@ public class TurnManager : MonoBehaviour
         Player currentPlayer = GetCurrentPlayer();
         SetTurnBools();
         Field.SendFieldBackToHand(currentPlayer);
+        HideCards.Instance.HideCardsOfOtherPlayers();
+        HideCards.Instance.ShowCardsOfCurrentPlayer();
     }
 
     void SetTurnBools()

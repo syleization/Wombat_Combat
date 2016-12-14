@@ -14,20 +14,9 @@ public class Card : MonoBehaviour
     public CardType Type;
     public CardSubType SubType;
     private bool CanTarget;
-
+    public Sprite OriginalSprite;
     public bool GetCanTarget() { return CanTarget; }
 
-    //public bool CanBePlayed
-    //{
-    //    get
-    //    {
-    //        /*
-    //        if it is the owners turn
-    //        if the owner hasnt played 3 cards this turn
-
-    //        */
-    //    }
-    //}
     void Start()
     {
         owner = TurnManager.Instance.GetCurrentPlayer();
@@ -40,6 +29,9 @@ public class Card : MonoBehaviour
         {
             CanTarget = false;
         }
+
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        OriginalSprite = spriteRenderer.sprite;
     }
     public Card(CardType type, bool powerCard = false)
     {
