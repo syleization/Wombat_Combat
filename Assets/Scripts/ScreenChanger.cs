@@ -5,13 +5,38 @@ using UnityEngine.SceneManagement;
 public class ScreenChanger : MonoBehaviour {
 
 	// Use this for initialization
-	public void Play()
+	public void Arena()
     {
-	    SceneManager.LoadScene( "Test");
+	    SceneManager.LoadScene( "TheArena");
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    public void Shop()
+    {
+        SceneManager.LoadScene("Shop");
+    }
+
+    public void Back()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void Twoplayers()
+    {
+        SceneManager.LoadScene("HandTest");
+    }
+
+    public void Threeplayers()
+    {
+        SceneManager.LoadScene("HandTest");
+    }
+
+    public void Fourplayers()
+    {
+        SceneManager.LoadScene("HandTest");
+    }
+
+    // Update is called once per frame
+    void Update () {
 	
 	}
 }
