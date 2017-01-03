@@ -266,6 +266,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3a37a0034746974681e6f9fc313ff5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &27250021 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1000013994366686, guid: 5ad6384d9b5cb0a4bbd44849f1c85e68,
+    type: 2}
+  m_PrefabInternal: {fileID: 1526585375}
+--- !u!114 &27250022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 27250021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45eac31ef0d8f2479a0236340606281, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GemsText: {fileID: 904083204}
+  CoinText: {fileID: 64561118}
 --- !u!1001 &48244773
 Prefab:
   m_ObjectHideFlags: 0
@@ -371,6 +389,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 049ee64fddc4ebc429a94551770751bc, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &64561118 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000011481294886, guid: 5ad6384d9b5cb0a4bbd44849f1c85e68,
+    type: 2}
+  m_PrefabInternal: {fileID: 1526585375}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1 &106626441
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,16 +723,16 @@ GameObject:
 --- !u!114 &595633756
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011708458348, guid: c5ccafc7fd6747a48b1a58b0061a02a5,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 595633755}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 432269c4be26b5f43a4912a000e57f14, type: 3}
+  m_Script: {fileID: 11500000, guid: c45eac31ef0d8f2479a0236340606281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   GemsText: {fileID: 904083204}
+  CoinText: {fileID: 64561118}
 --- !u!114 &595633757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1382,7 +1406,8 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114000010569230688, guid: 5ad6384d9b5cb0a4bbd44849f1c85e68, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 5ad6384d9b5cb0a4bbd44849f1c85e68, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1928928830

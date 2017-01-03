@@ -392,6 +392,48 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224000010188971494, guid: b5022082b9eff4640ab748a6d8e4d993,
     type: 2}
   m_PrefabInternal: {fileID: 358916863}
+--- !u!1 &467894622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 467894624}
+  - 114: {fileID: 467894623}
+  m_Layer: 0
+  m_Name: Currency Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &467894623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 467894622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45eac31ef0d8f2479a0236340606281, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GemsText: {fileID: 0}
+  CoinText: {fileID: 0}
+--- !u!4 &467894624
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 467894622}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.106549956, y: 0.18646419, z: 90}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
 --- !u!1 &485342897
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +690,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45eac31ef0d8f2479a0236340606281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GemsText: {fileID: 0}
+  CoinText: {fileID: 0}
 --- !u!224 &919568139 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224000013047958694, guid: b1ee75d0ea989924498da316bf33ffe0,
@@ -669,51 +713,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45eac31ef0d8f2479a0236340606281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GemsText: {fileID: 0}
+  CoinText: {fileID: 0}
 --- !u!224 &1411116087 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224000012643500832, guid: 4913feaa8b4d1ec4282f113ca0b623f4,
     type: 2}
   m_PrefabInternal: {fileID: 542657574}
---- !u!1 &1446935251
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1446935253}
-  - 114: {fileID: 1446935252}
-  m_Layer: 0
-  m_Name: Game Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1446935252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1446935251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 470c42c2269300a4fa03b1f87b5958f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1446935253
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1446935251}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 90}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
 --- !u!1001 &1530697635
 Prefab:
   m_ObjectHideFlags: 0
