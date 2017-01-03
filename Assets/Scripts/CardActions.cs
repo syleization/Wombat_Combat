@@ -6,14 +6,18 @@ public class CardActions : MonoBehaviour
 {
     // Not a singleton, but no instance of this class should ever be constructed
     // It is basically a hub for static functions
+    // Thrower will always be the local player
     private static Player Thrower;
     private static Player Reactor;
     private static List<Card> BarkedCards = new List<Card>();
     private CardActions() { }
 
-
     public static Player theThrower
     {
+        set
+        {
+            Thrower = value;
+        }
         get
         {
             return Thrower;
@@ -22,6 +26,10 @@ public class CardActions : MonoBehaviour
 
     public static Player theReactor
     {
+        set
+        {
+            Reactor = value;
+        }
         get
         {
             return Reactor;
@@ -31,6 +39,11 @@ public class CardActions : MonoBehaviour
     public static void DonkeyKick(Player thrower)
     {
         --thrower.CurrentActions;
+        if (!thrower.isServer)
+        {
+            thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
+        }
+        
         Player leftOfThrowingPlayer = TurnManager.Instance.GetPlayerToTheLeftOf(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
         Player rightOfThrowingPlayer = TurnManager.Instance.GetPlayerToTheRightOf(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
 
@@ -49,6 +62,11 @@ public class CardActions : MonoBehaviour
     public static void WombatCharge(Player thrower, Player target)
     {
         --thrower.CurrentActions;
+        if (!thrower.isServer)
+        {
+            thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
+        }
+
         Debug.Log("Wombat charges towards " + target.ToString() + "!");
         React(thrower, target);
     }
@@ -56,6 +74,11 @@ public class CardActions : MonoBehaviour
     public static void WomboCombo(Player thrower, Player target)
     {
         --thrower.CurrentActions;
+        if (!thrower.isServer)
+        {
+            thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
+        }
+
         Debug.Log("Two wombats jump at " + target.ToString() + "!");
         React(thrower, target);
     }
@@ -63,6 +86,11 @@ public class CardActions : MonoBehaviour
     public static void Bark(Player thrower, Player reactor)
     {
         --thrower.CurrentActions;
+        if (!thrower.isServer)
+        {
+            thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
+        }
+
         Debug.Log(reactor.ToString() + "'s dingo scares the wombat back into " + thrower.ToString() + "'s hand at the end of the turn!");
         Card card = Field.Instance.GetCard(0);
         BarkedCards.Add(card);
@@ -70,7 +98,7 @@ public class CardActions : MonoBehaviour
         Field.Instance.ClearField();
         card.gameObject.SetActive(false);
         TurnManager.Instance.currentStage = Stage.Play;
-        HideCards.Instance.HideCardsOfPlayer(reactor);
+        // HideCards.Instance.HideCardsOfPlayer(reactor);
     }
 
     public static void PlaceBarkedCards(Player thrower)
@@ -93,18 +121,28 @@ public class CardActions : MonoBehaviour
     public static void Bite(Player killer)
     {
         --killer.CurrentActions;
+        if (!killer.isServer)
+        {
+            killer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(killer), killer.CurrentActions);
+        }
+
         Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");
         Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
-        HideCards.Instance.HideCardsOfPlayer(killer);
+        // HideCards.Instance.HideCardsOfPlayer(killer);
     }
 
     public static void GooglyEyes(Player thrower, Player reactor)
     {
         --thrower.CurrentActions;
+        if (!thrower.isServer)
+        {
+            thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
+        }
+
         Debug.Log(reactor.ToString() + "'s dingo convinced the wombat to attack " + thrower.ToString());
         Field.Instance.RemoveCard(1);
-        HideCards.Instance.HideCardsOfPlayer(reactor);
+        //HideCards.Instance.HideCardsOfPlayer(reactor);
         React(reactor, thrower);
     }
 
@@ -147,7 +185,7 @@ public class CardActions : MonoBehaviour
         Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
         Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
-        HideCards.Instance.HideCardsOfPlayer(reactor);
+        // HideCards.Instance.HideCardsOfPlayer(reactor);
     }
 
     public static void WombatCage(Player thrower, Player reactor)
@@ -162,7 +200,7 @@ public class CardActions : MonoBehaviour
         DeckOfCards.TransformDealtCardToHand(thrownCard, reactor.Hand.CardsInHand.Count - 1);
         Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
-        HideCards.Instance.HideCardsOfPlayer(reactor);
+        // HideCards.Instance.HideCardsOfPlayer(reactor);
     }
 
     static void React(Player thrower, Player reactor)
@@ -171,18 +209,37 @@ public class CardActions : MonoBehaviour
         if(reactor.IsSinkholeActive == true)
         {
             Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
+
             Field.Instance.ClearField();
-            TurnManager.Instance.currentStage = Stage.Play;
+            if (thrower.isServer)
+            {
+                Field.Instance.RpcClearField();
+                TurnManager.Instance.currentStage = Stage.Play;
+            }
+            else
+            {
+                thrower.CmdClearField();
+                thrower.CmdChangeStage(Stage.Play);
+            }
         }
-        else if (reactor.Hand.HasDefenceCards() && reactor.CurrentActions > 0)
+        else if (reactor.HasDefenceCards && reactor.CurrentActions > 0)
         {
             TurnManager.Instance.currentStage = Stage.Reaction;
             Field.Instance.ChangeMaxFieldSize(Stage.Reaction);
 
             Thrower = thrower;
             Reactor = reactor;
-
-            HideCards.Instance.ShowCardsOfPlayer(reactor);
+            if(thrower.isServer)
+            {
+                thrower.RpcUpdateThrowerAndReactor(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
+            }
+            else
+            {
+                thrower.CmdChangeStage(Stage.Reaction);
+                thrower.CmdChangeFieldSize();
+                thrower.CmdUpdateThrowerAndReactor(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
+            }
+            // HideCards.Instance.ShowCardsOfPlayer(reactor);
         }
         else
         {
@@ -192,18 +249,29 @@ public class CardActions : MonoBehaviour
 
     static void DealDamage(Player thrower, Player victim)
     {
-        int damage = GlobalSettings.Instance.GetDamageAmountOf(Field.Instance.GetCard(0).SubType);
+        int damage = Field.Instance.CurrentDamageInField;
         Debug.Log(victim.ToString() + " was hit by " + thrower.ToString() + "'s wombat for " + damage + " damage!");
         victim.CurrentHealth -= damage;
 
         // Wombat is no longer bouncing around
         Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
+
+        if (!thrower.isServer)
+        {
+            thrower.CmdTakeDamage(TurnManager.Instance.GetTurnEnumOfPlayer(victim), damage);
+            thrower.CmdClearField();
+            thrower.CmdChangeStage(Stage.Play);
+        }
+        else
+        {
+            Field.Instance.RpcClearField();
+        }
     }
 
     public static void DontReact()
     {
-        HideCards.Instance.HideCardsOfPlayer(Reactor);
+        //HideCards.Instance.HideCardsOfPlayer(Reactor);
         DealDamage(Thrower, Reactor);
     }
 }

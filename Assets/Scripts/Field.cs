@@ -1,14 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
-public class Field : MonoBehaviour
+public class Field : NetworkBehaviour
 {
     // As of now the functionality only supports one field - this may be enough though
     public List<Card> CardsInField = new List<Card>();
-    private static int MaxFieldSize;
+    [SyncVar]
+    private int MaxFieldSize;
+    [SyncVar]
+    private int CurrentDamage = 0;
+    public int CurrentDamageInField
+    {
+        set
+        {
+            CurrentDamage = value;
+        }
+        get
+        {
+            return CurrentDamage;
+        }
+    }
     private static Field TheInstance;
-
     private Field() { }
 
     public static Field Instance
@@ -26,7 +40,14 @@ public class Field : MonoBehaviour
 
     void Awake()
     {
+        TheInstance = this;
         MaxFieldSize = 2;
+    }
+
+    [ClientRpc]
+    public void RpcClearField()
+    {
+        Instance.ClearField();
     }
 
     public void ChangeMaxFieldSize(Stage currentStage)
@@ -88,6 +109,7 @@ public class Field : MonoBehaviour
             Destroy(c.gameObject);
         }
         CardsInField.Clear();
+        CurrentDamage = 0;
     }
 
     public void SendFieldBackToHand(Player currentPlayer)
@@ -106,7 +128,7 @@ public class Field : MonoBehaviour
                 currentCard.IsInHand = true;
                 popup.cardIsDown = true;
                 currentPlayer.Hand.CardsInHand.Add(currentCard);
-                Field.Instance.CardsInField.Remove(currentCard);
+                Instance.CardsInField.Remove(currentCard);
 
                 DeckOfCards.TransformDealtCardToHand(currentCard, currentCard.owner.Hand.CardsInHand.Count - 1);
             }

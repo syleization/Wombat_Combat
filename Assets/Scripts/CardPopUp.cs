@@ -22,7 +22,7 @@ public class CardPopUp : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (cardIsDown && MouseIsWithinBounds() && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner == TurnManager.Instance.GetCurrentPlayer())
+        if (cardIsDown && MouseIsWithinBounds() && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner.isLocalPlayer)
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
@@ -38,7 +38,7 @@ public class CardPopUp : MonoBehaviour
 
     void OnMouseExit()
     {
-        if(!cardIsDown && !waitingForCard && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner == TurnManager.Instance.GetCurrentPlayer())
+        if(!cardIsDown && !waitingForCard && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner.isLocalPlayer)
         {
             waitingForCard = true;
             StartCoroutine(WaitToPutCardDown(waitTime));
@@ -57,25 +57,26 @@ public class CardPopUp : MonoBehaviour
     void PopUp(float amount)
     {
         // If it was 4 non AI players
-        if(Card.owner.tag == "LeftPlayer")
+        Turns turn = TurnManager.Instance.GetTurnEnumOfPlayer(Card.owner);
+        if (turn == Turns.LeftPlayer)
         {
             this.transform.position = new Vector3(transform.position.x + amount, transform.position.y, transform.position.z - amount * 0.01f);
         }
-        else if (Card.owner.tag == "TopPlayer")
+        else if (turn == Turns.TopPlayer)
         {
             this.transform.position = new Vector3(transform.position.x, transform.position.y - amount, transform.position.z - amount * 0.01f);
         }
-        else if (Card.owner.tag == "RightPlayer")
+        else if (turn == Turns.RightPlayer)
         {
             this.transform.position = new Vector3(transform.position.x - amount, transform.position.y, transform.position.z - amount * 0.01f);
         }
-        else if (Card.owner.tag == "BottomPlayer")
+        else if (turn == Turns.BottomPlayer)
         {
             this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
         }
         else
         {
-            Debug.Log("ERROR | A player isnt tagged correctly");
+            Debug.Log("ERROR[CardPopUp::PopUp] | A player isnt tagged correctly");
         }
          // this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
     }

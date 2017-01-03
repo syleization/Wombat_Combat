@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEditor;
 
 public class CardMove : MonoBehaviour
 {
@@ -227,14 +226,17 @@ public class CardMove : MonoBehaviour
         {
             if(subTypeOfCard == CardSubType.DonkeyKick)
             {
+                Field.Instance.CurrentDamageInField = GlobalSettings.Damage_DonkeyKick;
                 CardActions.DonkeyKick(TurnManager.Instance.GetCurrentPlayer());
             }
             else if(subTypeOfCard == CardSubType.WombatCharge)
             {
+                Field.Instance.CurrentDamageInField = GlobalSettings.Damage_WombatCharge;
                 CardActions.WombatCharge(TurnManager.Instance.GetCurrentPlayer(), target);
             }
             else if(subTypeOfCard == CardSubType.WomboCombo)
             {
+                Field.Instance.CurrentDamageInField = GlobalSettings.Damage_WomboCombo;
                 CardActions.WomboCombo(TurnManager.Instance.GetCurrentPlayer(), target);
             }
         }

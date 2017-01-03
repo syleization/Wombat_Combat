@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.Networking;
 
 public enum CardType { Attack, Defence, Trap, None }
 public enum CardSubType { DonkeyKick, WombatCharge, WomboCombo, Bark, Bite, GooglyEyes, Trampoline, Sinkhole, WombatCage, None}
-public class Card : MonoBehaviour
+public class Card : NetworkBehaviour
 {
     public Player owner;
     public string CurrentArea;
@@ -33,6 +34,7 @@ public class Card : MonoBehaviour
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         OriginalSprite = spriteRenderer.sprite;
     }
+
     public Card(CardType type, bool powerCard = false)
     {
         IsPowerCard = powerCard;
