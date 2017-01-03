@@ -121,14 +121,20 @@ public class CardActions : MonoBehaviour
     public static void Bite(Player killer)
     {
         --killer.CurrentActions;
+        TurnManager.Instance.currentStage = Stage.Play;
+        Field.Instance.ClearField();
         if (!killer.isServer)
         {
             killer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(killer), killer.CurrentActions);
+            killer.CmdClearField();
+            killer.CmdChangeStage(Stage.Play);
+        }
+        else
+        {
+            Field.Instance.RpcClearField();
         }
 
         Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");
-        Field.Instance.ClearField();
-        TurnManager.Instance.currentStage = Stage.Play;
         // HideCards.Instance.HideCardsOfPlayer(killer);
     }
 
@@ -257,11 +263,11 @@ public class CardActions : MonoBehaviour
         Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
 
-        if (!thrower.isServer)
+        if (!victim.isServer)
         {
-            thrower.CmdTakeDamage(TurnManager.Instance.GetTurnEnumOfPlayer(victim), damage);
-            thrower.CmdClearField();
-            thrower.CmdChangeStage(Stage.Play);
+            victim.CmdTakeDamage(TurnManager.Instance.GetTurnEnumOfPlayer(victim), damage);
+            victim.CmdClearField();
+            victim.CmdChangeStage(Stage.Play);
         }
         else
         {

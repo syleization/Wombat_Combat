@@ -50,6 +50,16 @@ public class Field : NetworkBehaviour
         Instance.ClearField();
     }
 
+    [ClientRpc]
+    public void RpcAddCardToField(CardSubType subType)
+    {
+        if (Instance.CanBePlaced() && Instance.CardsInField.Count == 0)
+        {
+            Instance.CardsInField.Add(Instantiate<Card>(GlobalSettings.Instance.GetCardOfSubType(subType)));
+            Instance.ResetFieldCardPositions();
+        }
+    }
+
     public void ChangeMaxFieldSize(Stage currentStage)
     {
         if(currentStage == Stage.Merge || currentStage == Stage.Reaction)

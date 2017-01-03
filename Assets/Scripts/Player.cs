@@ -129,6 +129,12 @@ public class Player : NetworkBehaviour
         Field.Instance.CurrentDamageInField = damage;
     }
 
+    [Command]
+    public void CmdAddCardToField(CardSubType subType)
+    {
+        Field.Instance.RpcAddCardToField(subType);
+    }
+
     // TurnManager Commands
     [Command]
     public void CmdChangeStage(Stage stage)

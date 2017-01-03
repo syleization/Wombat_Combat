@@ -188,6 +188,34 @@ public class GlobalSettings : NetworkBehaviour
         return -1;
     }
 
+    public Card GetCardOfSubType(CardSubType type)
+    {
+        switch(type)
+        {
+            case CardSubType.DonkeyKick:
+                return Attack_DonkeyKick;
+            case CardSubType.WombatCharge:
+                return Attack_WombatCharge;
+            case CardSubType.WomboCombo:
+                return Attack_WomboCombo;
+            case CardSubType.Bark:
+                return Defence_Bark;
+            case CardSubType.Bite:
+                return Defence_Bite;
+            case CardSubType.GooglyEyes:
+                return Defence_GooglyEyes;
+            case CardSubType.Trampoline:
+                return Trap_Trampoline;
+            case CardSubType.Sinkhole:
+                return Trap_Sinkhole;
+            case CardSubType.WombatCage:
+                return Trap_WombatCage;
+        }
+
+        Debug.Log("[GlobalSettings::GetCardOfSubType] Invalid parameter");
+        return null;
+    }
+
     // This is a function so the other clients only need to know about the damage amount the card being thrown at them is doing 
     // instead of having to save the entire card object
     public Card GetAttackCardOfDamageAmount(int damage)

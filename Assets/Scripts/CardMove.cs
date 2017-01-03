@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class CardMove : MonoBehaviour
 {
@@ -227,16 +228,49 @@ public class CardMove : MonoBehaviour
             if(subTypeOfCard == CardSubType.DonkeyKick)
             {
                 Field.Instance.CurrentDamageInField = GlobalSettings.Damage_DonkeyKick;
+                // Display Card and save damage for everyone else
+                if (Card.owner.isServer)
+                {
+                    Field.Instance.RpcAddCardToField(CardSubType.DonkeyKick);
+                }
+                else
+                {
+                    Card.owner.CmdChangeDamageInField(GlobalSettings.Damage_DonkeyKick);
+                    Card.owner.CmdAddCardToField(CardSubType.DonkeyKick);
+                }
+
                 CardActions.DonkeyKick(TurnManager.Instance.GetCurrentPlayer());
             }
             else if(subTypeOfCard == CardSubType.WombatCharge)
             {
                 Field.Instance.CurrentDamageInField = GlobalSettings.Damage_WombatCharge;
+
+                // Display Card for everyone else
+                if (Card.owner.isServer)
+                {
+                    NetworkServer.Spawn(Card.gameObject);
+                }
+                else
+                {
+                    Card.owner.CmdSpawnCard(Card.gameObject);
+                }
+
                 CardActions.WombatCharge(TurnManager.Instance.GetCurrentPlayer(), target);
             }
             else if(subTypeOfCard == CardSubType.WomboCombo)
             {
                 Field.Instance.CurrentDamageInField = GlobalSettings.Damage_WomboCombo;
+
+                // Display Card for everyone else
+                if (Card.owner.isServer)
+                {
+                    NetworkServer.Spawn(Card.gameObject);
+                }
+                else
+                {
+                    Card.owner.CmdSpawnCard(Card.gameObject);
+                }
+
                 CardActions.WomboCombo(TurnManager.Instance.GetCurrentPlayer(), target);
             }
         }
