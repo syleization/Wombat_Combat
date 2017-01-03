@@ -71,7 +71,7 @@ GameObject:
   m_Component:
   - 224: {fileID: 224000012845616478}
   - 114: {fileID: 114000011299648572}
-  - 114: {fileID: 114000010338499222}
+  - 114: {fileID: 114000010569230688}
   m_Layer: 5
   m_Name: Coins
   m_TagString: Untagged
@@ -79,18 +79,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114000010338499222
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013994366686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4eb260e6e9516c4e8c5d284b05b7d7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CoinText: {fileID: 114000011481294886}
 --- !u!114 &114000010364124676
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -118,6 +106,18 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114000010569230688
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013994366686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4eb260e6e9516c4e8c5d284b05b7d7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CoinText: {fileID: 114000011481294886}
 --- !u!114 &114000010980189104
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -296,9 +296,9 @@ RectTransform:
   - {fileID: 224000010609328586}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 431, y: 185}
+  m_AnchorMin: {x: 0.7897371, y: 0.9267012}
+  m_AnchorMax: {x: 0.7897371, y: 0.9267012}
+  m_AnchoredPosition: {x: 13, y: -1}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000014023613800
