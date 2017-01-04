@@ -56,29 +56,30 @@ public class CardPopUp : MonoBehaviour
 
     void PopUp(float amount)
     {
+        this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
         // If it was 4 non AI players
-        Turns turn = TurnManager.Instance.GetTurnEnumOfPlayer(Card.owner);
-        if (turn == Turns.LeftPlayer)
-        {
-            this.transform.position = new Vector3(transform.position.x + amount, transform.position.y, transform.position.z - amount * 0.01f);
-        }
-        else if (turn == Turns.TopPlayer)
-        {
-            this.transform.position = new Vector3(transform.position.x, transform.position.y - amount, transform.position.z - amount * 0.01f);
-        }
-        else if (turn == Turns.RightPlayer)
-        {
-            this.transform.position = new Vector3(transform.position.x - amount, transform.position.y, transform.position.z - amount * 0.01f);
-        }
-        else if (turn == Turns.BottomPlayer)
-        {
-            this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
-        }
-        else
-        {
-            Debug.Log("ERROR[CardPopUp::PopUp] | A player isnt tagged correctly");
-        }
-         // this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
+        //Turns turn = TurnManager.Instance.GetTurnEnumOfPlayer(Card.owner);
+        //if (turn == Turns.LeftPlayer)
+        //{
+        //    this.transform.position = new Vector3(transform.position.x + amount, transform.position.y, transform.position.z - amount * 0.01f);
+        //}
+        //else if (turn == Turns.TopPlayer)
+        //{
+        //    this.transform.position = new Vector3(transform.position.x, transform.position.y - amount, transform.position.z - amount * 0.01f);
+        //}
+        //else if (turn == Turns.RightPlayer)
+        //{
+        //    this.transform.position = new Vector3(transform.position.x - amount, transform.position.y, transform.position.z - amount * 0.01f);
+        //}
+        //else if (turn == Turns.BottomPlayer)
+        //{
+        //    this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
+        //}
+        //else
+        //{
+        //    Debug.Log("ERROR[CardPopUp::PopUp] | A player isnt tagged correctly");
+        //}
+        // this.transform.position = new Vector3(transform.position.x, transform.position.y + amount, transform.position.z - amount * 0.01f);
     }
 
     IEnumerator WaitToPutCardDown(float time)

@@ -53,14 +53,6 @@ public class DeckOfCards : MonoBehaviour
 
     Card GetRandomBasicCard()
     {
-        if(Random.Range(0, 2) == 0)
-        {
-            return GlobalSettings.Instance.Attack_DonkeyKick;
-        }
-        else
-        {
-            return GlobalSettings.Instance.Defence_Bark;
-        }
         switch(Random.Range(0, 6))
         {
             case 0:
@@ -165,26 +157,27 @@ public class DeckOfCards : MonoBehaviour
     public static void TransformDealtCardToHand(Card newCard, int Spacing)
     {
         Turns turn = TurnManager.Instance.GetTurnEnumOfPlayer(newCard.owner);
-        if (turn == Turns.LeftPlayer)
-        {
-            newCard.transform.position = new Vector3(newCard.owner.Hand.transform.position.x, ((float)Spacing * 2) - 5, (float)Spacing * -0.01f);
-        }
-        else if (turn == Turns.TopPlayer)
-        {
-            newCard.transform.position = new Vector3((-(float)Spacing * 2) + 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
-        }
-        else if (turn == Turns.RightPlayer)
-        {
-            newCard.transform.position = new Vector3(newCard.owner.Hand.transform.position.x, ((float)Spacing * 2) - 5, (float)Spacing * -0.01f);
-        }
-        else if (turn == Turns.BottomPlayer)
-        {
-            newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
-        }
-        else
-        {
-            Debug.Log("ERROR[DeckOfCards::TransformDealtCardToHand] | A player isnt tagged correctly");
-        }
+        newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
+        //if (turn == Turns.LeftPlayer)
+        //{
+        //    newCard.transform.position = new Vector3(newCard.owner.Hand.transform.position.x, ((float)Spacing * 2) - 5, (float)Spacing * -0.01f);
+        //}
+        //else if (turn == Turns.TopPlayer)
+        //{
+        //    newCard.transform.position = new Vector3((-(float)Spacing * 2) + 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
+        //}
+        //else if (turn == Turns.RightPlayer)
+        //{
+        //    newCard.transform.position = new Vector3(newCard.owner.Hand.transform.position.x, ((float)Spacing * 2) - 5, (float)Spacing * -0.01f);
+        //}
+        //else if (turn == Turns.BottomPlayer)
+        //{
+        //    newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
+        //}
+        //else
+        //{
+        //    Debug.Log("ERROR[DeckOfCards::TransformDealtCardToHand] | A player isnt tagged correctly");
+        //}
         newCard.transform.rotation = new Quaternion(newCard.owner.Hand.transform.rotation.x, newCard.owner.Hand.transform.rotation.y, newCard.owner.Hand.transform.rotation.z, newCard.owner.Hand.transform.rotation.w);
     }
 }

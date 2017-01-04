@@ -38,6 +38,7 @@ public class GlobalSettings : NetworkBehaviour
     public const int Damage_WomboCombo = 4;
     public static List<Player> Players = new List<Player>();
 
+    public bool CanStartGame = false;
     private int CurrentPlayerCount = 0;
     // SINGLETON
     private static GlobalSettings TheInstance;
@@ -64,7 +65,6 @@ public class GlobalSettings : NetworkBehaviour
 
     void Initialize()
     {
-
         Players.Add(LeftPlayer);
         Players.Add(TopPlayer);
         Players.Add(RightPlayer);
@@ -104,25 +104,38 @@ public class GlobalSettings : NetworkBehaviour
     void SpawnPlayers()
     {
         Hand newHand;
+        // Instantiate localplayer's hand
+        Player local = GetLocalPlayer();
         newHand = Instantiate<Hand>(Handzone);
-        TopPlayer.Hand = newHand;
-        newHand.transform.position = new Vector3(0.0f, 4.5f, 1.0f);
-        newHand.transform.rotation = new Quaternion(0.0f, 0.0f, -180.0f, 0.0f);
-
-        newHand = Instantiate<Hand>(Handzone);
-        BottomPlayer.Hand = newHand;
+        local.Hand = newHand;
         newHand.transform.position = new Vector3(0.0f, -4.5f, 1.0f);
         newHand.transform.rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
 
-        if (TypeOfGame != GameType.TwoPlayer)
+        // Instantiate the player's hand across from the local player
+        Player across = TurnManager.Instance.GetPlayerAcrossFrom(TurnManager.Instance.GetTurnEnumOfPlayer(local));
+        Debug.Log(across);
+        if (across != null)
         {
             newHand = Instantiate<Hand>(Handzone);
-            LeftPlayer.Hand = newHand;
+            across.Hand = newHand;
+            newHand.transform.position = new Vector3(0.0f, 4.5f, 1.0f);
+            newHand.transform.rotation = new Quaternion(0.0f, 0.0f, -180.0f, 0.0f);
+        }
+
+        // Instantiate the player's hand to the left of the local player
+        Player left = TurnManager.Instance.GetPlayerToTheLeftOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(local));
+        if (left != null)
+        {
+            newHand = Instantiate<Hand>(Handzone);
+            left.Hand = newHand;
             newHand.transform.position = new Vector3(-5.0f, 0.0f, 1.0f);
             newHand.transform.rotation = new Quaternion(0.0f, 0.0f, -90.0f, 0.0f);
         }
 
-        if(TypeOfGame == GameType.FourPlayer)
+        // Instantiate the player's hand to the right of the local player
+        Player right = TurnManager.Instance.GetPlayerToTheRightOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(local));
+
+        if (right != null)
         {
             newHand = Instantiate<Hand>(Handzone);
             RightPlayer.Hand = newHand;
@@ -131,6 +144,18 @@ public class GlobalSettings : NetworkBehaviour
         }
     }
 
+    Player GetLocalPlayer()
+    {
+        foreach(Player p in Players)
+        {
+            if(p != null && p.isLocalPlayer)
+            {
+                return p;
+            }
+        }
+        Debug.Log("[GlobalSettings::GetLocalPlayer] No player is local to this client");
+        return null;
+    }
     public void AddNetworkPlayer(Player player)
     {
         ++CurrentPlayerCount;
@@ -159,17 +184,17 @@ public class GlobalSettings : NetworkBehaviour
 
         if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
         {
-            Initialize();
+            CanStartGame = true;
         }
         else if(TypeOfGame == GameType.ThreePlayer && CurrentPlayerCount == 3)
         {
-            Initialize();
+            CanStartGame = true;
         }
         else if(TypeOfGame == GameType.FourPlayer && CurrentPlayerCount == 4)
         {
-            Initialize();
+            CanStartGame = true;
         }
-        
+
     }
 
     public int GetDamageAmountOf(CardSubType type)
@@ -231,5 +256,20 @@ public class GlobalSettings : NetworkBehaviour
 
         Debug.Log("[GlobalSettings::GetAttackCardOfDamageAmount] Invalid parameter");
         return null;
+    }
+
+    void OnGUI()
+    {
+        if(isServer && CanStartGame && GUI.Button(new Rect(Screen.width - 130, Screen.height / 2, 120, 20), "Start Game"))
+        {
+            CanStartGame = false;
+            RpcInitialize();
+        }
+    }
+
+    [ClientRpc]
+    void RpcInitialize()
+    {
+        Initialize();
     }
 }

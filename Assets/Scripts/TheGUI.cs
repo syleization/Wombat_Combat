@@ -50,10 +50,15 @@ public class TheGUI : NetworkBehaviour
             TurnManager.Instance.currentStage = Stage.Merge;
             currentPlayer.CmdChangeStage(Stage.Merge);
 
-            for (int i = 0; i < 3; ++i)
+            // Add cards to hand and update hand sizes
+            currentPlayer.CurrentHandSize = currentPlayer.Hand.CardsInHand.Count;
+
+            while (currentPlayer.CurrentHandSize < currentPlayer.CurrentMaxHandSize)
             {
                 currentPlayer.Deck.MoveDealtCard();
+                ++currentPlayer.CurrentHandSize;
             }
+            ++currentPlayer.CurrentMaxHandSize;
 
             Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
 

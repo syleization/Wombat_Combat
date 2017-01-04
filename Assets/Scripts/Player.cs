@@ -11,9 +11,38 @@ public class Player : NetworkBehaviour
     public bool HasDefenceCards = false;
     public Hand Hand;
     public DeckOfCards Deck;
-    public int CurrentMaxHandSize;
+    private int MaxHandSize = 3;
+    public int CurrentMaxHandSize
+    {
+        set
+        {
+            if(value < 8)
+            {
+                MaxHandSize = value;
+            }
+        }
+        get
+        {
+            return MaxHandSize;
+        }
+    }
     [SyncVar]
-    public int CurrentHandSize;
+    private int HandSize = 0;
+    public int CurrentHandSize
+    {
+        set
+        {
+            HandSize = value;
+            if (!isServer)
+            {
+                CmdChangeCurrentHandSize(value);
+            }
+        }
+        get
+        {
+            return HandSize;
+        }
+    }
     public bool IsHoldingCard;
     [SyncVar]
     public bool IsTurn;
@@ -101,6 +130,12 @@ public class Player : NetworkBehaviour
     public void CmdChangeHasDefenceCards(bool hasDefenceCards)
     {
         HasDefenceCards = hasDefenceCards;
+    }
+
+    [Command]
+    public void CmdChangeCurrentHandSize(int value)
+    {
+        HandSize = value;
     }
 
     // Card Commands
@@ -208,23 +243,14 @@ public class Player : NetworkBehaviour
         }
     }
 
-        void Awake()
+    void Awake()
     {
-        CurrentMaxHandSize = 7;
         CurrentActions = MaxActions;
         CurrentHealth = MaxHealth;
         Deck = GetComponent<DeckOfCards>();
         Deck.Initialize();
         Deck.owner = this;
         Hand = GetComponent<Hand>();
-    }
-
-    void Update()
-    {
-        if (isLocalPlayer && Hand != null)
-        {
-            CurrentHandSize = Hand.CardsInHand.Count;
-        }
     }
     
     public bool HasPermission()
@@ -236,5 +262,4 @@ public class Player : NetworkBehaviour
     {
         return PlayersName;
     }
-
 }

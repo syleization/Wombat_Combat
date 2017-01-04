@@ -360,6 +360,54 @@ public class TurnManager : NetworkBehaviour
         return null;
     }
 
+    public Player GetPlayerAcrossFrom(Turns turn)
+    {
+        switch(turn)
+        {
+            case Turns.LeftPlayer: return GlobalSettings.Instance.RightPlayer;
+
+            case Turns.TopPlayer: return GlobalSettings.Instance.BottomPlayer;
+
+            case Turns.RightPlayer: return GlobalSettings.Instance.LeftPlayer;
+
+            case Turns.BottomPlayer: return GlobalSettings.Instance.TopPlayer;
+        }
+        Debug.Log("[Turnmanager::GetPlayerAcrossFrom] invalid parameter");
+        return null;
+    }
+
+    public Player GetPlayerToTheLeftOfWithNull(Turns turn)
+    {
+        switch (turn)
+        {
+            case Turns.LeftPlayer: return GlobalSettings.Instance.TopPlayer;
+
+            case Turns.TopPlayer: return GlobalSettings.Instance.RightPlayer;
+
+            case Turns.RightPlayer: return GlobalSettings.Instance.BottomPlayer;
+
+            case Turns.BottomPlayer: return GlobalSettings.Instance.LeftPlayer;
+        }
+        Debug.Log("[Turnmanager::GetPlayerToTheLeftOfWithNull] invalid parameter");
+        return null;
+    }
+
+    public Player GetPlayerToTheRightOfWithNull(Turns turn)
+    {
+        switch (turn)
+        {
+            case Turns.LeftPlayer: return GlobalSettings.Instance.BottomPlayer;
+
+            case Turns.TopPlayer: return GlobalSettings.Instance.LeftPlayer;
+
+            case Turns.RightPlayer: return GlobalSettings.Instance.TopPlayer;
+
+            case Turns.BottomPlayer: return GlobalSettings.Instance.RightPlayer;
+        }
+        Debug.Log("[Turnmanager::GetPlayerToTheRightOfWithNull] invalid parameter");
+        return null;
+    }
+
     public Turns GetTurnEnumOfPlayer(Player player)
     {
         if(GlobalSettings.Instance.LeftPlayer != null && player == GlobalSettings.Instance.LeftPlayer)

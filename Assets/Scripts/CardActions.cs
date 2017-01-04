@@ -92,8 +92,8 @@ public class CardActions : MonoBehaviour
         }
 
         Debug.Log(reactor.ToString() + "'s dingo scares the wombat back into " + thrower.ToString() + "'s hand at the end of the turn!");
+
         // Place the card in a holder array and clear the field
-        Card card = Field.Instance.GetCard(0);
         TurnManager.Instance.currentStage = Stage.Play;
         if (!reactor.isServer)
         {
@@ -120,6 +120,7 @@ public class CardActions : MonoBehaviour
                 card.CurrentArea = "Hand";
                 card.IsInHand = true;
                 DeckOfCards.TransformDealtCardToHand(card, thrower.Hand.CardsInHand.Count - 1);
+                ++thrower.CurrentHandSize;
             }
 
             BarkedCards.Clear();
@@ -219,6 +220,7 @@ public class CardActions : MonoBehaviour
 
         // Retrieve the wombat and add it to your hand
         Card thrownCard = Field.Instance.GetCard(0);
+        ++reactor.CurrentHandSize;
         reactor.Hand.CardsInHand.Add(thrownCard);
         // Change variables of card so it is now a card in the hand of the other player
         thrownCard.CurrentArea = "Hand";
