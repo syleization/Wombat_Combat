@@ -144,7 +144,7 @@ public class GlobalSettings : NetworkBehaviour
         }
     }
 
-    Player GetLocalPlayer()
+    public Player GetLocalPlayer()
     {
         foreach(Player p in Players)
         {

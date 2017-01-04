@@ -156,7 +156,7 @@ public class DeckOfCards : MonoBehaviour
 
     public static void TransformDealtCardToHand(Card newCard, int Spacing)
     {
-        Turns turn = TurnManager.Instance.GetTurnEnumOfPlayer(newCard.owner);
+        //Turns turn = TurnManager.Instance.GetTurnEnumOfPlayer(newCard.owner);
         newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
         //if (turn == Turns.LeftPlayer)
         //{

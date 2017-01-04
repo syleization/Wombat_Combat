@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 
 public class TheGUI : NetworkBehaviour
 {
+    Player left, right, across;
     [SyncVar]
     public bool Active = false;
     public bool isActive
@@ -14,21 +15,28 @@ public class TheGUI : NetworkBehaviour
         }
     }
 
+    void Start()
+    {
+        across = TurnManager.Instance.GetPlayerAcrossFrom(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
+        right = TurnManager.Instance.GetPlayerToTheRightOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
+        left = TurnManager.Instance.GetPlayerToTheLeftOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
+    }
+
     void OnGUI()
     {
-        if(!Active)
+        if (!Active)
         {
             return;
         }
         Player currentPlayer = TurnManager.Instance.GetCurrentPlayer();
         // Creates a box in the bottom right showing whose turn it is and what their health is
-        GUI.Box(new Rect(Screen.width - 250, Screen.height - 30, 250, 30),
-            "Turn: " + currentPlayer.ToString() + " | Health: " + currentPlayer.CurrentHealth.ToString() + " | Actions: " + currentPlayer.CurrentActions.ToString());
+        //GUI.Box(new Rect(Screen.width - 250, Screen.height - 30, 250, 30),
+        //    "Turn: " + currentPlayer.ToString() + " | Health: " + currentPlayer.CurrentHealth.ToString() + " | Actions: " + currentPlayer.CurrentActions.ToString());
         // Creates a box in the top middle to show the current stage
         GUI.Box(new Rect(Screen.width / 2 - 50, 0, 100, 30), "Stage: " + TurnManager.Instance.currentStage.ToString());
-        
+
         // Draw card at the start of your turn
-        if(TurnManager.Instance.currentStage == Stage.Draw && currentPlayer.isLocalPlayer)
+        if (TurnManager.Instance.currentStage == Stage.Draw && currentPlayer.isLocalPlayer)
         {
             // if they have a sinkhole active take it away
             if (currentPlayer.IsSinkholeActive)
@@ -45,7 +53,7 @@ public class TheGUI : NetworkBehaviour
 
             // Reset action count to max
             currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), Player.MaxActions);
-            
+
             currentPlayer.CurrentActions = Player.MaxActions;
             TurnManager.Instance.currentStage = Stage.Merge;
             currentPlayer.CmdChangeStage(Stage.Merge);
@@ -80,7 +88,7 @@ public class TheGUI : NetworkBehaviour
 
             Field.Instance.SendFieldBackToHand(currentPlayer);
             Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
-            if(!isServer)
+            if (!isServer)
             {
                 currentPlayer.CmdChangeFieldSize();
             }
@@ -122,7 +130,7 @@ public class TheGUI : NetworkBehaviour
                     newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_DonkeyKick);
                     break;
             }
-            if(!isServer)
+            if (!isServer)
             {
                 currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);
             }
@@ -134,6 +142,24 @@ public class TheGUI : NetworkBehaviour
 
             // Clear field of used cards
             Field.Instance.ClearField();
+        }
+
+        DisplayPlayers();
+    }
+
+    void DisplayPlayers()
+    {
+        if(across != null)
+        {
+            GUI.Box(new Rect(across.Hand.transform.position.x + (Screen.width * 0.5f) - 50, across.Hand.transform.position.y + 25, 100, 20), "HS:" + across.CurrentHandSize.ToString() + " HP:" + across.CurrentHealth.ToString() + " A:" + across.CurrentActions.ToString());
+        }
+        if (left != null)
+        {
+            GUI.Box(new Rect(left.Hand.transform.position.x, left.Hand.transform.position.y - (Screen.height * 0.5f), 50, 20), "HS:" + left.CurrentHandSize.ToString() + " HP:" + left.CurrentHealth.ToString() + " A:" + left.CurrentActions.ToString());
+        }
+        if (right != null)
+        {
+            GUI.Box(new Rect(right.Hand.transform.position.x, right.Hand.transform.position.y + (Screen.height * 0.5f), 50, 20), "HS:" + right.CurrentHandSize.ToString() + " HP:" + right.CurrentHealth.ToString() + " A:" + right.CurrentActions.ToString());
         }
     }
 }
