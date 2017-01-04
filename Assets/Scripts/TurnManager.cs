@@ -159,21 +159,9 @@ public class TurnManager : NetworkBehaviour
     {
         Player prevPlayer = GetCurrentPlayer();
         SetTurnBools();
-        Player currentPlayer = GetCurrentPlayer();
         Field.Instance.SendFieldBackToHand(prevPlayer);
         // HideCards.Instance.HideCardsOfOtherPlayers(GetCurrentPlayer());
         //HideCards.Instance.ShowCardsOfPlayer(GetCurrentPlayer());
-
-        // if they have a sinkhole active take it away
-        if (currentPlayer.IsSinkholeActive)
-        {
-            currentPlayer.IsSinkholeActive = false;
-
-            if(!isServer)
-            {
-                currentPlayer.CmdChangeSinkholeBool(false);
-            }
-        }
 
         if (!isServer)
         {

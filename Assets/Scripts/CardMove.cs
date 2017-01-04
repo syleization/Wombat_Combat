@@ -248,11 +248,12 @@ public class CardMove : MonoBehaviour
                 // Display Card for everyone else
                 if (Card.owner.isServer)
                 {
-                    NetworkServer.Spawn(Card.gameObject);
+                    Field.Instance.RpcAddCardToField(CardSubType.WombatCharge);
                 }
                 else
                 {
-                    Card.owner.CmdSpawnCard(Card.gameObject);
+                    Card.owner.CmdChangeDamageInField(GlobalSettings.Damage_WombatCharge);
+                    Card.owner.CmdAddCardToField(CardSubType.WombatCharge);
                 }
 
                 CardActions.WombatCharge(TurnManager.Instance.GetCurrentPlayer(), target);
@@ -264,11 +265,12 @@ public class CardMove : MonoBehaviour
                 // Display Card for everyone else
                 if (Card.owner.isServer)
                 {
-                    NetworkServer.Spawn(Card.gameObject);
+                    Field.Instance.RpcAddCardToField(CardSubType.WomboCombo);
                 }
                 else
                 {
-                    Card.owner.CmdSpawnCard(Card.gameObject);
+                    Card.owner.CmdChangeDamageInField(GlobalSettings.Damage_WomboCombo);
+                    Card.owner.CmdAddCardToField(CardSubType.WomboCombo);
                 }
 
                 CardActions.WomboCombo(TurnManager.Instance.GetCurrentPlayer(), target);
@@ -288,6 +290,15 @@ public class CardMove : MonoBehaviour
             {
                 CardActions.GooglyEyes(CardActions.theThrower, CardActions.theReactor);
             }
+
+            // After a defence card is used re check if the player still has defence cards
+            Card.owner.HasDefenceCards = Card.owner.Hand.HasDefenceCards();
+
+            if (!Card.owner.isServer)
+            {
+                Card.owner.CmdChangeHasDefenceCards(Card.owner.HasDefenceCards);
+            }
+
         }
         else if (cardUsed.Type == CardType.Trap)
         {
@@ -302,6 +313,13 @@ public class CardMove : MonoBehaviour
             else if (subTypeOfCard == CardSubType.WombatCage)
             {
                 CardActions.WombatCage(CardActions.theThrower, CardActions.theReactor);
+            }
+
+            Card.owner.HasDefenceCards = Card.owner.Hand.HasDefenceCards();
+
+            if (!Card.owner.isServer)
+            {
+                Card.owner.CmdChangeHasDefenceCards(Card.owner.HasDefenceCards);
             }
         }
     }

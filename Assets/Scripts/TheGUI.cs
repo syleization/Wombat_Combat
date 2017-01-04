@@ -30,13 +30,31 @@ public class TheGUI : NetworkBehaviour
         // Draw card at the start of your turn
         if(TurnManager.Instance.currentStage == Stage.Draw && currentPlayer.isLocalPlayer)
         {
+            // if they have a sinkhole active take it away
+            if (currentPlayer.IsSinkholeActive)
+            {
+                currentPlayer.IsSinkholeActive = false;
+
+                if (!currentPlayer.isServer)
+                {
+                    currentPlayer.CmdChangeSinkholeBool(false);
+                }
+            }
+            // If a bark was used against the player put those cards back into their hand
+            CardActions.PlaceBarkedCards(currentPlayer);
+
+            // Reset action count to max
             currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), Player.MaxActions);
             
             currentPlayer.CurrentActions = Player.MaxActions;
             TurnManager.Instance.currentStage = Stage.Merge;
             currentPlayer.CmdChangeStage(Stage.Merge);
 
-            currentPlayer.Deck.MoveDealtCard();
+            for (int i = 0; i < 3; ++i)
+            {
+                currentPlayer.Deck.MoveDealtCard();
+            }
+
             Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
 
             // Check if the player has defence cards
@@ -67,8 +85,7 @@ public class TheGUI : NetworkBehaviour
             // Do some kind of end of turn transition to visually show it
             TurnManager.Instance.currentStage = Stage.Draw;
             currentPlayer.CmdChangeStage(Stage.Draw);
-            // If a bark was used against the player put those cards back into their hand
-            CardActions.PlaceBarkedCards(currentPlayer);
+
             TurnManager.Instance.EndTurn();
         }
         else if (TurnManager.Instance.currentStage == Stage.Reaction && CardActions.theReactor.isLocalPlayer && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "Don'tReact"))

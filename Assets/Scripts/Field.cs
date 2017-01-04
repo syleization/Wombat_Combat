@@ -60,6 +60,16 @@ public class Field : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void RpcRemoveCardFromField(int index)
+    {
+        if (Instance.GetCard(index) != null)
+        {
+            Instance.RemoveCard(index);
+            Instance.ResetFieldCardPositions();
+        }
+    }
+
     public void ChangeMaxFieldSize(Stage currentStage)
     {
         if(currentStage == Stage.Merge || currentStage == Stage.Reaction)

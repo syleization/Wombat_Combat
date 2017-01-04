@@ -9,7 +9,7 @@ public class CardActions : MonoBehaviour
     // Thrower will always be the local player
     private static Player Thrower;
     private static Player Reactor;
-    private static List<Card> BarkedCards = new List<Card>();
+    public static List<Card> BarkedCards = new List<Card>();
     private CardActions() { }
 
     public static Player theThrower
@@ -85,19 +85,27 @@ public class CardActions : MonoBehaviour
 
     public static void Bark(Player thrower, Player reactor)
     {
-        --thrower.CurrentActions;
-        if (!thrower.isServer)
+        --reactor.CurrentActions;
+        if (!reactor.isServer)
         {
-            thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
+            reactor.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
         }
 
         Debug.Log(reactor.ToString() + "'s dingo scares the wombat back into " + thrower.ToString() + "'s hand at the end of the turn!");
+        // Place the card in a holder array and clear the field
         Card card = Field.Instance.GetCard(0);
-        BarkedCards.Add(card);
-        Field.Instance.CardsInField.Remove(card);
-        Field.Instance.ClearField();
-        card.gameObject.SetActive(false);
         TurnManager.Instance.currentStage = Stage.Play;
+        if (!reactor.isServer)
+        {
+            reactor.CmdChangeStage(Stage.Play);
+            reactor.CmdUpdateBarkedCards(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.CmdClearField();
+        }
+        else
+        {
+            reactor.RpcUpdateBarkedCards(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            Field.Instance.RpcClearField();
+        }
         // HideCards.Instance.HideCardsOfPlayer(reactor);
     }
 
@@ -140,14 +148,14 @@ public class CardActions : MonoBehaviour
 
     public static void GooglyEyes(Player thrower, Player reactor)
     {
-        --thrower.CurrentActions;
-        if (!thrower.isServer)
+        --reactor.CurrentActions;
+        Field.Instance.RemoveCard(1);
+        if (!reactor.isServer)
         {
-            thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
+            reactor.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), reactor.CurrentActions);
         }
 
         Debug.Log(reactor.ToString() + "'s dingo convinced the wombat to attack " + thrower.ToString());
-        Field.Instance.RemoveCard(1);
         //HideCards.Instance.HideCardsOfPlayer(reactor);
         React(reactor, thrower);
     }
@@ -181,6 +189,7 @@ public class CardActions : MonoBehaviour
 
     private static void TrampolineBounce(Player thrower, Player target)
     {
+        // Remove the trampoline from the field
         Field.Instance.RemoveCard(1);
         React(thrower, target);
     }
@@ -188,44 +197,74 @@ public class CardActions : MonoBehaviour
     public static void Sinkhole(Player thrower, Player reactor)
     {
         reactor.IsSinkholeActive = true;
-        Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
-        Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
-        // HideCards.Instance.HideCardsOfPlayer(reactor);
+
+        if (!reactor.isServer)
+        {
+            reactor.CmdClearField();
+            reactor.CmdChangeStage(Stage.Play);
+            reactor.CmdChangeSinkholeBool(true);
+        }
+        else
+        {
+            Field.Instance.RpcClearField();
+        }
+
+        Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
     }
 
     public static void WombatCage(Player thrower, Player reactor)
     {
         Debug.Log(reactor.ToString() + " trapped " + thrower.ToString() + "'s wombat and stole it!");
+
+        // Retrieve the wombat and add it to your hand
         Card thrownCard = Field.Instance.GetCard(0);
-        Field.Instance.CardsInField.Remove(thrownCard);
         reactor.Hand.CardsInHand.Add(thrownCard);
+        // Change variables of card so it is now a card in the hand of the other player
         thrownCard.CurrentArea = "Hand";
         thrownCard.IsInHand = true;
         thrownCard.owner = reactor;
         DeckOfCards.TransformDealtCardToHand(thrownCard, reactor.Hand.CardsInHand.Count - 1);
-        Field.Instance.ClearField();
+
+        // Remove the card from the field so its game object isnt destroyed
+        Field.Instance.CardsInField.RemoveAt(0);
+        if(!reactor.isServer)
+        {
+            reactor.CmdRemoveCardFromField(0);
+        }
+        else
+        {
+            Field.Instance.RpcRemoveCardFromField(0);
+        }
+        // Clear the field and reset the stage
         TurnManager.Instance.currentStage = Stage.Play;
+
+        if (!reactor.isServer)
+        {
+            reactor.CmdClearField();
+            reactor.CmdChangeStage(Stage.Play);
+        }
+        else
+        {
+            Field.Instance.RpcClearField();
+        }
         // HideCards.Instance.HideCardsOfPlayer(reactor);
     }
 
     static void React(Player thrower, Player reactor)
     {
-        
         if(reactor.IsSinkholeActive == true)
         {
             Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
 
             Field.Instance.ClearField();
-            if (thrower.isServer)
+            if (!thrower.isServer)
             {
-                Field.Instance.RpcClearField();
-                TurnManager.Instance.currentStage = Stage.Play;
+                thrower.CmdClearField();
             }
             else
             {
-                thrower.CmdClearField();
-                thrower.CmdChangeStage(Stage.Play);
+                Field.Instance.RpcClearField();
             }
         }
         else if (reactor.HasDefenceCards && reactor.CurrentActions > 0)
@@ -260,14 +299,15 @@ public class CardActions : MonoBehaviour
         victim.CurrentHealth -= damage;
 
         // Wombat is no longer bouncing around
-        Field.Instance.ClearField();
         TurnManager.Instance.currentStage = Stage.Play;
+        Field.Instance.ClearField();
+        Player local = victim.isLocalPlayer ? victim : thrower;
 
-        if (!victim.isServer)
+        if (!local.isServer)
         {
-            victim.CmdTakeDamage(TurnManager.Instance.GetTurnEnumOfPlayer(victim), damage);
-            victim.CmdClearField();
-            victim.CmdChangeStage(Stage.Play);
+            local.CmdTakeDamage(TurnManager.Instance.GetTurnEnumOfPlayer(victim), damage);
+            local.CmdClearField();
+            local.CmdChangeStage(Stage.Play);
         }
         else
         {

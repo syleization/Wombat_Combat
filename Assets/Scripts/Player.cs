@@ -120,7 +120,7 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdClearField()
     {
-        Field.Instance.ClearField();
+        Field.Instance.RpcClearField();
     }
 
     [Command]
@@ -133,6 +133,12 @@ public class Player : NetworkBehaviour
     public void CmdAddCardToField(CardSubType subType)
     {
         Field.Instance.RpcAddCardToField(subType);
+    }
+
+    [Command]
+    public void CmdRemoveCardFromField(int index)
+    {
+        Field.Instance.RpcRemoveCardFromField(index);
     }
 
     // TurnManager Commands
@@ -182,7 +188,27 @@ public class Player : NetworkBehaviour
         CardActions.theReactor = TurnManager.Instance.GetPlayerOfTurnEnum(reactor);
     }
 
-    void Awake()
+    [Command]
+    public void CmdUpdateBarkedCards(Turns owner)
+    {
+        RpcUpdateBarkedCards(owner);
+    }
+
+    [ClientRpc]
+    public void RpcUpdateBarkedCards(Turns owner)
+    {
+        if(TurnManager.Instance.GetPlayerOfTurnEnum(owner).isLocalPlayer)
+        {
+            // Add card to holder array
+            CardActions.BarkedCards.Add(Field.Instance.GetCard(0));
+            // Remove card from local field so the game object isnt destroyed in server clear field
+            Field.Instance.CardsInField.RemoveAt(0);
+            // Hide gameobject till it is put back into their hand
+            CardActions.BarkedCards[0].gameObject.SetActive(false);
+        }
+    }
+
+        void Awake()
     {
         CurrentMaxHandSize = 7;
         CurrentActions = MaxActions;

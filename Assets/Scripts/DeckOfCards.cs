@@ -11,7 +11,7 @@ public class DeckOfCards : MonoBehaviour
     private List<Card> cards = new List<Card>();
 
     public Player owner;
-    private bool showReset = false;
+   // private bool showReset = false;
 
     // SHOULD ONLY EVER BE CALLED ONCE BY GLOBALSETTINGS
     public void Initialize()
@@ -53,13 +53,13 @@ public class DeckOfCards : MonoBehaviour
 
     Card GetRandomBasicCard()
     {
-        if (Random.Range(0, 2) == 0)
+        if(Random.Range(0, 2) == 0)
         {
-            return GlobalSettings.Instance.Defence_Bite;
+            return GlobalSettings.Instance.Attack_DonkeyKick;
         }
         else
         {
-            return GlobalSettings.Instance.Attack_DonkeyKick;
+            return GlobalSettings.Instance.Defence_Bark;
         }
         switch(Random.Range(0, 6))
         {
@@ -103,7 +103,7 @@ public class DeckOfCards : MonoBehaviour
     {
         if (deck.Count == 0)
         {
-            showReset = true;
+            //showReset = true;
             return null;
             //Alternatively to auto reset the deck:
             //ResetDeck();
@@ -117,11 +117,11 @@ public class DeckOfCards : MonoBehaviour
         go = Instantiate<Card>(cards[cardIndex]);
 
         go.owner = TurnManager.Instance.GetCurrentPlayer();
-        deck.RemoveAt(cardIndex);
+        deck.Remove(cards[cardIndex]);
 
         if (cards.Count == 0)
         {
-            showReset = true;
+            //showReset = true;
         }
 
         return go;
@@ -152,7 +152,7 @@ public class DeckOfCards : MonoBehaviour
             if (newCard == null)
             {
                 Debug.Log("Out of Cards");
-                showReset = true;
+                //showReset = true;
                 return;
             }
             TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
