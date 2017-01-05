@@ -149,7 +149,9 @@ public class TheGUI : NetworkBehaviour
 
     void DisplayPlayers()
     {
-        if(across != null)
+        Player current = TurnManager.Instance.GetCurrentPlayer();
+        GUI.Box(new Rect(Screen.width - 100, Screen.height - 20, 100, 20), "HS:" + current.CurrentHandSize.ToString() + " HP:" + current.CurrentHealth.ToString() + " A:" + current.CurrentActions.ToString());
+        if (across != null)
         {
             GUI.Box(new Rect(across.Hand.transform.position.x + (Screen.width * 0.5f) - 50, across.Hand.transform.position.y + 25, 100, 20), "HS:" + across.CurrentHandSize.ToString() + " HP:" + across.CurrentHealth.ToString() + " A:" + across.CurrentActions.ToString());
         }

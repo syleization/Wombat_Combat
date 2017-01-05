@@ -10,11 +10,16 @@ public class HudManager : MonoBehaviour
         HUD = this.gameObject.GetComponent<NetworkManagerHUD>();
     }
 
-    void OnGUI()
+    public void ToggleHUD()
     {
-        if (GUI.Button(new Rect(10, 10, 60, 20), "Toggle"))
-        {
-            HUD.showGUI = !HUD.showGUI;
-        }
+        HUD.showGUI = !HUD.showGUI;
     }
+
+    //void OnGUI()
+    //{
+    //    if (GUI.Button(new Rect(10, 10, 60, 20), "Toggle"))
+    //    {
+    //        HUD.showGUI = !HUD.showGUI;
+    //    }
+    //}
 }

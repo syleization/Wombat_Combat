@@ -65,6 +65,9 @@ public class GlobalSettings : NetworkBehaviour
 
     void Initialize()
     {
+        HudManager networkHud = FindObjectOfType<HudManager>();
+        networkHud.ToggleHUD();
+
         Players.Add(LeftPlayer);
         Players.Add(TopPlayer);
         Players.Add(RightPlayer);
