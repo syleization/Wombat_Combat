@@ -53,10 +53,12 @@ public class DeckOfCards : MonoBehaviour
 
     Card GetRandomBasicCard()
     {
-        switch(Random.Range(0, 6))
+        switch(Random.Range(0, 8))
         {
+            case 6:
             case 0:
                 return GlobalSettings.Instance.Attack_DonkeyKick;
+            case 7:
             case 1:
                 return GlobalSettings.Instance.Attack_WombatCharge;
             case 2:

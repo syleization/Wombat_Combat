@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public enum AreaPosition { Left, Top, Right, Bottom }
 public enum GameType { TwoPlayer, ThreePlayer, FourPlayer }
@@ -61,6 +62,31 @@ public class GlobalSettings : NetworkBehaviour
     void Awake()
     {
         TheInstance = this;
+    }
+
+    [ClientRpc]
+    public void RpcEndGame()
+    {
+        TheGUI.GameIsOver = true;
+    }
+
+    [ClientRpc]
+    public void RpcChangeScene()
+    {
+        if (!isServer)
+        {
+            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        }
+        else
+        {
+            StartCoroutine(WaitForServerShutdown(2.0f));
+        }
+    }
+
+    IEnumerator WaitForServerShutdown(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
     }
 
     void Initialize()

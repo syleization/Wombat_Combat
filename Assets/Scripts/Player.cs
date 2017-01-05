@@ -56,7 +56,7 @@ public class Player : NetworkBehaviour
         }
     }
     [SyncVar]
-    private int PlayersCurrentHealth;
+    public int PlayersCurrentHealth;
     public int CurrentHealth
     {
         get
@@ -66,10 +66,21 @@ public class Player : NetworkBehaviour
         set
         {
             PlayersCurrentHealth = value;
-
-            if(PlayersCurrentHealth < 0)
+            if(value <= 0)
             {
                 PlayersCurrentHealth = 0;
+                if (GlobalSettings.Instance.TypeOfGame == GameType.TwoPlayer)
+                {
+                    if (isServer)
+                    {
+                        TheGUI gui = FindObjectOfType<TheGUI>();
+                        gui.GameIsOver = true;
+                    }
+                    else
+                    {
+                        GlobalSettings.Instance.GetLocalPlayer().CmdEndGame();
+                    }
+                }
             }
         }
     }
@@ -229,6 +240,15 @@ public class Player : NetworkBehaviour
         RpcUpdateBarkedCards(owner);
     }
 
+    // GlobalSettings Actions
+    [Command]
+    public void CmdEndGame()
+    {
+        TheGUI gui = FindObjectOfType<TheGUI>();
+        gui.GameIsOver = true;
+    }
+
+    // Client Rpcs
     [ClientRpc]
     public void RpcUpdateBarkedCards(Turns owner)
     {
@@ -261,5 +281,16 @@ public class Player : NetworkBehaviour
     public override string ToString()
     {
         return PlayersName;
+    }
+
+
+    public void ClearHand()
+    {
+        foreach (Card c in Hand.CardsInHand)
+        {
+            Destroy(c.gameObject);
+        }
+        Hand.CardsInHand.Clear();
+        HandSize = 0;
     }
 }
