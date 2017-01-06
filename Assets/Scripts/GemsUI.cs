@@ -18,7 +18,5 @@ public class GemsUI : MonoBehaviour
         string Gems = ((int)CurrentGems).ToString();
 
         GemsText.text = Gems;
-
-
     }
 }

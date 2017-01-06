@@ -10,11 +10,12 @@ public class CurrencyManager : MonoBehaviour
     public static int CurrentCoins;
     public Text CoinText;
 
-    void Start()
+    void Awake()
     {
+        if (SaveLoad.DoesDirExist() == false)
+            SaveLoad.CreateDir();
+        SaveLoad.LoadClient();
         DontDestroyOnLoad(gameObject);
-        CurrentGems = 0;
-        CurrentCoins = 0;
     }
 
     void Update()
@@ -26,8 +27,5 @@ public class CurrencyManager : MonoBehaviour
         string Coins = ((int)CurrentCoins).ToString();
 
         CoinText.text = Coins;
-
-
     }
-
 }

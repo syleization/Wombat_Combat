@@ -5,9 +5,14 @@ using UnityEngine.SceneManagement;
 public class ScreenChanger : MonoBehaviour {
 
 	// Use this for initialization
+    void Awake()
+    {
+        
+    }
+
 	public void Arena()
     {
-	    SceneManager.LoadScene( "TheArena");
+	    SceneManager.LoadScene("TheArena");
 	}
 
     public void Shop()
