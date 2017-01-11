@@ -18,8 +18,20 @@ public class CardPopUp : MonoBehaviour
     void Start()
     {
         Card = GetComponent<Card>();
+        
     }
 
+    void Update()
+    {
+        // Temporary fix for the errors of onMouseExit with andoid
+        // Should later be replaced with a better input detection system
+        if (Application.platform == RuntimePlatform.Android && Input.touchCount == 0 && !cardIsDown && !waitingForCard && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner.isLocalPlayer)
+        {
+            waitingForCard = true;
+            StartCoroutine(WaitToPutCardDown(waitTime));
+        }
+    }
+    
     void OnMouseEnter()
     {
         if (cardIsDown && MouseIsWithinBounds() && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner.isLocalPlayer)
@@ -38,7 +50,7 @@ public class CardPopUp : MonoBehaviour
 
     void OnMouseExit()
     {
-        if(!cardIsDown && !waitingForCard && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner.isLocalPlayer)
+        if(Application.platform != RuntimePlatform.Android && !cardIsDown && !waitingForCard && !Card.owner.IsHoldingCard && Card.IsInHand && Card.owner.isLocalPlayer)
         {
             waitingForCard = true;
             StartCoroutine(WaitToPutCardDown(waitTime));

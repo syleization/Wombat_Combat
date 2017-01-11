@@ -23,6 +23,7 @@ public class TheGUI : NetworkBehaviour
         right = TurnManager.Instance.GetPlayerToTheRightOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
         left = TurnManager.Instance.GetPlayerToTheLeftOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
         GameIsOver = false;
+        
     }
 
     void OnGUI()
@@ -138,6 +139,7 @@ public class TheGUI : NetworkBehaviour
                     currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);
                 }
                 --currentPlayer.CurrentActions;
+                --currentPlayer.CurrentHandSize;
                 newCard.owner = currentPlayer;
                 DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
                 newCard.CurrentArea = "Hand";
