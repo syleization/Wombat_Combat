@@ -12,6 +12,10 @@ public class NetworkCleanup : MonoBehaviour
         //NetworkManager.singleton.StopHost();
         //Network.Disconnect();
         //NetworkServer.Shutdown();
+        if(Application.platform != RuntimePlatform.Android)
+        {
+            gameObject.SetActive(false);
+        }
         manager = FindObjectOfType<NetworkManager>();
     }
 
