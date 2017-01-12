@@ -84,7 +84,7 @@ public class TheGUI : NetworkBehaviour
                 }
             }
             // Sifts through the stages and the last stage has an end turn button instead of an end stage button
-            else if (TurnManager.Instance.currentStage == Stage.Merge && currentPlayer.isLocalPlayer && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndStage"))
+            else if (TurnManager.Instance.currentStage == Stage.Merge && currentPlayer.isLocalPlayer && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndStage"))
             {
                 // Do some kind of transition to visually show the stage has changed
                 TurnManager.Instance.currentStage = Stage.Play;
@@ -97,7 +97,7 @@ public class TheGUI : NetworkBehaviour
                     currentPlayer.CmdChangeFieldSize();
                 }
             }
-            else if (TurnManager.Instance.currentStage == Stage.Play && currentPlayer.isLocalPlayer && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndTurn"))
+            else if (TurnManager.Instance.currentStage == Stage.Play && currentPlayer.isLocalPlayer && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndTurn"))
             {
                 // Do some kind of end of turn transition to visually show it
                 TurnManager.Instance.currentStage = Stage.Draw;
@@ -105,7 +105,7 @@ public class TheGUI : NetworkBehaviour
 
                 TurnManager.Instance.EndTurn();
             }
-            else if (TurnManager.Instance.currentStage == Stage.Reaction && CardActions.theReactor.isLocalPlayer && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "Don'tReact"))
+            else if (TurnManager.Instance.currentStage == Stage.Reaction && CardActions.theReactor.isLocalPlayer && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "Don'tReact"))
             {
                 CardActions.DontReact();
             }
@@ -114,7 +114,7 @@ public class TheGUI : NetworkBehaviour
                 && currentPlayer.isLocalPlayer
                && currentPlayer != null && Field.Instance.IsMergable() != CardType.None
                && currentPlayer.CurrentActions > 0
-               && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
+               && GUI.Button(new Rect(Screen.width / 50.0f, Screen.height / 2, Screen.width / 10.0f, Screen.height / 15.0f), "Merge"))
             {
                 // Add new power card to hand
                 Card newCard;

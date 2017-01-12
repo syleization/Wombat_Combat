@@ -91,12 +91,15 @@ public class GlobalSettings : NetworkBehaviour
 
     void Initialize()
     {
-        HudManager networkHud = FindObjectOfType<HudManager>();
-        networkHud.ToggleHUD();
         if (Application.platform == RuntimePlatform.Android)
         {
             NetworkCleanup test = FindObjectOfType<NetworkCleanup>();
             test.ShowGUI = false;
+        }
+        else
+        {
+            HudManager networkHud = FindObjectOfType<HudManager>();
+            networkHud.ToggleHUD();
         }
         Players.Add(LeftPlayer);
         Players.Add(TopPlayer);

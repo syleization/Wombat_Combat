@@ -5,7 +5,7 @@ public class HudManager : MonoBehaviour
 {
     NetworkManagerHUD HUD;
 
-    void Start()
+    void Awake()
     {
         HUD = this.gameObject.GetComponent<NetworkManagerHUD>();
     }

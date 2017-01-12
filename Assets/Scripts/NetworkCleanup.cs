@@ -7,6 +7,7 @@ public class NetworkCleanup : MonoBehaviour
     NetworkManager manager;
     bool IsConnecting = false;
     public bool ShowGUI = true;
+
     void Start()
     {
         //NetworkManager.singleton.StopHost();
@@ -16,7 +17,12 @@ public class NetworkCleanup : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
-        manager = FindObjectOfType<NetworkManager>();
+        else
+        {
+            HudManager hud = FindObjectOfType<HudManager>();
+            hud.ToggleHUD();
+            manager = FindObjectOfType<NetworkManager>();
+        }
     }
 
     void OnGUI()
@@ -40,6 +46,9 @@ public class NetworkCleanup : MonoBehaviour
             IsConnecting = false;
             manager.StopHost();
         }
-
+        if (!IsConnecting)
+        {
+            manager.networkAddress = GUI.TextField(new Rect((float)Screen.width * 0.5f - (float)Screen.width / 11.0f, (float)Screen.height / 10.0f * 2.0f, (float)Screen.width / 5.5f, (float)Screen.height / 10.0f), manager.networkAddress);
+        }
     }
 }
