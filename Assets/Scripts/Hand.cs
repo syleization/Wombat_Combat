@@ -58,7 +58,20 @@ public class Hand : MonoBehaviour
     {
         foreach(Card card in CardsInHand)
         {
-            if(card.Type == CardType.Defence || card.Type == CardType.Trap)
+            if(card.Type == CardType.Defence)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool HasTrapCards()
+    {
+        foreach (Card card in CardsInHand)
+        {
+            if (card.Type == CardType.Trap)
             {
                 return true;
             }

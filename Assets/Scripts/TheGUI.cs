@@ -76,11 +76,13 @@ public class TheGUI : NetworkBehaviour
 
                 // Check if the player has defence cards
                 currentPlayer.HasDefenceCards = currentPlayer.Hand.HasDefenceCards();
+                currentPlayer.HasTrapCards = currentPlayer.Hand.HasTrapCards();
 
                 if (!isServer)
                 {
                     currentPlayer.CmdChangeFieldSize();
                     currentPlayer.CmdChangeHasDefenceCards(currentPlayer.HasDefenceCards);
+                    currentPlayer.CmdChangeHasTrapCards(currentPlayer.HasTrapCards);
                 }
             }
             // Sifts through the stages and the last stage has an end turn button instead of an end stage button

@@ -269,7 +269,9 @@ public class CardActions : MonoBehaviour
                 Field.Instance.RpcClearField();
             }
         }
-        else if (reactor.HasDefenceCards && reactor.CurrentActions > 0)
+        else if ((reactor.HasDefenceCards && reactor.CurrentActions > 0) ||
+            (reactor.HasTrapCards && Field.Instance.CurrentDamageInField 
+            != GlobalSettings.Instance.GetDamageAmountOf(CardSubType.WomboCombo) && reactor.CurrentActions > 0))
         {
             TurnManager.Instance.currentStage = Stage.Reaction;
             Field.Instance.ChangeMaxFieldSize(Stage.Reaction);

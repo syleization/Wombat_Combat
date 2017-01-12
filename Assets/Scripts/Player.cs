@@ -9,6 +9,8 @@ public class Player : NetworkBehaviour
     // Variable used for deciding if a player can defend over the network
     [SyncVar]
     public bool HasDefenceCards = false;
+    [SyncVar]
+    public bool HasTrapCards = false;
     public Hand Hand;
     public DeckOfCards Deck;
     private int MaxHandSize = 3;
@@ -141,6 +143,12 @@ public class Player : NetworkBehaviour
     public void CmdChangeHasDefenceCards(bool hasDefenceCards)
     {
         HasDefenceCards = hasDefenceCards;
+    }
+
+    [Command]
+    public void CmdChangeHasTrapCards(bool hasTrapCards)
+    {
+        HasTrapCards = hasTrapCards;
     }
 
     [Command]

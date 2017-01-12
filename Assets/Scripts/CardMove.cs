@@ -153,6 +153,12 @@ public class CardMove : MonoBehaviour
         {
             if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence || Card.Type == CardType.Trap))
             {
+                // You are trying to play a trap against wombo combo
+                if(Card.Type == CardType.Trap && Field.Instance.CurrentDamageInField == GlobalSettings.Instance.GetDamageAmountOf(CardSubType.WomboCombo))
+                {
+                    SnapBackToOrigin();
+                    return;
+                }
                 // Check if you are releasing the card back to the hand
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
@@ -315,11 +321,11 @@ public class CardMove : MonoBehaviour
                 CardActions.WombatCage(CardActions.theThrower, CardActions.theReactor);
             }
 
-            Card.owner.HasDefenceCards = Card.owner.Hand.HasDefenceCards();
+            Card.owner.HasTrapCards = Card.owner.Hand.HasTrapCards();
 
             if (!Card.owner.isServer)
             {
-                Card.owner.CmdChangeHasDefenceCards(Card.owner.HasDefenceCards);
+                Card.owner.CmdChangeHasTrapCards(Card.owner.HasTrapCards);
             }
         }
     }
