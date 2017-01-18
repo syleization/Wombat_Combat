@@ -67,7 +67,7 @@ public class TurnManager : NetworkBehaviour
         set
         {
             CurrentStage = value;
-            if(isServer)
+            if(isServer && value != Stage.Draw)
             {
                 RpcDisplayBanner(value);
             }

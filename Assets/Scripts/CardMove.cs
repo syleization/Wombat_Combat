@@ -17,20 +17,20 @@ public class CardMove : MonoBehaviour
         Card = GetComponent<Card>();
     }
 #if UNITY_ANDROID
+    public static bool CardMoving = false;
     // Touch System
     void Update()
     {
-        if(Input.touchCount == 1)
+        if(Input.touchCount == 1 && !CardMoving)
         {
             Touch touch = Input.GetTouch(0);
-
             Ray ray = Camera.main.ScreenPointToRay(touch.position);
             RaycastHit hit;
             // This raycast goes past the card to see the hand
             if (Physics.Raycast(ray, out hit) && hit.collider != null && hit.collider.gameObject == Card.gameObject)
             {
-                Debug.Log(hit.collider.gameObject.ToString());
-                if (touch.phase == TouchPhase.Began)
+                CardMoving = true;
+                if (touch.phase == TouchPhase.Began && !Card.owner.IsHoldingCard)
                 {
                     MobileOnMouseDown(touch);
                 }
