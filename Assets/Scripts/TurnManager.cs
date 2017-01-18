@@ -8,9 +8,24 @@ public enum Stage { Draw, Merge, Play, Reaction }
 // this class will take care of switching turns and counting down time until the turn expires
 public class TurnManager : NetworkBehaviour
 {
+    [SerializeField]
+    private GameObject CombineBanner;
+    [SerializeField]
+    private GameObject PlayBanner;
+    [SerializeField]
+    private GameObject ReactionBanner;
+
+    private bool IsDisplayingBanner = false;
+    public bool IsCurrentlyDisplayingBanner
+    {
+        get
+        {
+            return IsDisplayingBanner;
+        }
+    }
     // for Singleton Pattern
     private static TurnManager TheInstance;
-
+    
     private TurnManager() { }
 
     public static TurnManager Instance
@@ -25,10 +40,10 @@ public class TurnManager : NetworkBehaviour
             return TheInstance;
         }
     }
-
+    [SerializeField]
     [SyncVar]
     private Turns CurrentTurn; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
-
+    [SerializeField]
     [SyncVar]
     private Stage CurrentStage = Stage.Draw;
     public Turns currentTurn
@@ -52,7 +67,47 @@ public class TurnManager : NetworkBehaviour
         set
         {
             CurrentStage = value;
+            if(isServer)
+            {
+                RpcDisplayBanner(value);
+            }
         }
+    }
+
+    IEnumerator DisplayBanner(Stage stage)
+    {
+        if (IsDisplayingBanner == false)
+        {
+            IsDisplayingBanner = true;
+            GameObject banner;
+
+            switch (stage)
+            {
+                case Stage.Merge:
+                    banner = Instantiate(CombineBanner);
+                    break;
+                case Stage.Play:
+                    banner = Instantiate(PlayBanner);
+                    break;
+                case Stage.Reaction:
+                    banner = Instantiate(ReactionBanner);
+                    break;
+                default:
+                    banner = new GameObject();
+                    break;
+            }
+
+            yield return new WaitForSeconds(4.0f);
+
+            Destroy(banner);
+            IsDisplayingBanner = false;
+        }
+    }
+
+    [ClientRpc]
+    void RpcDisplayBanner(Stage stage)
+    {
+        StartCoroutine(DisplayBanner(stage));
     }
 
     void Awake()
@@ -89,71 +144,6 @@ public class TurnManager : NetworkBehaviour
 
         //HideCards.Instance.HideCardsOfOtherPlayers(GetCurrentPlayer());
     }
-
-    //void OnGUI()
-    //{
-    //    // Creates a box in the bottom right showing whose turn it is and what their health is
-    //    GUI.Box(new Rect(Screen.width - 250, Screen.height - 30, 250, 30), 
-    //        "Turn: " + GetCurrentPlayer().ToString() + " | Health: " + GetCurrentPlayer().CurrentHealth.ToString() + " | Actions: " + GetCurrentPlayer().CurrentActions.ToString());
-    //    // Creates a box in the top middle to show the current stage
-    //    GUI.Box(new Rect(Screen.width / 2 - 50, 0, 100, 30), "Stage: " + CurrentStage.ToString());
-
-    //    // Sifts through the stages and the last stage has an end turn button instead of an end stage button
-    //    if (CurrentStage == Stage.Merge && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndStage"))
-    //    {
-    //        // Do some kind of transition to visually show the stage has changed
-    //        CurrentStage = Stage.Play;
-    //        Field.Instance.SendFieldBackToHand(GetCurrentPlayer());
-    //        Field.Instance.ChangeMaxFieldSize(CurrentStage);
-    //    }
-    //    else if (CurrentStage == Stage.Play && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "EndTurn"))
-    //    {
-    //        // Do some kind of end of turn transition to visually show it
-    //        CurrentStage = Stage.Merge;
-
-    //        // If a bark was used against the player put those cards back into their hand
-    //        CardActions.PlaceBarkedCards(TurnManager.Instance.GetCurrentPlayer());
-    //        Instance.EndTurn();
-    //        Field.Instance.ChangeMaxFieldSize(CurrentStage);
-    //    }
-    //    else if(CurrentStage == Stage.Reaction && GUI.Button(new Rect(Screen.width - 110, Screen.height / 2, 100, 20), "Don'tReact"))
-    //    {
-    //        CardActions.DontReact();
-    //    }
-
-    //    if (Instance.currentStage == Stage.Merge
-    //       && GetCurrentPlayer() != null && Field.Instance.IsMergable() != CardType.None
-    //       && GetCurrentPlayer().CurrentActions > 0
-    //       && GUI.Button(new Rect(10, Screen.height / 2, 50, 20), "Merge"))
-    //    {
-    //        // Add new power card to hand
-    //        Card newCard;
-    //        switch (Field.Instance.IsMergable())
-    //        {
-    //            case CardType.Attack:
-    //                newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_WomboCombo);
-    //                break;
-    //            case CardType.Defence:
-    //                newCard = Instantiate<Card>(GlobalSettings.Instance.Defence_GooglyEyes);
-    //                break;
-    //            case CardType.Trap:
-    //                newCard = Instantiate<Card>(GlobalSettings.Instance.Trap_WombatCage);
-    //                break;
-    //            default:
-    //                Debug.Log("Error in Merge");
-    //                newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_DonkeyKick);
-    //                break;
-    //        }
-    //        --GetCurrentPlayer().CurrentActions;
-    //        newCard.owner = TurnManager.Instance.GetCurrentPlayer();
-    //        DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
-    //        newCard.CurrentArea = "Hand";
-    //        GetCurrentPlayer().Hand.CardsInHand.Add(newCard);
-
-    //        // Clear field of used cards
-    //        Field.Instance.ClearField();
-    //    }
-    //}
 
     public void EndTurn()
     {

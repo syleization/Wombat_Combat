@@ -30,9 +30,12 @@ public class GlobalSettings : NetworkBehaviour
     public Card Trap_Trampoline;
     public Card Trap_Sinkhole;
     public Card Trap_WombatCage;
-    public Hand Handzone;
-    public Field Fieldzone;
-    public TheGUI TheGUI;
+    [SerializeField]
+    private Hand Handzone;
+    [SerializeField]
+    private Field Fieldzone;
+    [SerializeField]
+    private TheGUI TheGUI;
     [Header("Damages")]
     public const int Damage_DonkeyKick = 2;
     public const int Damage_WombatCharge = 3;
@@ -91,16 +94,13 @@ public class GlobalSettings : NetworkBehaviour
 
     void Initialize()
     {
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            NetworkCleanup test = FindObjectOfType<NetworkCleanup>();
-            test.ShowGUI = false;
-        }
-        else
-        {
-            HudManager networkHud = FindObjectOfType<HudManager>();
-            networkHud.ToggleHUD();
-        }
+#if UNITY_ANDROID
+        NetworkCleanup test = FindObjectOfType<NetworkCleanup>();
+        test.ShowGUI = false;
+#else
+        HudManager networkHud = FindObjectOfType<HudManager>();
+        networkHud.ToggleHUD();
+#endif
         Players.Add(LeftPlayer);
         Players.Add(TopPlayer);
         Players.Add(RightPlayer);
@@ -149,7 +149,6 @@ public class GlobalSettings : NetworkBehaviour
 
         // Instantiate the player's hand across from the local player
         Player across = TurnManager.Instance.GetPlayerAcrossFrom(TurnManager.Instance.GetTurnEnumOfPlayer(local));
-        Debug.Log(across);
         if (across != null)
         {
             newHand = Instantiate<Hand>(Handzone);

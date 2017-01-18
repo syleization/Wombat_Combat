@@ -7,22 +7,15 @@ public class NetworkCleanup : MonoBehaviour
     NetworkManager manager;
     bool IsConnecting = false;
     public bool ShowGUI = true;
-
+#if UNITY_ANDROID
     void Start()
     {
         //NetworkManager.singleton.StopHost();
         //Network.Disconnect();
         //NetworkServer.Shutdown();
-        if(Application.platform != RuntimePlatform.Android)
-        {
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            HudManager hud = FindObjectOfType<HudManager>();
-            hud.ToggleHUD();
-            manager = FindObjectOfType<NetworkManager>();
-        }
+        HudManager hud = FindObjectOfType<HudManager>();
+        hud.ToggleHUD();
+        manager = FindObjectOfType<NetworkManager>();
     }
 
     void OnGUI()
@@ -51,4 +44,5 @@ public class NetworkCleanup : MonoBehaviour
             manager.networkAddress = GUI.TextField(new Rect((float)Screen.width * 0.5f - (float)Screen.width / 11.0f, (float)Screen.height / 10.0f * 2.0f, (float)Screen.width / 5.5f, (float)Screen.height / 10.0f), manager.networkAddress);
         }
     }
+#endif
 }
