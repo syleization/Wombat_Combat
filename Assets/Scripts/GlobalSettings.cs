@@ -116,8 +116,10 @@ public class GlobalSettings : NetworkBehaviour
             RightPlayer.Name = RightPlayerName;
         }
 
-        TopPlayer.Name = TopPlayerName;
-
+        if (TopPlayer)
+        {
+            TopPlayer.Name = TopPlayerName;
+        }
         BottomPlayer.Name = BottomPlayerName;
 
         SpawnPlayers();
@@ -215,8 +217,8 @@ public class GlobalSettings : NetworkBehaviour
             --CurrentPlayerCount;
             Debug.Log("Player Not Registered");
         }
-        
 
+        CanStartGame = true;
         if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
         {
             CanStartGame = true;

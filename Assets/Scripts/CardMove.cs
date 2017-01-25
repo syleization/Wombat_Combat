@@ -20,21 +20,27 @@ public class CardMove : MonoBehaviour
     // Touch System
     void Update()
     {
-        if(Input.touchCount == 1)
+        if(Input.touchCount == 1 && CardPopUp.CardCanMoveNow == true)
         {
+            Debug.Log("move");
             Touch touch = Input.GetTouch(0);
             Ray ray = Camera.main.ScreenPointToRay(touch.position);
             RaycastHit hit;
             // This raycast goes past the card to see the hand
             if (Physics.Raycast(ray, out hit) && hit.collider != null && hit.collider.gameObject == Card.gameObject)
+                //if (transform.GetComponent<Collider>() == Physics2D.OverlapPoint(Camera.main.ScreenToWorldPoint(touch.position))) 
             {
-                if (touch.phase == TouchPhase.Began && !Card.owner.IsHoldingCard)
+                if (touch.phase == TouchPhase.Stationary && !Card.owner.IsHoldingCard)
                 {
+                    Debug.Log("down");
+                    CardPopUp.ClearInfoBox();
                     MobileOnMouseDown(touch);
                 }
-                else if (touch.phase == TouchPhase.Ended)
+                else if (touch.phase == TouchPhase.Ended && Card.owner.IsHoldingCard)
                 {
+                    Debug.Log("up");
                     MobileOnMouseUp(touch);
+                    CardPopUp.CardCanMoveNow = false;
                 }
                 else if (touch.phase == TouchPhase.Moved && Card.owner.IsHoldingCard)
                 {
@@ -51,9 +57,10 @@ public class CardMove : MonoBehaviour
         {
             if (Card.owner.CurrentActions > 0)
             {
+                transform.position = new Vector3(transform.position.x, transform.position.y, -3.0f);
                 // When card is clicked it is no longer in hand
                 Card.owner.IsHoldingCard = true;
-                screenPoint = Camera.main.WorldToScreenPoint(touch.position);
+                
                 if (Card.CurrentArea == "Hand")
                 {
                     Card.owner.Hand.ResetHandCardPositions(Card, Card.owner.Hand.CardsInHand.Count);
@@ -70,9 +77,10 @@ public class CardMove : MonoBehaviour
             if (Card.owner.CurrentActions > 0)
             {
                 // Move the card around with the cursor
-                Vector3 curScreenPoint = new Vector3(touch.position.x, touch.position.y, screenPoint.z - 0.1f);
+                Vector3 curScreenPoint = new Vector3(touch.position.x, touch.position.y, 9.0f);
 
                 Vector3 currentPosition = Camera.main.ScreenToWorldPoint(curScreenPoint);
+               // currentPosition.z = -1;
                 transform.position = currentPosition;
             }
         }
@@ -90,7 +98,6 @@ public class CardMove : MonoBehaviour
                 // This raycast goes past the card to see the hand
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
                 {
-                    
                     if (hit.collider.tag == "Hand")
                     {
                         if (Hand.IsYourHand(Card, hit.collider.gameObject))
