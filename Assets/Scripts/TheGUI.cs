@@ -176,20 +176,16 @@ public class TheGUI : NetworkBehaviour
 
             Destroy(Field.Instance.gameObject);
         }
-        // When the game is over the host gets a play again button which resets
-        else if (GameIsOver && isServer && GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height / 2 - 15, 100, 30), "Play Again!"))
-        {
-            GlobalSettings.Instance.RpcChangeScene();
-        }
-        else if(GameIsOver)
+        // When the game is over you can now disconnect from the server or if you are the host shut down the server
+        else if (GameIsOver)
         {
             if (GlobalSettings.Instance.GetLocalPlayer().CurrentHealth == 0)
             {
-                GUI.Box(new Rect(Screen.width / 2 - 50, Screen.height / 2 - 45, 100, 30), "Loser!");
+                GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Loser!");
             }
             else
             {
-                GUI.Box(new Rect(Screen.width / 2 - 50, Screen.height / 2 - 45, 100, 30), "Winner!");
+                GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Winner!");
             }
         }
     }

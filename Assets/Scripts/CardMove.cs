@@ -244,12 +244,6 @@ public class CardMove : MonoBehaviour
 
 #else
 
-    void Start()
-    {
-        CardPopUp = GetComponent<CardPopUp>();
-        Card = GetComponent<Card>();
-    }
-
     void OnMouseDown()
     {
         if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction

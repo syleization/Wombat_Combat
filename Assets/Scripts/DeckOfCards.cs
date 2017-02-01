@@ -23,42 +23,41 @@ public class DeckOfCards : MonoBehaviour
         cards.AddRange(deck);
     }
 
-    void OnGUI()
-    {
-        //if (!showReset)
-        //{
-        //    // Deal button
-        //    if (GUI.Button(new Rect(10, 10, 100, 20), "Deal"))
-        //    {
-        //        MoveDealtCard();
-        //    }
-        //}
-        //else
-        //{
-        //    //// Reset button
-        //    //if (GUI.Button(new Rect(10, 10, 100, 20), "Reset"))
-        //    //{
-        //    //    ResetDeck();
-        //    //}
-        //}
-        //// GameOver button
-        //if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 20), "ClearHand"))
-        //{
-        //    GameOver();
-        //}
+    //void OnGUI()
+    //{
+    //    //if (!showReset)
+    //    //{
+    //    //    // Deal button
+    //    //    if (GUI.Button(new Rect(10, 10, 100, 20), "Deal"))
+    //    //    {
+    //    //        MoveDealtCard();
+    //    //    }
+    //    //}
+    //    //else
+    //    //{
+    //    //    //// Reset button
+    //    //    //if (GUI.Button(new Rect(10, 10, 100, 20), "Reset"))
+    //    //    //{
+    //    //    //    ResetDeck();
+    //    //    //}
+    //    //}
+    //    //// GameOver button
+    //    //if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 20), "ClearHand"))
+    //    //{
+    //    //    GameOver();
+    //    //}
 
-        // Merge Button
+    //    // Merge Button
        
-    }
+    //}
 
     Card GetRandomBasicCard()
     {
-        switch(Random.Range(0, 8))
+        switch(Random.Range(0, 7))
         {
             case 6:
             case 0:
                 return GlobalSettings.Instance.Attack_DonkeyKick;
-            case 7:
             case 1:
                 return GlobalSettings.Instance.Attack_WombatCharge;
             case 2:
@@ -158,28 +157,7 @@ public class DeckOfCards : MonoBehaviour
 
     public static void TransformDealtCardToHand(Card newCard, int Spacing)
     {
-        //Turns turn = TurnManager.Instance.GetTurnEnumOfPlayer(newCard.owner);
         newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
-        //if (turn == Turns.LeftPlayer)
-        //{
-        //    newCard.transform.position = new Vector3(newCard.owner.Hand.transform.position.x, ((float)Spacing * 2) - 5, (float)Spacing * -0.01f);
-        //}
-        //else if (turn == Turns.TopPlayer)
-        //{
-        //    newCard.transform.position = new Vector3((-(float)Spacing * 2) + 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
-        //}
-        //else if (turn == Turns.RightPlayer)
-        //{
-        //    newCard.transform.position = new Vector3(newCard.owner.Hand.transform.position.x, ((float)Spacing * 2) - 5, (float)Spacing * -0.01f);
-        //}
-        //else if (turn == Turns.BottomPlayer)
-        //{
-        //    newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
-        //}
-        //else
-        //{
-        //    Debug.Log("ERROR[DeckOfCards::TransformDealtCardToHand] | A player isnt tagged correctly");
-        //}
         newCard.transform.rotation = new Quaternion(newCard.owner.Hand.transform.rotation.x, newCard.owner.Hand.transform.rotation.y, newCard.owner.Hand.transform.rotation.z, newCard.owner.Hand.transform.rotation.w);
     }
 }

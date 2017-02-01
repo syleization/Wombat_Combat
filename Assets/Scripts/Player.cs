@@ -252,8 +252,7 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdEndGame()
     {
-        TheGUI gui = FindObjectOfType<TheGUI>();
-        gui.GameIsOver = true;
+        GlobalSettings.Instance.RpcEndGame();
     }
 
     // Client Rpcs

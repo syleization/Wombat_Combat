@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 public enum AreaPosition { Left, Top, Right, Bottom }
 public enum GameType { TwoPlayer, ThreePlayer, FourPlayer }
@@ -36,10 +35,12 @@ public class GlobalSettings : NetworkBehaviour
     private Field Fieldzone;
     [SerializeField]
     private TheGUI TheGUI;
+    [SerializeField]
+    private NetworkCleanup TheNetworkCleanup;
     [Header("Damages")]
-    public const int Damage_DonkeyKick = 2;
+    public const int Damage_DonkeyKick = 1;
     public const int Damage_WombatCharge = 3;
-    public const int Damage_WomboCombo = 4;
+    public const int Damage_WomboCombo = 5;
     public static List<Player> Players = new List<Player>();
 
     public bool CanStartGame = false;
@@ -67,38 +68,12 @@ public class GlobalSettings : NetworkBehaviour
         TheInstance = this;
     }
 
-    [ClientRpc]
-    public void RpcEndGame()
-    {
-        TheGUI.GameIsOver = true;
-    }
-
-    [ClientRpc]
-    public void RpcChangeScene()
-    {
-        if (!isServer)
-        {
-            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-        }
-        else
-        {
-            StartCoroutine(WaitForServerShutdown(2.0f));
-        }
-    }
-
-    IEnumerator WaitForServerShutdown(float waitTime)
-    {
-        yield return new WaitForSeconds(waitTime);
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-    }
-
     void Initialize()
     {
-#if UNITY_ANDROID
-        NetworkCleanup test = FindObjectOfType<NetworkCleanup>();
-        test.ShowGUI = false;
-#else
         HudManager networkHud = FindObjectOfType<HudManager>();
+#if UNITY_ANDROID
+        networkHud.ShowGUI = false;
+#else
         networkHud.ToggleHUD();
 #endif
         Players.Add(LeftPlayer);
@@ -123,7 +98,7 @@ public class GlobalSettings : NetworkBehaviour
         BottomPlayer.Name = BottomPlayerName;
 
         SpawnPlayers();
-
+   
         if (isServer)
         {
             TurnManager.Instance.Initialize();
@@ -136,7 +111,40 @@ public class GlobalSettings : NetworkBehaviour
             TheGUI gui = Instantiate<TheGUI>(TheGUI);
             NetworkServer.Spawn(gui.gameObject);
             gui.isActive = true;
+
+            NetworkServer.Spawn(Instantiate(TheNetworkCleanup).gameObject);
         }
+    }
+
+    public void Terminate()
+    {
+        // Clear Players
+        foreach(Player player in Players)
+        {
+            if(player != null)
+            {
+                foreach(Card card in player.Hand.CardsInHand)
+                {
+                    Destroy(card.gameObject);
+                }
+                player.Hand.CardsInHand.Clear();
+                Destroy(player.Hand.gameObject);
+                Destroy(player.gameObject);
+            }
+        }
+        Players.Clear();
+        LeftPlayer = null;
+        TopPlayer = null;
+        RightPlayer = null;
+        BottomPlayer = null;
+
+        // Reset original values
+        CanStartGame = false;
+        CurrentPlayerCount = 0;
+        LeftPlayerName = "";
+        TopPlayerName = "";
+        RightPlayerName = "";
+        BottomPlayerName = "";
     }
 
     void SpawnPlayers()
@@ -218,7 +226,7 @@ public class GlobalSettings : NetworkBehaviour
             Debug.Log("Player Not Registered");
         }
 
-        CanStartGame = true;
+       // CanStartGame = true;
         if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
         {
             CanStartGame = true;
@@ -308,5 +316,11 @@ public class GlobalSettings : NetworkBehaviour
     void RpcInitialize()
     {
         Initialize();
+    }
+
+    [ClientRpc]
+    public void RpcEndGame()
+    {
+        TheGUI.GameIsOver = true;
     }
 }

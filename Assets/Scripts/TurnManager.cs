@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
-public enum Turns { LeftPlayer, TopPlayer, RightPlayer, BottomPlayer }
+public enum Turns { LeftPlayer, TopPlayer, RightPlayer, BottomPlayer, Null }
 public enum Stage { Draw, Merge, Play, Reaction }
 // this class will take care of switching turns and counting down time until the turn expires
 public class TurnManager : NetworkBehaviour
@@ -42,7 +42,7 @@ public class TurnManager : NetworkBehaviour
     }
     [SerializeField]
     [SyncVar]
-    private Turns CurrentTurn; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
+    private Turns CurrentTurn = Turns.Null; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
     [SerializeField]
     [SyncVar]
     private Stage CurrentStage = Stage.Draw;
@@ -141,8 +141,13 @@ public class TurnManager : NetworkBehaviour
         }
 
         SetTurnBools();
+    }
 
-        //HideCards.Instance.HideCardsOfOtherPlayers(GetCurrentPlayer());
+    public void Terminate()
+    {
+        CurrentStage = Stage.Draw;
+        CurrentTurn = Turns.Null;
+        IsDisplayingBanner = false;
     }
 
     public void EndTurn()
@@ -150,8 +155,6 @@ public class TurnManager : NetworkBehaviour
         Player prevPlayer = GetCurrentPlayer();
         SetTurnBools();
         Field.Instance.SendFieldBackToHand(prevPlayer);
-        // HideCards.Instance.HideCardsOfOtherPlayers(GetCurrentPlayer());
-        //HideCards.Instance.ShowCardsOfPlayer(GetCurrentPlayer());
 
         if (!isServer)
         {
