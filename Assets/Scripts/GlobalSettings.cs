@@ -35,8 +35,7 @@ public class GlobalSettings : NetworkBehaviour
     private Field Fieldzone;
     [SerializeField]
     private TheGUI TheGUI;
-    [SerializeField]
-    private NetworkCleanup TheNetworkCleanup;
+
     [Header("Damages")]
     public const int Damage_DonkeyKick = 1;
     public const int Damage_WombatCharge = 3;
@@ -71,6 +70,9 @@ public class GlobalSettings : NetworkBehaviour
     void Initialize()
     {
         HudManager networkHud = FindObjectOfType<HudManager>();
+        NetworkCleanup networkCleanup = FindObjectOfType<NetworkCleanup>();
+
+        networkCleanup.ShowGUI = true;
 #if UNITY_ANDROID
         networkHud.ShowGUI = false;
 #else
@@ -111,8 +113,6 @@ public class GlobalSettings : NetworkBehaviour
             TheGUI gui = Instantiate<TheGUI>(TheGUI);
             NetworkServer.Spawn(gui.gameObject);
             gui.isActive = true;
-
-            NetworkServer.Spawn(Instantiate(TheNetworkCleanup).gameObject);
         }
     }
 
