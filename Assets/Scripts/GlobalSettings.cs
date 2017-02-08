@@ -78,6 +78,7 @@ public class GlobalSettings : NetworkBehaviour
 #else
         networkHud.ToggleHUD();
 #endif
+
         Players.Add(LeftPlayer);
         Players.Add(TopPlayer);
         Players.Add(RightPlayer);
@@ -100,7 +101,9 @@ public class GlobalSettings : NetworkBehaviour
         BottomPlayer.Name = BottomPlayerName;
 
         SpawnPlayers();
-   
+
+        CanvasManager.Instance.Initialize();
+
         if (isServer)
         {
             TurnManager.Instance.Initialize();
@@ -118,6 +121,7 @@ public class GlobalSettings : NetworkBehaviour
 
     public void Terminate()
     {
+        CanvasManager.Instance.Terminate();
         // Clear Players
         foreach(Player player in Players)
         {
@@ -226,7 +230,7 @@ public class GlobalSettings : NetworkBehaviour
             Debug.Log("Player Not Registered");
         }
 
-       // CanStartGame = true;
+        //CanStartGame = true;// A testing shortcut
         if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
         {
             CanStartGame = true;

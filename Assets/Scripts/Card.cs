@@ -9,6 +9,7 @@ public enum CardSubType { DonkeyKick, WombatCharge, WomboCombo, Bark, Bite, Goog
 public class Card : NetworkBehaviour
 {
     public Player owner;
+    [Tooltip("Areas are 'Hand', 'Field', 'TrapZone'")]
     public string CurrentArea;
     public bool IsPowerCard;
     public bool IsInHand;

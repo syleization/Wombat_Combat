@@ -22,7 +22,6 @@ public class CardMove : MonoBehaviour
     {
         if(Input.touchCount == 1 && CardPopUp.CardCanMoveNow == true)
         {
-            Debug.Log("move");
             Touch touch = Input.GetTouch(0);
             Ray ray = Camera.main.ScreenPointToRay(touch.position);
             RaycastHit hit;
@@ -32,13 +31,11 @@ public class CardMove : MonoBehaviour
             {
                 if (touch.phase == TouchPhase.Stationary && !Card.owner.IsHoldingCard)
                 {
-                    Debug.Log("down");
                     CardPopUp.ClearInfoBox();
                     MobileOnMouseDown(touch);
                 }
                 else if (touch.phase == TouchPhase.Ended && Card.owner.IsHoldingCard)
                 {
-                    Debug.Log("up");
                     MobileOnMouseUp(touch);
                     CardPopUp.CardCanMoveNow = false;
                 }
@@ -52,7 +49,7 @@ public class CardMove : MonoBehaviour
 
     void MobileOnMouseDown(Touch touch)
     {
-        if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction
+        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
         {
             if (Card.owner.CurrentActions > 0)
@@ -65,13 +62,18 @@ public class CardMove : MonoBehaviour
                 {
                     Card.owner.Hand.ResetHandCardPositions(Card, Card.owner.Hand.CardsInHand.Count);
                 }
+                else if(Card.CurrentArea == "TrapZone")
+                {
+                    Card.owner.Traps.ToggleActive(Card);
+                    CanvasManager.Instance.UpdateCanvas("Text");
+                }
             }
         }
     }
 
     void MobileOnMouseDrag(Touch touch)
     {
-        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction)
+        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
         {
             if (Card.owner.CurrentActions > 0)
@@ -88,7 +90,7 @@ public class CardMove : MonoBehaviour
 
     void MobileOnMouseUp(Touch touch)
     {
-        if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction)
+        if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
         {
             if (Card.owner.CurrentActions > 0)
             {
@@ -152,7 +154,7 @@ public class CardMove : MonoBehaviour
                     {
                         if (Field.Instance.CanBePlaced())
                         {
-                            if (TurnManager.Instance.currentStage != Stage.Play || (TurnManager.Instance.currentStage == Stage.Play && Card.Type == CardType.Attack))
+                            if (TurnManager.Instance.currentStage != Stage.Play || (TurnManager.Instance.currentStage == Stage.Play && Card.Type != CardType.Defence))
                             {
                                 if (Card.CurrentArea == "Hand")
                                 {
@@ -161,9 +163,18 @@ public class CardMove : MonoBehaviour
                                     // Remove card from previous spot
                                     Card.owner.Hand.CardsInHand.Remove(Card);
 
-                                    if (TurnManager.Instance.currentStage == Stage.Play && Card.SubType == CardSubType.DonkeyKick)
+                                    if (TurnManager.Instance.currentStage == Stage.Play)
                                     {
-                                        PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                        if (Card.SubType == CardSubType.DonkeyKick)
+                                        {
+                                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                        }
+                                        else if(Card.Type == CardType.Trap)
+                                        {
+                                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                            Card.IsInHand = false;
+                                            return;
+                                        }
                                     }
                                 }
                                 // Move card to the field positions
@@ -195,7 +206,8 @@ public class CardMove : MonoBehaviour
         // if a player is reacting to a wombat being thrown at them and they are the one moving the card
         else if (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor)
         {
-            if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence || Card.Type == CardType.Trap))
+            if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence 
+                || (Card.Type == CardType.Trap && Card.CurrentArea == "TrapZone")))
             {
                 // You are trying to play a trap against wombo combo
                 if (Card.Type == CardType.Trap && Field.Instance.CurrentDamageInField == GlobalSettings.Instance.GetDamageAmountOf(CardSubType.WomboCombo))
@@ -218,6 +230,15 @@ public class CardMove : MonoBehaviour
                             // Remove card from previous spot
                             CardActions.theReactor.Hand.CardsInHand.Remove(Card);
                             // Play the defence card | first parameter is irrelevant
+                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                        }
+                        else if(Card.CurrentArea == "TrapZone")
+                        {
+                            // Add card to field
+                            Field.Instance.CardsInField.Add(Card);
+                            // Remove card from TrapZone
+                            Card.owner.Traps.RemoveTrap(Card);
+                            // Play the trap card | first parameter is irrelevant
                             PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
                         }
                         // Move card to the field positions
@@ -246,7 +267,7 @@ public class CardMove : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction
+        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
         {
             if (Card.owner.CurrentActions > 0)
@@ -258,13 +279,18 @@ public class CardMove : MonoBehaviour
                 {
                     Card.owner.Hand.ResetHandCardPositions(Card, Card.owner.Hand.CardsInHand.Count);
                 }
+                else if(Card.CurrentArea == "TrapZone")
+                {
+                    Card.owner.Traps.ToggleActive(Card);
+                    CanvasManager.Instance.UpdateCanvas("Text");
+                }
             }
         }
     }
 
     void OnMouseDrag()
     {
-        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction)
+        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
         {
             if (Card.owner.CurrentActions > 0)
@@ -280,7 +306,7 @@ public class CardMove : MonoBehaviour
 
     void OnMouseUp()
     {
-        if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction)
+        if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
         {
             if (Card.owner.CurrentActions > 0)
             {
@@ -344,7 +370,7 @@ public class CardMove : MonoBehaviour
                     {
                         if (Field.Instance.CanBePlaced())
                         {
-                            if (TurnManager.Instance.currentStage != Stage.Play || (TurnManager.Instance.currentStage == Stage.Play && Card.Type == CardType.Attack))
+                            if (TurnManager.Instance.currentStage != Stage.Play || (TurnManager.Instance.currentStage == Stage.Play && Card.Type != CardType.Defence))
                             {
                                 if (Card.CurrentArea == "Hand")
                                 {
@@ -353,9 +379,18 @@ public class CardMove : MonoBehaviour
                                     // Remove card from previous spot
                                     Card.owner.Hand.CardsInHand.Remove(Card);
 
-                                    if (TurnManager.Instance.currentStage == Stage.Play && Card.SubType == CardSubType.DonkeyKick)
+                                    if (TurnManager.Instance.currentStage == Stage.Play)
                                     {
-                                        PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                        if (Card.SubType == CardSubType.DonkeyKick)
+                                        {
+                                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                        }
+                                        else if(Card.Type == CardType.Trap)
+                                        {
+                                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                            Card.IsInHand = false;
+                                            return;
+                                        }
                                     }
                                 }
                                 // Move card to the field positions
@@ -387,7 +422,8 @@ public class CardMove : MonoBehaviour
         // if a player is reacting to a wombat being thrown at them and they are the one moving the card
         else if (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor)
         {
-            if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence || Card.Type == CardType.Trap))
+            if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence 
+                || (Card.Type == CardType.Trap && Card.CurrentArea == "TrapZone")))
             {
                 // You are trying to play a trap against wombo combo
                 if(Card.Type == CardType.Trap && Field.Instance.CurrentDamageInField == GlobalSettings.Instance.GetDamageAmountOf(CardSubType.WomboCombo))
@@ -410,6 +446,15 @@ public class CardMove : MonoBehaviour
                             // Remove card from previous spot
                             CardActions.theReactor.Hand.CardsInHand.Remove(Card);
                             // Play the defence card | first parameter is irrelevant
+                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                        }
+                        else if(Card.CurrentArea == "TrapZone")
+                        {
+                            // Add card to field
+                            Field.Instance.CardsInField.Add(Card);
+                            // Remove card from TrapZone
+                            Card.owner.Traps.RemoveTrap(Card);
+                            // Play the trap card | first parameter is irrelevant
                             PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
                         }
                         // Move card to the field positions
@@ -445,6 +490,10 @@ public class CardMove : MonoBehaviour
         {
             SnapBackToField();
         }
+        else if(Card.CurrentArea == "TrapZone")
+        {
+            SnapBackToTrapZone();
+        }
     }
 
     void SnapBackToHand()
@@ -460,6 +509,12 @@ public class CardMove : MonoBehaviour
         Field.Instance.ResetFieldCardPositions();
         Card.owner.IsHoldingCard = false;
         CardPopUp.cardIsDown = true;
+    }
+
+    void SnapBackToTrapZone()
+    {
+        Card.owner.Traps.RemoveTrap(Card);
+        Card.owner.Traps.SetTrap(Card);
     }
 
     void PlayCard(Player target, Card cardUsed)
@@ -545,24 +600,43 @@ public class CardMove : MonoBehaviour
         }
         else if (cardUsed.Type == CardType.Trap)
         {
-            if (subTypeOfCard == CardSubType.Sinkhole)
+            if(TurnManager.Instance.currentStage == Stage.Play)
             {
-                CardActions.Sinkhole(CardActions.theThrower, CardActions.theReactor);
-            }
-            else if (subTypeOfCard == CardSubType.Trampoline)
-            {
-                CardActions.Trampoline(CardActions.theThrower, CardActions.theReactor);
-            }
-            else if (subTypeOfCard == CardSubType.WombatCage)
-            {
-                CardActions.WombatCage(CardActions.theThrower, CardActions.theReactor);
-            }
+                if (Card.owner.Traps.SetTrap(Card) == false)
+                {
+                    Field.Instance.CardsInField.Remove(Card);
+                    Card.owner.Hand.CardsInHand.Add(Card);
+                    SnapBackToHand();
+                    ++cardUsed.owner.CurrentHandSize;
+                }
+                Card.owner.HasTrapCards = Card.owner.Traps.HasTraps();
 
-            Card.owner.HasTrapCards = Card.owner.Hand.HasTrapCards();
-
-            if (!Card.owner.isServer)
+                if (!Card.owner.isServer)
+                {
+                    Card.owner.CmdChangeHasTrapCards(Card.owner.HasTrapCards);
+                }
+            }
+            else
             {
-                Card.owner.CmdChangeHasTrapCards(Card.owner.HasTrapCards);
+                if (subTypeOfCard == CardSubType.Sinkhole)
+                {
+                    CardActions.Sinkhole(CardActions.theThrower, CardActions.theReactor);
+                }
+                else if (subTypeOfCard == CardSubType.Trampoline)
+                {
+                    CardActions.Trampoline(CardActions.theThrower, CardActions.theReactor);
+                }
+                else if (subTypeOfCard == CardSubType.WombatCage)
+                {
+                    CardActions.WombatCage(CardActions.theThrower, CardActions.theReactor);
+                }
+
+                Card.owner.HasTrapCards = Card.owner.Traps.HasTraps();
+
+                if (!Card.owner.isServer)
+                {
+                    Card.owner.CmdChangeHasTrapCards(Card.owner.HasTrapCards);
+                }
             }
         }
     }

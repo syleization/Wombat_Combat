@@ -13,6 +13,7 @@ public class Player : NetworkBehaviour
     public bool HasTrapCards = false;
     public Hand Hand;
     public DeckOfCards Deck;
+    public TrapZone Traps;
     private int MaxHandSize = 3;
     public int CurrentMaxHandSize
     {

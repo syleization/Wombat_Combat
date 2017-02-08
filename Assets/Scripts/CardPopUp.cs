@@ -56,7 +56,6 @@ public class CardPopUp : MonoBehaviour
     {
         if(Input.touchCount == 1 && !TheCard.owner.IsHoldingCard && TheCard.owner.isLocalPlayer && MobileStop == false && CardCanMoveNow == false)
         {
-            Debug.Log("tap");
             MobileStop = true;
             Touch touch = Input.GetTouch(0);
             // If someone taps the screen display info box
@@ -140,7 +139,7 @@ public class CardPopUp : MonoBehaviour
 #else
     void OnMouseEnter()
     {
-        if (cardIsDown && MouseIsWithinBounds() && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && TheCard.owner.isLocalPlayer)
+        if (cardIsDown && MouseIsWithinBounds() && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && TheCard.owner.isLocalPlayer && TheCard.CurrentArea != "TrapZone")
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
@@ -156,7 +155,7 @@ public class CardPopUp : MonoBehaviour
 
     void OnMouseExit()
     {
-        if(!cardIsDown && !waitingForCard && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && TheCard.owner.isLocalPlayer)
+        if(!cardIsDown && !waitingForCard && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && TheCard.owner.isLocalPlayer && TheCard.CurrentArea != "TrapZone")
         {
             waitingForCard = true;
             StartCoroutine(WaitToPutCardDown(waitTime));
