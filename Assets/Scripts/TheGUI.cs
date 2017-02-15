@@ -123,29 +123,15 @@ public class TheGUI : NetworkBehaviour
 
             if (TurnManager.Instance.currentStage == Stage.Merge
                 && currentPlayer.isLocalPlayer
-               && currentPlayer != null && Field.Instance.IsMergable() != CardType.None
+               && currentPlayer != null && Field.Instance.IsMergable()
                && currentPlayer.CurrentActions > 0
                && !TurnManager.Instance.IsCurrentlyDisplayingBanner
                && GUI.Button(new Rect(Screen.width / 50.0f, Screen.height / 2, Screen.width / 10.0f, Screen.height / 15.0f), "Merge"))
             {
                 // Add new power card to hand
-                Card newCard;
-                switch (Field.Instance.IsMergable())
-                {
-                    case CardType.Attack:
-                        newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_WomboCombo);
-                        break;
-                    case CardType.Defence:
-                        newCard = Instantiate<Card>(GlobalSettings.Instance.Defence_GooglyEyes);
-                        break;
-                    case CardType.Trap:
-                        newCard = Instantiate<Card>(GlobalSettings.Instance.Trap_WombatCage);
-                        break;
-                    default:
-                        Debug.Log("Error in Merge");
-                        newCard = Instantiate<Card>(GlobalSettings.Instance.Attack_DonkeyKick);
-                        break;
-                }
+
+                Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
+
                 if (!isServer)
                 {
                     currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);

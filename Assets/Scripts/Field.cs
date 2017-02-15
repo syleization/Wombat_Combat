@@ -116,10 +116,10 @@ public class Field : NetworkBehaviour
         }
     }
 
-    public CardType IsMergable()
+    public bool IsMergable()
     {
         // If there are two cards in the field - their types match - they aren't power cards
-        return (GetCard(0) != null && GetCard(1) != null) && (GetCard(0).Type == GetCard(1).Type) && (GetCard(0).IsPowerCard == false && GetCard(1).IsPowerCard == false) ? GetCard(0).Type : CardType.None;
+        return (GetCard(0) != null && GetCard(1) != null) && (GetCard(0).Type == GetCard(1).Type) && (GetCard(0).Level == GetCard(1).Level) && (GetCard(0).Level != CardLevel.Three && GetCard(1).Level != CardLevel.Three) ? true : false;
     }
 
     public void ClearField()

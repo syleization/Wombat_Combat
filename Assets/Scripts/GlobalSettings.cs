@@ -41,7 +41,7 @@ public class GlobalSettings : NetworkBehaviour
     public const int Damage_WombatCharge = 3;
     public const int Damage_WomboCombo = 5;
     public static List<Player> Players = new List<Player>();
-
+    private List<Card> AllCards = new List<Card>();
     public bool CanStartGame = false;
     private int CurrentPlayerCount = 0;
     // SINGLETON
@@ -65,6 +65,15 @@ public class GlobalSettings : NetworkBehaviour
     void Awake()
     {
         TheInstance = this;
+        AllCards.Add(Attack_DonkeyKick);
+        AllCards.Add(Attack_WombatCharge);
+        AllCards.Add(Attack_WomboCombo);
+        AllCards.Add(Defence_Bark);
+        AllCards.Add(Defence_Bite);
+        AllCards.Add(Defence_GooglyEyes);
+        AllCards.Add(Trap_Trampoline);
+        AllCards.Add(Trap_Sinkhole);
+        AllCards.Add(Trap_WombatCage);
     }
 
     void Initialize()
@@ -230,7 +239,7 @@ public class GlobalSettings : NetworkBehaviour
             Debug.Log("Player Not Registered");
         }
 
-        //CanStartGame = true;// A testing shortcut
+        CanStartGame = true;// A testing shortcut
         if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
         {
             CanStartGame = true;
@@ -305,6 +314,15 @@ public class GlobalSettings : NetworkBehaviour
 
         Debug.Log("[GlobalSettings::GetAttackCardOfDamageAmount] Invalid parameter");
         return null;
+    }
+
+    public Card GetMergeCard(CardType type, CardLevel level)
+    {
+        int typeIndex = (int)type;
+        int levelIndex = (int)level + 1;
+        const int amountOfCardTypes = 3;
+
+        return AllCards[typeIndex * amountOfCardTypes  + levelIndex];
     }
 
     void OnGUI()

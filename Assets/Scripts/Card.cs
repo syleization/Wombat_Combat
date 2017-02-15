@@ -5,13 +5,15 @@ using System;
 using UnityEngine.Networking;
 
 public enum CardType { Attack, Defence, Trap, None }
-public enum CardSubType { DonkeyKick, WombatCharge, WomboCombo, Bark, Bite, GooglyEyes, Trampoline, Sinkhole, WombatCage, None}
+// Ordered to determine level
+public enum CardSubType { DonkeyKick, Bark, Trampoline, WombatCharge, Bite, Sinkhole, WomboCombo, GooglyEyes, WombatCage, None}
+public enum CardLevel { One, Two, Three, None }
 public class Card : NetworkBehaviour
 {
     public Player owner;
     [Tooltip("Areas are 'Hand', 'Field', 'TrapZone'")]
     public string CurrentArea;
-    public bool IsPowerCard;
+    public CardLevel Level;
     public bool IsInHand;
     public CardType Type;
     public CardSubType SubType;
@@ -32,21 +34,37 @@ public class Card : NetworkBehaviour
             CanTarget = false;
         }
 
+        // Set the card's level
+        int level = (int)SubType;
+        const int levelOneCardsCount = 3;
+        const int levelTwoCardsCount = 3;
+        const int levelThreeCardsCount = 3;
+        Level = (level < levelOneCardsCount) ? CardLevel.One : CardLevel.None;
+
+        if (Level == CardLevel.None)
+        {
+            Level = (level < levelOneCardsCount + levelTwoCardsCount) ? CardLevel.Two : CardLevel.None;
+            if (Level == CardLevel.None)
+            {
+                Level = (level < levelOneCardsCount + levelTwoCardsCount + levelThreeCardsCount) ? CardLevel.Three : CardLevel.None;
+            }
+            Debug.Assert(Level != CardLevel.None, "[Card::Start] Problem with level initialization");
+        }
+
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         OriginalSprite = spriteRenderer.sprite;
     }
 
-    public Card(CardType type, bool powerCard = false)
-    {
-        IsPowerCard = powerCard;
-        Type = type;
-        if(type == CardType.Attack)
-        {
-            CanTarget = true;
-        }
-        else
-        {
-            CanTarget = false;
-        }
-    }
+    //public Card(CardType type)
+    //{
+    //    Type = type;
+    //    if(type == CardType.Attack)
+    //    {
+    //        CanTarget = true;
+    //    }
+    //    else
+    //    {
+    //        CanTarget = false;
+    //    }
+    //}
 }

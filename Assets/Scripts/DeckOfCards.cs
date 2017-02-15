@@ -53,7 +53,7 @@ public class DeckOfCards : MonoBehaviour
 
     Card GetRandomBasicCard()
     {
-        switch(Random.Range(0, 7))
+        switch(Random.Range(5, 6))
         {
             case 6:
             case 0:
