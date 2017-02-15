@@ -197,7 +197,7 @@ public class GlobalSettings : NetworkBehaviour
         {
             newHand = Instantiate<Hand>(Handzone);
             RightPlayer.Hand = newHand;
-            newHand.transform.position = new Vector3(5.0f, -0.0f, 1.0f);
+            newHand.transform.position = new Vector3(5.0f, 0.0f, 1.0f);
             newHand.transform.rotation = new Quaternion(0.0f, 0.0f, 90.0f, 0.0f);
         }
     }
@@ -239,7 +239,7 @@ public class GlobalSettings : NetworkBehaviour
             Debug.Log("Player Not Registered");
         }
 
-        CanStartGame = true;// A testing shortcut
+        //CanStartGame = true;// A testing shortcut
         if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
         {
             CanStartGame = true;
