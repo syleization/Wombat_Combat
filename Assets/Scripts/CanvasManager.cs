@@ -6,6 +6,8 @@ public class CanvasManager : MonoBehaviour
 {
     [SerializeField]
     TrapCanvas Trap;
+    [SerializeField]
+    CardTapCanvas CardTap;
 
     private CanvasManager() { }
     private static CanvasManager TheInstance;
@@ -26,19 +28,32 @@ public class CanvasManager : MonoBehaviour
     {
         Trap = Instantiate(Trap);
         Trap.Initialize();
+        CardTap = Instantiate(CardTap);
+        CardTap.Initialize();
     }
 
     public void Terminate()
     {
         Trap.Terminate();
         Destroy(Trap.gameObject);
+        Destroy(CardTap.gameObject);
     }
 
-    public void UpdateCanvas(string canvas)
+    // Send null into second parameter if you arent using the cardtap canvas
+    public void UpdateCanvas(string canvas, Sprite cardTapCanvasSprite = null)
     {
         if(canvas == "Trap")
         {
             Trap.UpdateTrapAmount();
         }
+        else if(canvas == "CardTap")
+        {
+            CardTap.UpdateCanvasImage(cardTapCanvasSprite);
+        }
+    }
+
+    public bool IsCardTapCanvasImageNull()
+    {
+        return CardTap.IsImageNull();
     }
 }

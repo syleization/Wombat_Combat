@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class CardPopUp : MonoBehaviour
 {
     Card TheCard;
-    Texture CurrentCardInfo;
     Ray ray;
     RaycastHit hit;
     Timer StationaryTimer = new Timer();
@@ -27,19 +26,10 @@ public class CardPopUp : MonoBehaviour
 #if UNITY_ANDROID
     bool MobileStop = false;
 
-    void OnGUI()
-    {
-        if(CurrentCardInfo)
-        {
-            GUI.DrawTexture(new Rect(0.0f, 0.0f, Screen.width / 4, Screen.height / 2), CurrentCardInfo);
-        }
-    }
-
     void DisplayCardInfoBox()
     {
-        Texture infoSprite = Resources.Load(TheCard.SubType.ToString() + "_InfoBox") as Texture;
-
-        CurrentCardInfo = infoSprite;
+        Sprite infoSprite = Resources.Load<Sprite>(TheCard.SubType.ToString() + "_InfoBox");
+        CanvasManager.Instance.UpdateCanvas("CardTap", infoSprite);
     }
 
     void SetCardCanMoveNow()
@@ -49,7 +39,7 @@ public class CardPopUp : MonoBehaviour
 
     public void ClearInfoBox()
     {
-        CurrentCardInfo = null;
+        CanvasManager.Instance.UpdateCanvas("CardTap", null);
     }
 
     void FixedUpdate()
@@ -59,7 +49,7 @@ public class CardPopUp : MonoBehaviour
             MobileStop = true;
             Touch touch = Input.GetTouch(0);
             // If someone taps the screen display info box
-            if (touch.phase == TouchPhase.Ended && !CurrentCardInfo)
+            if (touch.phase == TouchPhase.Ended && CanvasManager.Instance.IsCardTapCanvasImageNull())
             {
                 Ray ray = Camera.main.ScreenPointToRay(touch.position);
                 RaycastHit hit;
@@ -74,7 +64,7 @@ public class CardPopUp : MonoBehaviour
                 CardCanMoveNow = false;
             }
             // If someone taps somwhere else that isnt the card and the card info box is currently up
-            else if (touch.phase == TouchPhase.Began && CurrentCardInfo)
+            else if (touch.phase == TouchPhase.Began && !CanvasManager.Instance.IsCardTapCanvasImageNull())
             {
                 Debug.Log("Destroy");
                 Ray ray = Camera.main.ScreenPointToRay(touch.position);
