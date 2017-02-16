@@ -239,7 +239,7 @@ public class GlobalSettings : NetworkBehaviour
             Debug.Log("Player Not Registered");
         }
 
-        CanStartGame = true;// A testing shortcut
+        //CanStartGame = true;// A testing shortcut
         if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
         {
             CanStartGame = true;
