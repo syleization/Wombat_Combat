@@ -10,7 +10,7 @@ public class RedAttack : MonoBehaviour
     public float TargetDirection = 180;
     public bool Activate = false;
     public int state = 0;
-    static Vector3 middle = new Vector3(0, 0, -1);
+    private static Vector3 middle = new Vector3(0, 0, -1);
 
     // Use this for initialization
     void Start () {
@@ -38,11 +38,17 @@ public class RedAttack : MonoBehaviour
                         CurrentSpins += SpinSpeed;
                         transform.Rotate(new Vector3(0, 0, 1), SpinSpeed);
                     }
-                    else state++;
+                    else
+                    {
+                        state++;
+                        transform.Rotate(new Vector3(0, 0, 1), SpinSpeed);
+                    }
                     break;
                 case 2:
-                    if (transform.rotation.z != TargetDirection)
+                    if (transform.rotation.eulerAngles.z < TargetDirection)
+                    {
                         transform.Rotate(new Vector3(0, 0, 1), SpinSpeed);
+                    }
                     else state++;
                     break;
                     //if ((transform.position - middle).magnitude < 50)

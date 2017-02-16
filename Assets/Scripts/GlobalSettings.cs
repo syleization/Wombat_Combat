@@ -74,6 +74,11 @@ public class GlobalSettings : NetworkBehaviour
         AllCards.Add(Trap_Trampoline);
         AllCards.Add(Trap_Sinkhole);
         AllCards.Add(Trap_WombatCage);
+
+        Players.Add(LeftPlayer);
+        Players.Add(TopPlayer);
+        Players.Add(RightPlayer);
+        Players.Add(BottomPlayer);
     }
 
     void Initialize()

@@ -10,7 +10,8 @@ public class Effects : MonoBehaviour {
         GameObject temp = Instantiate(Resources.Load("Effects/RedAttack")) as GameObject; //, start, rot
         RedAttack attack = temp.GetComponent<RedAttack>();
         attack.Activate = false;
-        attack.transform.Rotate(Vector3.forward, FaceAwayFromDirection(Sender));
+        attack.transform.Rotate(new Vector3(0, 0, FaceAwayFromDirection(Sender)));
+        //attack.transform.Rotate(Vector3.forward, FaceAwayFromDirection(Sender));
         attack.transform.position = PointBehind(Sender);
         attack.TargetDirection = FaceDirection(Reciever);
         attack.Activate = true;
@@ -26,7 +27,7 @@ public class Effects : MonoBehaviour {
         else if (instance.BottomPlayer == target)
             return 180;
         else if (instance.LeftPlayer == target)
-            return 270;
+            return -90;
         return 0;
     }
 
@@ -36,7 +37,7 @@ public class Effects : MonoBehaviour {
         if (instance.TopPlayer == target)
             return 180;
         else if (instance.RightPlayer == target)
-            return 270;
+            return -90;
         else if (instance.BottomPlayer == target)
             return 0;
         else if (instance.LeftPlayer == target)
