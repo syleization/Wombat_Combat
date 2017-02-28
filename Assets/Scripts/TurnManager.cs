@@ -69,7 +69,8 @@ public class TurnManager : NetworkBehaviour
             CurrentStage = value;
             if(isServer && value != Stage.Draw)
             {
-                RpcDisplayBanner(value);
+                //RpcDisplayBanner(value);
+                StartCoroutine(DisplayBanner(value));
             }
         }
     }
@@ -96,10 +97,12 @@ public class TurnManager : NetworkBehaviour
                     banner = new GameObject();
                     break;
             }
+            NetworkServer.Spawn(banner);
 
             yield return new WaitForSeconds(4.0f);
 
             Destroy(banner);
+            NetworkServer.UnSpawn(banner);
             IsDisplayingBanner = false;
         }
     }

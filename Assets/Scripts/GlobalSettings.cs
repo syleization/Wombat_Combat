@@ -75,14 +75,16 @@ public class GlobalSettings : NetworkBehaviour
         AllCards.Add(Trap_Sinkhole);
         AllCards.Add(Trap_WombatCage);
 
-        Players.Add(LeftPlayer);
-        Players.Add(TopPlayer);
-        Players.Add(RightPlayer);
-        Players.Add(BottomPlayer);
+        // Alex's Testing
+        //Players.Add(LeftPlayer);
+        //Players.Add(TopPlayer);
+        //Players.Add(RightPlayer);
+        //Players.Add(BottomPlayer);
     }
 
     void Initialize()
     {
+        Debug.Log("Initialize");
         HudManager networkHud = FindObjectOfType<HudManager>();
         NetworkCleanup networkCleanup = FindObjectOfType<NetworkCleanup>();
 
@@ -201,7 +203,7 @@ public class GlobalSettings : NetworkBehaviour
         if (right != null)
         {
             newHand = Instantiate<Hand>(Handzone);
-            RightPlayer.Hand = newHand;
+            right.Hand = newHand;
             newHand.transform.position = new Vector3(5.0f, 0.0f, 1.0f);
             newHand.transform.rotation = new Quaternion(0.0f, 0.0f, 90.0f, 0.0f);
         }
