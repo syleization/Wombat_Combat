@@ -27,7 +27,7 @@ public class ScreenChanger : MonoBehaviour {
 
     public void Twoplayers()
     {
-        SceneManager.LoadScene("HandTest");
+        SceneManager.LoadScene("Networking");
     }
 
     public void Threeplayers()
