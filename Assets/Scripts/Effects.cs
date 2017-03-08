@@ -89,4 +89,17 @@ public class Effects : MonoBehaviour {
         result.z = -1;
         return result;
     }
+
+    public static void SinkholeOn()
+    {
+        GameObject hole = Resources.Load("Effects/Sinkhole") as GameObject;
+        Instantiate(hole);
+    }
+
+    public static void SinkholeOff()
+    {
+        Sinkhole hole = FindObjectOfType<Sinkhole>();
+        if (hole != null)
+            Destroy(hole.gameObject);
+    }
 }
