@@ -106,5 +106,11 @@ public class EffectTester : MonoBehaviour {
         {
             Effects.SinkholeOff();
         }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            Sinkhole hole = FindObjectOfType<Sinkhole>();
+            hole.EatCard(card);
+        }
     }
 }

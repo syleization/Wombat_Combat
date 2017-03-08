@@ -94,6 +94,7 @@ public class Effects : MonoBehaviour {
     {
         GameObject hole = Resources.Load("Effects/Sinkhole") as GameObject;
         Instantiate(hole);
+        //hole.transform.position
     }
 
     public static void SinkholeOff()
