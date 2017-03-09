@@ -207,23 +207,21 @@ public class CardActions : MonoBehaviour
         reactor.IsSinkholeActive = true;
         TurnManager.Instance.currentStage = Stage.Play;
 
-        GameObject card = Instantiate(GlobalSettings.Instance.GetCardOfSubType(Field.Instance.GetCard(0).SubType)).gameObject;
-        card.transform.position = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
-        card.transform.rotation = thrower.Hand.transform.rotation;
+        CardSubType card = Field.Instance.GetCard(0).SubType;
+        Vector3 cardPosition = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
+        Quaternion cardRotation = thrower.Hand.transform.rotation;
         
 
         if (!reactor.isServer)
         {
-            reactor.CmdSpawnCard(card);
             reactor.CmdClearField();
             reactor.CmdChangeStage(Stage.Play);
-            reactor.CmdChangeSinkholeBool(true, card);
+            reactor.CmdChangeSinkholeBool(true, card, cardPosition, cardRotation);
             reactor.CmdPauseGame(2.0f);
         }
         else
         {
-            NetworkServer.Spawn(card);
-            reactor.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), true, card);
+            reactor.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), true, card, cardPosition, cardRotation);
             Field.Instance.RpcClearField();
             Pause.Instance.RpcPauseGame(2.0f);
             
@@ -276,21 +274,19 @@ public class CardActions : MonoBehaviour
         if(reactor.IsSinkholeActive == true)
         {
             Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
-            GameObject card = Instantiate(GlobalSettings.Instance.GetCardOfSubType(Field.Instance.GetCard(0).SubType)).gameObject;
-            card.transform.position = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
-            card.transform.rotation = thrower.Hand.transform.rotation;
+            CardSubType card = Field.Instance.GetCard(0).SubType;
+            Vector3 cardPosition = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
+            Quaternion cardRotation = thrower.Hand.transform.rotation;
 
             Field.Instance.ClearField();
             if (!thrower.isServer)
             {
-                reactor.CmdSpawnCard(card);
-                thrower.CmdEatCard(thrower.PlayersSinkhole.gameObject, card);
+                thrower.CmdEatCard(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), card, cardPosition, cardRotation);
                 thrower.CmdClearField();
             }
             else
             {
-                NetworkServer.Spawn(card);
-                thrower.RpcEatCard(thrower.PlayersSinkhole.gameObject, card);
+                thrower.RpcEatCard(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), card, cardPosition, cardRotation);
                 Field.Instance.RpcClearField();
             }
         }

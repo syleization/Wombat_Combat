@@ -20,7 +20,7 @@ public class Sinkhole : MonoBehaviour {
     private List<data> cards = new List<data>();
     public float fallTime = 5.0f;
     private Vector3 target;
-
+    private List<data> itemsToDestroy = new List<data>();
 	// Use this for initialization
 	void Start ()
     {
@@ -41,10 +41,14 @@ public class Sinkhole : MonoBehaviour {
             }
             else
             {
-                NetworkServer.UnSpawn(item.card);
-                Destroy(item.card);
-                cards.Remove(item);
+                itemsToDestroy.Clear();
+                itemsToDestroy.Add(item);
             }
+        }
+        foreach(data item in itemsToDestroy)
+        {
+            Destroy(item.card);
+            cards.Remove(item);
         }
 	}
 

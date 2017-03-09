@@ -136,10 +136,10 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    public void CmdChangeSinkholeBool(bool sinkhole, GameObject card)
+    public void CmdChangeSinkholeBool(bool sinkhole, CardSubType card, Vector3 position, Quaternion rotation)
     {
         IsSinkholeActive = sinkhole;
-        RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(this), sinkhole, card);
+        RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(this), sinkhole, card, position, rotation);
     }
 
     [Command]
@@ -267,15 +267,16 @@ public class Player : NetworkBehaviour
 
     // Effects Commands
     [Command]
-    public void CmdEatCard(GameObject sinkhole, GameObject card)
+    public void CmdEatCard(Turns sinkhole, CardSubType card, Vector3 position, Quaternion rotation)
     {
-        RpcEatCard(sinkhole, card);
+        RpcEatCard(sinkhole, card, position, rotation);
     }
 
     [ClientRpc]
-    public void RpcEatCard(GameObject sinkhole, GameObject card)
+    public void RpcEatCard(Turns sinkhole, CardSubType card, Vector3 position, Quaternion rotation)
     {
-        sinkhole.GetComponent<Sinkhole>().EatCard(card);
+        Sinkhole temp = TurnManager.Instance.GetPlayerOfTurnEnum(sinkhole).PlayersSinkhole;
+        temp.EatCard(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card).gameObject, position, rotation) as GameObject);
     }
 
     [Command]
@@ -306,23 +307,21 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcUpdateSinkhole(Turns playerTurns, bool sinkholeActive, GameObject card)
+    public void RpcUpdateSinkhole(Turns playerTurns, bool sinkholeActive, CardSubType card, Vector3 position, Quaternion rotation)
     {
-        Debug.Log(card);
         Player player = TurnManager.Instance.GetPlayerOfTurnEnum(playerTurns);
         player.IsSinkholeActive = sinkholeActive;
 
         if(player.IsSinkholeActive)
         {
             Effects.SinkholeOn(player);
-            player.PlayersSinkhole.EatCard(card);
+            player.PlayersSinkhole.EatCard(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card).gameObject, position, rotation) as GameObject);
         }
         else
         {
             Effects.SinkholeOff(player.PlayersSinkhole);
         }
     }
-
 
     void Awake()
     {
