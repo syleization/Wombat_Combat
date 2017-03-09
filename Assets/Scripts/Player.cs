@@ -136,10 +136,10 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    public void CmdChangeSinkholeBool(bool sinkhole)
+    public void CmdChangeSinkholeBool(bool sinkhole, GameObject card)
     {
         IsSinkholeActive = sinkhole;
-        RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(this), sinkhole);
+        RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(this), sinkhole, card);
     }
 
     [Command]
@@ -258,7 +258,25 @@ public class Player : NetworkBehaviour
         GlobalSettings.Instance.RpcEndGame();
     }
 
+    // Pause Commands
+    [Command]
+    public void CmdPauseGame(float waitTime)
+    {
+        Pause.Instance.RpcPauseGame(waitTime);
+    }
+
     // Effects Commands
+    [Command]
+    public void CmdEatCard(GameObject sinkhole, GameObject card)
+    {
+        RpcEatCard(sinkhole, card);
+    }
+
+    [ClientRpc]
+    public void RpcEatCard(GameObject sinkhole, GameObject card)
+    {
+        sinkhole.GetComponent<Sinkhole>().EatCard(card);
+    }
 
     // Client Rpcs
     [ClientRpc]
@@ -276,14 +294,16 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcUpdateSinkhole(Turns playerTurns, bool sinkholeActive)
+    public void RpcUpdateSinkhole(Turns playerTurns, bool sinkholeActive, GameObject card)
     {
+        Debug.Log(card);
         Player player = TurnManager.Instance.GetPlayerOfTurnEnum(playerTurns);
         player.IsSinkholeActive = sinkholeActive;
 
         if(player.IsSinkholeActive)
         {
             Effects.SinkholeOn(player);
+            player.PlayersSinkhole.EatCard(card);
         }
         else
         {

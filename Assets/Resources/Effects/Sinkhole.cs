@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public class Sinkhole : MonoBehaviour {
 
@@ -40,6 +41,7 @@ public class Sinkhole : MonoBehaviour {
             }
             else
             {
+                NetworkServer.UnSpawn(item.card);
                 Destroy(item.card);
                 cards.Remove(item);
             }

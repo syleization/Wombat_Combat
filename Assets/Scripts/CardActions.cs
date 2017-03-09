@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public class CardActions : MonoBehaviour
 {
@@ -200,16 +201,26 @@ public class CardActions : MonoBehaviour
         reactor.IsSinkholeActive = true;
         TurnManager.Instance.currentStage = Stage.Play;
 
+        GameObject card = Instantiate(GlobalSettings.Instance.GetCardOfSubType(Field.Instance.GetCard(0).SubType)).gameObject;
+        card.transform.position = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
+        card.transform.rotation = thrower.Hand.transform.rotation;
+        
+
         if (!reactor.isServer)
         {
+            reactor.CmdSpawnCard(card);
             reactor.CmdClearField();
             reactor.CmdChangeStage(Stage.Play);
-            reactor.CmdChangeSinkholeBool(true);
+            reactor.CmdChangeSinkholeBool(true, card);
+            reactor.CmdPauseGame(2.0f);
         }
         else
         {
-            reactor.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), true);
+            NetworkServer.Spawn(card);
+            reactor.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), true, card);
             Field.Instance.RpcClearField();
+            Pause.Instance.RpcPauseGame(2.0f);
+            
         }
 
         Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
@@ -259,14 +270,21 @@ public class CardActions : MonoBehaviour
         if(reactor.IsSinkholeActive == true)
         {
             Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
+            GameObject card = Instantiate(GlobalSettings.Instance.GetCardOfSubType(Field.Instance.GetCard(0).SubType)).gameObject;
+            card.transform.position = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
+            card.transform.rotation = thrower.Hand.transform.rotation;
 
             Field.Instance.ClearField();
             if (!thrower.isServer)
             {
+                reactor.CmdSpawnCard(card);
+                thrower.CmdEatCard(thrower.PlayersSinkhole.gameObject, card);
                 thrower.CmdClearField();
             }
             else
             {
+                NetworkServer.Spawn(card);
+                thrower.RpcEatCard(thrower.PlayersSinkhole.gameObject, card);
                 Field.Instance.RpcClearField();
             }
         }
