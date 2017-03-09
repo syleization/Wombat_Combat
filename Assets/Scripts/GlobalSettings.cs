@@ -76,10 +76,17 @@ public class GlobalSettings : NetworkBehaviour
         AllCards.Add(Trap_WombatCage);
 
         // Alex's Testing
-        //Players.Add(LeftPlayer);
-        //Players.Add(TopPlayer);
-        //Players.Add(RightPlayer);
-        //Players.Add(BottomPlayer);
+        if (GameObject.Find("EffectTester"))
+        {
+            Players.Add(LeftPlayer);
+            Players.Add(TopPlayer);
+            Players.Add(RightPlayer);
+            Players.Add(BottomPlayer);
+        }
+        else
+        {
+            Debug.Log("Don't forget to get rid of the test code");
+        }
     }
 
     void Initialize()
