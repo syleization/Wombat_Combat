@@ -98,14 +98,14 @@ public class EffectTester : MonoBehaviour {
             Player defender = instance.GetPlayerToTheRightOf(instance.GetTurnEnumOfPlayer(attacker));
             Effects.Attack(attacker, defender);
         }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            Effects.SinkholeOn();
-        }
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            Effects.SinkholeOff();
-        }
+        //if (Input.GetKeyDown(KeyCode.B))
+        //{
+        //    Effects.SinkholeOn();
+        //}
+        //if (Input.GetKeyDown(KeyCode.N))
+        //{
+        //    Effects.SinkholeOff();
+        //}
         if (Input.GetKeyDown(KeyCode.M))
         {
             GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;

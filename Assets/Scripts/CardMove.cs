@@ -49,138 +49,151 @@ public class CardMove : MonoBehaviour
 
     void MobileOnMouseDown(Touch touch)
     {
-        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
-            || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
+        if(Pause.Instance.IsPaused == false)
         {
-            if (Card.owner.CurrentActions > 0)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, -3.0f);
-                // When card is clicked it is no longer in hand
-                Card.owner.IsHoldingCard = true;
+            if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
+                    || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
+                {
+                    if (Card.owner.CurrentActions > 0)
+                    {
+                        transform.position = new Vector3(transform.position.x, transform.position.y, -3.0f);
+                        // When card is clicked it is no longer in hand
+                        Card.owner.IsHoldingCard = true;
                 
-                if (Card.CurrentArea == "Hand")
-                {
-                    Card.owner.Hand.ResetHandCardPositions(Card, Card.owner.Hand.CardsInHand.Count);
+                        if (Card.CurrentArea == "Hand")
+                        {
+                            Card.owner.Hand.ResetHandCardPositions(Card, Card.owner.Hand.CardsInHand.Count);
+                        }
+                        else if(Card.CurrentArea == "TrapZone")
+                        {
+                            Card.owner.Traps.ToggleActive(Card);
+                            CanvasManager.Instance.UpdateCanvas("Text");
+                        }
+                    }
                 }
-                else if(Card.CurrentArea == "TrapZone")
-                {
-                    Card.owner.Traps.ToggleActive(Card);
-                    CanvasManager.Instance.UpdateCanvas("Text");
-                }
-            }
         }
     }
 
     void MobileOnMouseDrag(Touch touch)
     {
-        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
-            || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
+        if (Pause.Instance.IsPaused == false)
         {
-            if (Card.owner.CurrentActions > 0)
+            if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
+                || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
             {
-                // Move the card around with the cursor
-                Vector3 curScreenPoint = new Vector3(touch.position.x, touch.position.y, 9.0f);
+                if (Card.owner.CurrentActions > 0)
+                {
+                    // Move the card around with the cursor
+                    Vector3 curScreenPoint = new Vector3(touch.position.x, touch.position.y, 9.0f);
 
-                Vector3 currentPosition = Camera.main.ScreenToWorldPoint(curScreenPoint);
-               // currentPosition.z = -1;
-                transform.position = currentPosition;
+                    Vector3 currentPosition = Camera.main.ScreenToWorldPoint(curScreenPoint);
+                   // currentPosition.z = -1;
+                    transform.position = currentPosition;
+                }
             }
         }
     }
 
     void MobileOnMouseUp(Touch touch)
     {
-        if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
+        if (Pause.Instance.IsPaused == false)
         {
-            if (Card.owner.CurrentActions > 0)
+            if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             {
-                // Check if you are releasing the card back to the hand
-                Ray ray = Camera.main.ScreenPointToRay(touch.position);
-                RaycastHit hit;
-                // This raycast goes past the card to see the hand
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
+                if (Card.owner.CurrentActions > 0)
                 {
-                    if (hit.collider.tag == "Hand")
+                    // Check if you are releasing the card back to the hand
+                    Ray ray = Camera.main.ScreenPointToRay(touch.position);
+                    RaycastHit hit;
+                    // This raycast goes past the card to see the hand
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
                     {
-                        if (Hand.IsYourHand(Card, hit.collider.gameObject))
+                        if (hit.collider.tag == "Hand")
                         {
-                            if (Card.CurrentArea == "Field")
+                            if (Hand.IsYourHand(Card, hit.collider.gameObject))
                             {
-                                // Add card to hand
-                                Card.owner.Hand.CardsInHand.Add(Card);
-                                // Remove card from previous spot
-                                Field.Instance.CardsInField.Remove(Card);
-                            }
-                            Field.Instance.ResetFieldCardPositions();
-                            // Card is now in hand
-                            SnapBackToHand();
-                            Card.CurrentArea = "Hand";
-                            Card.IsInHand = true;
-                        }
-                        else if (TurnManager.Instance.currentStage == Stage.Play)
-                        {
-                            // Find out whose hand was hit
-                            Player target = Hand.GetOwner(hit.collider.gameObject);
-
-                            // If card can target other players
-                            if (Card.GetCanTarget())
-                            {
-                                if (Card.CurrentArea == "Hand")
+                                if (Card.CurrentArea == "Field")
                                 {
-                                    // The card is added to the field array, but not displayed in the field 
-                                    // This is so we can keep accessing the card from anywhere and as the wombat bounces around
-                                    // All players know what type of wombat is bouncing around
-                                    Field.Instance.CardsInField.Add(Card);
-                                    Card.owner.Hand.CardsInHand.Remove(Card);
+                                    // Add card to hand
+                                    Card.owner.Hand.CardsInHand.Add(Card);
+                                    // Remove card from previous spot
+                                    Field.Instance.CardsInField.Remove(Card);
                                 }
-                                // Move card to the field positions
-                                SnapBackToField();
-                                Card.CurrentArea = "Field";
-                                Card.IsInHand = false;
+                                Field.Instance.ResetFieldCardPositions();
+                                // Card is now in hand
+                                SnapBackToHand();
+                                Card.CurrentArea = "Hand";
+                                Card.IsInHand = true;
+                            }
+                            else if (TurnManager.Instance.currentStage == Stage.Play)
+                            {
+                                // Find out whose hand was hit
+                                Player target = Hand.GetOwner(hit.collider.gameObject);
 
-                                PlayCard(target, Card);
+                                // If card can target other players
+                                if (Card.GetCanTarget())
+                                {
+                                    if (Card.CurrentArea == "Hand")
+                                    {
+                                        // The card is added to the field array, but not displayed in the field 
+                                        // This is so we can keep accessing the card from anywhere and as the wombat bounces around
+                                        // All players know what type of wombat is bouncing around
+                                        Field.Instance.CardsInField.Add(Card);
+                                        Card.owner.Hand.CardsInHand.Remove(Card);
+                                    }
+                                    // Move card to the field positions
+                                    SnapBackToField();
+                                    Card.CurrentArea = "Field";
+                                    Card.IsInHand = false;
+
+                                    PlayCard(target, Card);
+                                }
+                                else
+                                {
+                                    SnapBackToOrigin();
+                                }
                             }
                             else
                             {
                                 SnapBackToOrigin();
                             }
                         }
-                        else
+                        else if (hit.collider.tag == "Field")
                         {
-                            SnapBackToOrigin();
-                        }
-                    }
-                    else if (hit.collider.tag == "Field")
-                    {
-                        if (Field.Instance.CanBePlaced())
-                        {
-                            if (TurnManager.Instance.currentStage != Stage.Play || (TurnManager.Instance.currentStage == Stage.Play && Card.Type != CardType.Defence))
+                            if (Field.Instance.CanBePlaced())
                             {
-                                if (Card.CurrentArea == "Hand")
+                                if (TurnManager.Instance.currentStage != Stage.Play || (TurnManager.Instance.currentStage == Stage.Play && Card.Type != CardType.Defence))
                                 {
-                                    // Add card to field
-                                    Field.Instance.CardsInField.Add(Card);
-                                    // Remove card from previous spot
-                                    Card.owner.Hand.CardsInHand.Remove(Card);
-
-                                    if (TurnManager.Instance.currentStage == Stage.Play)
+                                    if (Card.CurrentArea == "Hand")
                                     {
-                                        if (Card.SubType == CardSubType.DonkeyKick)
+                                        // Add card to field
+                                        Field.Instance.CardsInField.Add(Card);
+                                        // Remove card from previous spot
+                                        Card.owner.Hand.CardsInHand.Remove(Card);
+
+                                        if (TurnManager.Instance.currentStage == Stage.Play)
                                         {
-                                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
-                                        }
-                                        else if(Card.Type == CardType.Trap)
-                                        {
-                                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
-                                            Card.IsInHand = false;
-                                            return;
+                                            if (Card.SubType == CardSubType.DonkeyKick)
+                                            {
+                                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                            }
+                                            else if(Card.Type == CardType.Trap)
+                                            {
+                                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                                Card.IsInHand = false;
+                                                return;
+                                            }
                                         }
                                     }
+                                    // Move card to the field positions
+                                    SnapBackToField();
+                                    Card.CurrentArea = "Field";
+                                    Card.IsInHand = false;
                                 }
-                                // Move card to the field positions
-                                SnapBackToField();
-                                Card.CurrentArea = "Field";
-                                Card.IsInHand = false;
+                                else
+                                {
+                                    SnapBackToOrigin();
+                                }
                             }
                             else
                             {
@@ -192,59 +205,59 @@ public class CardMove : MonoBehaviour
                             SnapBackToOrigin();
                         }
                     }
-                    else
+                    else // it hit nothing so return the card back to its previous place
                     {
                         SnapBackToOrigin();
                     }
                 }
-                else // it hit nothing so return the card back to its previous place
-                {
-                    SnapBackToOrigin();
-                }
             }
-        }
-        // if a player is reacting to a wombat being thrown at them and they are the one moving the card
-        else if (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor)
-        {
-            if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence 
-                || (Card.Type == CardType.Trap && Card.CurrentArea == "TrapZone")))
+            // if a player is reacting to a wombat being thrown at them and they are the one moving the card
+            else if (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor)
             {
-                // You are trying to play a trap against wombo combo
-                if (Card.Type == CardType.Trap && Field.Instance.CurrentDamageInField == GlobalSettings.Instance.GetDamageAmountOf(CardSubType.WomboCombo))
+                if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence 
+                    || (Card.Type == CardType.Trap && Card.CurrentArea == "TrapZone")))
                 {
-                    SnapBackToOrigin();
-                    return;
-                }
-                // Check if you are releasing the card back to the hand
-                Ray ray = Camera.main.ScreenPointToRay(touch.position);
-                RaycastHit hit;
-                // This raycast goes past the card to see the hand
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
-                {
-                    if (Field.Instance.CanBePlaced())
+                    // You are trying to play a trap against wombo combo
+                    if (Card.Type == CardType.Trap && Field.Instance.CurrentDamageInField == GlobalSettings.Instance.GetDamageAmountOf(CardSubType.WomboCombo))
                     {
-                        if (Card.CurrentArea == "Hand")
+                        SnapBackToOrigin();
+                        return;
+                    }
+                    // Check if you are releasing the card back to the hand
+                    Ray ray = Camera.main.ScreenPointToRay(touch.position);
+                    RaycastHit hit;
+                    // This raycast goes past the card to see the hand
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
+                    {
+                        if (Field.Instance.CanBePlaced())
                         {
-                            // Add card to field
-                            Field.Instance.CardsInField.Add(Card);
-                            // Remove card from previous spot
-                            CardActions.theReactor.Hand.CardsInHand.Remove(Card);
-                            // Play the defence card | first parameter is irrelevant
-                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                            if (Card.CurrentArea == "Hand")
+                            {
+                                // Add card to field
+                                Field.Instance.CardsInField.Add(Card);
+                                // Remove card from previous spot
+                                CardActions.theReactor.Hand.CardsInHand.Remove(Card);
+                                // Play the defence card | first parameter is irrelevant
+                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                            }
+                            else if(Card.CurrentArea == "TrapZone")
+                            {
+                                // Add card to field
+                                Field.Instance.CardsInField.Add(Card);
+                                // Remove card from TrapZone
+                                Card.owner.Traps.RemoveTrap(Card);
+                                // Play the trap card | first parameter is irrelevant
+                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                            }
+                            // Move card to the field positions
+                            SnapBackToField();
+                            Card.CurrentArea = "Field";
+                            Card.IsInHand = false;
                         }
-                        else if(Card.CurrentArea == "TrapZone")
+                        else
                         {
-                            // Add card to field
-                            Field.Instance.CardsInField.Add(Card);
-                            // Remove card from TrapZone
-                            Card.owner.Traps.RemoveTrap(Card);
-                            // Play the trap card | first parameter is irrelevant
-                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                            SnapBackToOrigin();
                         }
-                        // Move card to the field positions
-                        SnapBackToField();
-                        Card.CurrentArea = "Field";
-                        Card.IsInHand = false;
                     }
                     else
                     {
@@ -255,10 +268,6 @@ public class CardMove : MonoBehaviour
                 {
                     SnapBackToOrigin();
                 }
-            }
-            else
-            {
-                SnapBackToOrigin();
             }
         }
     }
@@ -267,22 +276,25 @@ public class CardMove : MonoBehaviour
 
     void OnMouseDown()
     {
-        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
-            || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
+        if (Pause.Instance.IsPaused == false)
         {
-            if (Card.owner.CurrentActions > 0)
+            if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
+            || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
             {
-                // When card is clicked it is no longer in hand
-                Card.owner.IsHoldingCard = true;
-                screenPoint = Camera.main.WorldToScreenPoint(Input.mousePosition);
-                if (Card.CurrentArea == "Hand")
+                if (Card.owner.CurrentActions > 0)
                 {
-                    Card.owner.Hand.ResetHandCardPositions(Card, Card.owner.Hand.CardsInHand.Count);
-                }
-                else if(Card.CurrentArea == "TrapZone")
-                {
-                    Card.owner.Traps.ToggleActive(Card);
-                    CanvasManager.Instance.UpdateCanvas("Text");
+                    // When card is clicked it is no longer in hand
+                    Card.owner.IsHoldingCard = true;
+                    screenPoint = Camera.main.WorldToScreenPoint(Input.mousePosition);
+                    if (Card.CurrentArea == "Hand")
+                    {
+                        Card.owner.Hand.ResetHandCardPositions(Card, Card.owner.Hand.CardsInHand.Count);
+                    }
+                    else if (Card.CurrentArea == "TrapZone")
+                    {
+                        Card.owner.Traps.ToggleActive(Card);
+                        CanvasManager.Instance.UpdateCanvas("Text");
+                    }
                 }
             }
         }
@@ -290,113 +302,123 @@ public class CardMove : MonoBehaviour
 
     void OnMouseDrag()
     {
-        if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
-            || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
+        if (Pause.Instance.IsPaused == false)
         {
-            if (Card.owner.CurrentActions > 0)
+            if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
+            || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
             {
-                // Move the card around with the cursor
-                Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z - 0.1f);
+                if (Card.owner.CurrentActions > 0)
+                {
+                    // Move the card around with the cursor
+                    Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z - 0.1f);
 
-                Vector3 currentPosition = Camera.main.ScreenToWorldPoint(curScreenPoint);
-                transform.position = currentPosition;
+                    Vector3 currentPosition = Camera.main.ScreenToWorldPoint(curScreenPoint);
+                    transform.position = currentPosition;
+                }
             }
         }
     }
 
     void OnMouseUp()
     {
-        if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
+        if (Pause.Instance.IsPaused == false)
         {
-            if (Card.owner.CurrentActions > 0)
+            if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             {
-                // Check if you are releasing the card back to the hand
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                // This raycast goes past the card to see the hand
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
+                if (Card.owner.CurrentActions > 0)
                 {
-                    if (hit.collider.tag == "Hand")
+                    // Check if you are releasing the card back to the hand
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+                    // This raycast goes past the card to see the hand
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
                     {
-                        if (Hand.IsYourHand(Card, hit.collider.gameObject))
+                        if (hit.collider.tag == "Hand")
                         {
-                            if (Card.CurrentArea == "Field")
+                            if (Hand.IsYourHand(Card, hit.collider.gameObject))
                             {
-                                // Add card to hand
-                                Card.owner.Hand.CardsInHand.Add(Card);
-                                // Remove card from previous spot
-                                Field.Instance.CardsInField.Remove(Card);
-                            }
-                            Field.Instance.ResetFieldCardPositions();
-                            // Card is now in hand
-                            SnapBackToHand();
-                            Card.CurrentArea = "Hand";
-                            Card.IsInHand = true;
-                        }
-                        else if (TurnManager.Instance.currentStage == Stage.Play)
-                        {
-                            // Find out whose hand was hit
-                            Player target = Hand.GetOwner(hit.collider.gameObject);
-
-                            // If card can target other players
-                            if (Card.GetCanTarget())
-                            {
-                                if (Card.CurrentArea == "Hand")
+                                if (Card.CurrentArea == "Field")
                                 {
-                                    // The card is added to the field array, but not displayed in the field 
-                                    // This is so we can keep accessing the card from anywhere and as the wombat bounces around
-                                    // All players know what type of wombat is bouncing around
-                                    Field.Instance.CardsInField.Add(Card);
-                                    Card.owner.Hand.CardsInHand.Remove(Card);
+                                    // Add card to hand
+                                    Card.owner.Hand.CardsInHand.Add(Card);
+                                    // Remove card from previous spot
+                                    Field.Instance.CardsInField.Remove(Card);
                                 }
-                                // Move card to the field positions
-                                SnapBackToField();
-                                Card.CurrentArea = "Field";
-                                Card.IsInHand = false;
+                                Field.Instance.ResetFieldCardPositions();
+                                // Card is now in hand
+                                SnapBackToHand();
+                                Card.CurrentArea = "Hand";
+                                Card.IsInHand = true;
+                            }
+                            else if (TurnManager.Instance.currentStage == Stage.Play)
+                            {
+                                // Find out whose hand was hit
+                                Player target = Hand.GetOwner(hit.collider.gameObject);
 
-                                PlayCard(target, Card);
+                                // If card can target other players
+                                if (Card.GetCanTarget())
+                                {
+                                    if (Card.CurrentArea == "Hand")
+                                    {
+                                        // The card is added to the field array, but not displayed in the field 
+                                        // This is so we can keep accessing the card from anywhere and as the wombat bounces around
+                                        // All players know what type of wombat is bouncing around
+                                        Field.Instance.CardsInField.Add(Card);
+                                        Card.owner.Hand.CardsInHand.Remove(Card);
+                                    }
+                                    // Move card to the field positions
+                                    SnapBackToField();
+                                    Card.CurrentArea = "Field";
+                                    Card.IsInHand = false;
+
+                                    PlayCard(target, Card);
+                                }
+                                else
+                                {
+                                    SnapBackToOrigin();
+                                }
                             }
                             else
                             {
                                 SnapBackToOrigin();
                             }
                         }
-                        else
+                        else if (hit.collider.tag == "Field")
                         {
-                            SnapBackToOrigin();
-                        }
-                    }
-                    else if (hit.collider.tag == "Field")
-                    {
-                        if (Field.Instance.CanBePlaced())
-                        {
-                            if (TurnManager.Instance.currentStage != Stage.Play || (TurnManager.Instance.currentStage == Stage.Play && Card.Type != CardType.Defence))
+                            if (Field.Instance.CanBePlaced())
                             {
-                                if (Card.CurrentArea == "Hand")
+                                if (TurnManager.Instance.currentStage != Stage.Play || (TurnManager.Instance.currentStage == Stage.Play && Card.Type != CardType.Defence))
                                 {
-                                    // Add card to field
-                                    Field.Instance.CardsInField.Add(Card);
-                                    // Remove card from previous spot
-                                    Card.owner.Hand.CardsInHand.Remove(Card);
-
-                                    if (TurnManager.Instance.currentStage == Stage.Play)
+                                    if (Card.CurrentArea == "Hand")
                                     {
-                                        if (Card.SubType == CardSubType.DonkeyKick)
+                                        // Add card to field
+                                        Field.Instance.CardsInField.Add(Card);
+                                        // Remove card from previous spot
+                                        Card.owner.Hand.CardsInHand.Remove(Card);
+
+                                        if (TurnManager.Instance.currentStage == Stage.Play)
                                         {
-                                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
-                                        }
-                                        else if(Card.Type == CardType.Trap)
-                                        {
-                                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
-                                            Card.IsInHand = false;
-                                            return;
+                                            if (Card.SubType == CardSubType.DonkeyKick)
+                                            {
+                                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                            }
+                                            else if (Card.Type == CardType.Trap)
+                                            {
+                                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Field.Instance.GetCard(0));
+                                                Card.IsInHand = false;
+                                                return;
+                                            }
                                         }
                                     }
+                                    // Move card to the field positions
+                                    SnapBackToField();
+                                    Card.CurrentArea = "Field";
+                                    Card.IsInHand = false;
                                 }
-                                // Move card to the field positions
-                                SnapBackToField();
-                                Card.CurrentArea = "Field";
-                                Card.IsInHand = false;
+                                else
+                                {
+                                    SnapBackToOrigin();
+                                }
                             }
                             else
                             {
@@ -408,59 +430,59 @@ public class CardMove : MonoBehaviour
                             SnapBackToOrigin();
                         }
                     }
-                    else
+                    else // it hit nothing so return the card back to its previous place
                     {
                         SnapBackToOrigin();
                     }
                 }
-                else // it hit nothing so return the card back to its previous place
-                {
-                    SnapBackToOrigin();
-                }
             }
-        }
-        // if a player is reacting to a wombat being thrown at them and they are the one moving the card
-        else if (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor)
-        {
-            if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence 
-                || (Card.Type == CardType.Trap && Card.CurrentArea == "TrapZone")))
+            // if a player is reacting to a wombat being thrown at them and they are the one moving the card
+            else if (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor)
             {
-                // You are trying to play a trap against wombo combo
-                if(Card.Type == CardType.Trap && Field.Instance.CurrentDamageInField == GlobalSettings.Instance.GetDamageAmountOf(CardSubType.WomboCombo))
+                if (Card.owner.CurrentActions > 0 && (Card.Type == CardType.Defence
+                    || (Card.Type == CardType.Trap && Card.CurrentArea == "TrapZone")))
                 {
-                    SnapBackToOrigin();
-                    return;
-                }
-                // Check if you are releasing the card back to the hand
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                // This raycast goes past the card to see the hand
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
-                {
-                    if (Field.Instance.CanBePlaced())
+                    // You are trying to play a trap against wombo combo
+                    if (Card.Type == CardType.Trap && Field.Instance.CurrentDamageInField == GlobalSettings.Instance.GetDamageAmountOf(CardSubType.WomboCombo))
                     {
-                        if (Card.CurrentArea == "Hand")
+                        SnapBackToOrigin();
+                        return;
+                    }
+                    // Check if you are releasing the card back to the hand
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+                    // This raycast goes past the card to see the hand
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Card"))))
+                    {
+                        if (Field.Instance.CanBePlaced())
                         {
-                            // Add card to field
-                            Field.Instance.CardsInField.Add(Card);
-                            // Remove card from previous spot
-                            CardActions.theReactor.Hand.CardsInHand.Remove(Card);
-                            // Play the defence card | first parameter is irrelevant
-                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                            if (Card.CurrentArea == "Hand")
+                            {
+                                // Add card to field
+                                Field.Instance.CardsInField.Add(Card);
+                                // Remove card from previous spot
+                                CardActions.theReactor.Hand.CardsInHand.Remove(Card);
+                                // Play the defence card | first parameter is irrelevant
+                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                            }
+                            else if (Card.CurrentArea == "TrapZone")
+                            {
+                                // Add card to field
+                                Field.Instance.CardsInField.Add(Card);
+                                // Remove card from TrapZone
+                                Card.owner.Traps.RemoveTrap(Card);
+                                // Play the trap card | first parameter is irrelevant
+                                PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                            }
+                            // Move card to the field positions
+                            SnapBackToField();
+                            Card.CurrentArea = "Field";
+                            Card.IsInHand = false;
                         }
-                        else if(Card.CurrentArea == "TrapZone")
+                        else
                         {
-                            // Add card to field
-                            Field.Instance.CardsInField.Add(Card);
-                            // Remove card from TrapZone
-                            Card.owner.Traps.RemoveTrap(Card);
-                            // Play the trap card | first parameter is irrelevant
-                            PlayCard(TurnManager.Instance.GetCurrentPlayer(), Card);
+                            SnapBackToOrigin();
                         }
-                        // Move card to the field positions
-                        SnapBackToField();
-                        Card.CurrentArea = "Field";
-                        Card.IsInHand = false;
                     }
                     else
                     {
@@ -471,10 +493,6 @@ public class CardMove : MonoBehaviour
                 {
                     SnapBackToOrigin();
                 }
-            }
-            else
-            {
-                SnapBackToOrigin();
             }
         }
     }

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Effects : MonoBehaviour {
+public class Effects : MonoBehaviour
+{
 
 	public static void Attack(Player Sender, Player Reciever)
     {
@@ -90,17 +91,43 @@ public class Effects : MonoBehaviour {
         return result;
     }
 
-    public static void SinkholeOn()
+    public static void SinkholeOn(Player player)
     {
         GameObject hole = Resources.Load("Effects/Sinkhole") as GameObject;
-        Instantiate(hole);
-        //hole.transform.position
+        hole = Instantiate(hole);
+
+        Player local = GlobalSettings.Instance.GetLocalPlayer();
+        Player across = TurnManager.Instance.GetPlayerAcrossFrom(TurnManager.Instance.GetTurnEnumOfPlayer(local));
+        Player left = TurnManager.Instance.GetPlayerToTheLeftOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(local));
+        Player right = TurnManager.Instance.GetPlayerToTheRightOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(local));
+
+        player.PlayersSinkhole = hole.GetComponent<Sinkhole>();
+
+        if (player == local)
+        {
+            hole.transform.position = new Vector3(0.0f, -2.0f, 0.0f);
+            hole.transform.rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
+        }
+        else if(player == across)
+        {
+            hole.transform.position = new Vector3(0.0f, 2.0f, 0.0f);
+            hole.transform.rotation = new Quaternion(0.0f, 0.0f, 180.0f, 0.0f);
+        }
+        else if (player == left)
+        {
+            hole.transform.position = new Vector3(-6.0f, 0.0f, 0.0f);
+            hole.transform.rotation = new Quaternion(0.0f, 0.0f, -90.0f, 0.0f);
+        }
+        else if (player == right)
+        {
+            hole.transform.position = new Vector3(6.0f, 0.0f, 0.0f);
+            hole.transform.rotation = new Quaternion(0.0f, 0.0f, 90.0f, 0.0f);
+        }
     }
 
-    public static void SinkholeOff()
+    public static void SinkholeOff(Sinkhole sinkhole)
     {
-        Sinkhole hole = FindObjectOfType<Sinkhole>();
-        if (hole != null)
-            Destroy(hole.gameObject);
+        if (sinkhole != null)
+            Destroy(sinkhole.gameObject);
     }
 }

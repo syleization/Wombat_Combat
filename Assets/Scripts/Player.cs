@@ -11,6 +11,7 @@ public class Player : NetworkBehaviour
     public bool HasDefenceCards = false;
     [SyncVar]
     public bool HasTrapCards = false;
+    public Sinkhole PlayersSinkhole;
     public Hand Hand;
     public DeckOfCards Deck;
     public TrapZone Traps;
@@ -138,6 +139,7 @@ public class Player : NetworkBehaviour
     public void CmdChangeSinkholeBool(bool sinkhole)
     {
         IsSinkholeActive = sinkhole;
+        RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(this), sinkhole);
     }
 
     [Command]
@@ -256,6 +258,8 @@ public class Player : NetworkBehaviour
         GlobalSettings.Instance.RpcEndGame();
     }
 
+    // Effects Commands
+
     // Client Rpcs
     [ClientRpc]
     public void RpcUpdateBarkedCards(Turns owner)
@@ -271,6 +275,23 @@ public class Player : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void RpcUpdateSinkhole(Turns playerTurns, bool sinkholeActive)
+    {
+        Player player = TurnManager.Instance.GetPlayerOfTurnEnum(playerTurns);
+        player.IsSinkholeActive = sinkholeActive;
+
+        if(player.IsSinkholeActive)
+        {
+            Effects.SinkholeOn(player);
+        }
+        else
+        {
+            Effects.SinkholeOff(player.PlayersSinkhole);
+        }
+    }
+
+
     void Awake()
     {
         CurrentActions = MaxActions;
@@ -280,7 +301,10 @@ public class Player : NetworkBehaviour
         Deck.owner = this;
         Hand = GetComponent<Hand>();
     }
-    
+
+    Timer WaitToPlayTimer = new Timer();
+    bool doneWaiting = true;
+
     public bool HasPermission()
     {
         return IsTurn ? true : false;

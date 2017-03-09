@@ -51,6 +51,10 @@ public class TheGUI : NetworkBehaviour
                     {
                         currentPlayer.CmdChangeSinkholeBool(false);
                     }
+                    else
+                    {
+                        currentPlayer.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), false);
+                    }
                 }
                 // If a bark was used against the player put those cards back into their hand
                 CardActions.PlaceBarkedCards(currentPlayer);

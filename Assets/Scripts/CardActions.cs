@@ -208,6 +208,7 @@ public class CardActions : MonoBehaviour
         }
         else
         {
+            reactor.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), true);
             Field.Instance.RpcClearField();
         }
 
