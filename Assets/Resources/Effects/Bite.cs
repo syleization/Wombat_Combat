@@ -1,17 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Bite : MonoBehaviour {
-
+public class Bite : MonoBehaviour
+{
     public GameObject target;
     public float timer = 5.0f;
     private Vector3 dir;
 
-	// Use this for initialization
-	void Start ()
+    void Awake()
     {
+        enabled = false;
+    }
+
+	// Use this for initialization
+	public void Initialize(GameObject card)
+    {
+        target = card;
         dir = new Vector3(Random.Range(1.0f, -1.0f), Random.Range(1.0f, -1.0f), 0);
         dir = dir * 100;
+        enabled = true;
 	}
 	
 	// Update is called once per frame

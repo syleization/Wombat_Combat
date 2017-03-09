@@ -132,16 +132,22 @@ public class CardActions : MonoBehaviour
     {
         --killer.CurrentActions;
         TurnManager.Instance.currentStage = Stage.Play;
+        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
         Field.Instance.ClearField();
+
         if (!killer.isServer)
         {
+            killer.CmdBite(tempSubType);
             killer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(killer), killer.CurrentActions);
             killer.CmdClearField();
             killer.CmdChangeStage(Stage.Play);
+            killer.CmdPauseGame(2.0f);
         }
         else
         {
+            killer.RpcBite(tempSubType);
             Field.Instance.RpcClearField();
+            Pause.Instance.RpcPauseGame(2.0f);
         }
 
         Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");

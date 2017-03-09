@@ -130,4 +130,13 @@ public class Effects : MonoBehaviour
         if (sinkhole != null)
             Destroy(sinkhole.gameObject);
     }
+
+    // Send in already instantiated card
+    public static void Bite(GameObject card)
+    {
+        card.transform.position = Vector3.zero;
+        GameObject biteAnimation = Instantiate(Resources.Load("Effects/Bite")) as GameObject;
+
+        biteAnimation.GetComponent<Bite>().Initialize(card);
+    }
 }

@@ -278,6 +278,18 @@ public class Player : NetworkBehaviour
         sinkhole.GetComponent<Sinkhole>().EatCard(card);
     }
 
+    [Command]
+    public void CmdBite(CardSubType card)
+    {
+        RpcBite(card);
+    }
+
+    [ClientRpc]
+    public void RpcBite(CardSubType card)
+    {
+        Effects.Bite(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject);
+    }
+
     // Client Rpcs
     [ClientRpc]
     public void RpcUpdateBarkedCards(Turns owner)
