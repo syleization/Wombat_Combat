@@ -4,7 +4,7 @@ using System.Collections;
 public class Bite : MonoBehaviour
 {
     public GameObject target;
-    public float timer = 5.0f;
+    public float timer = 3;
     private Vector3 dir;
 
     void Awake()
@@ -16,15 +16,15 @@ public class Bite : MonoBehaviour
 	public void Initialize(GameObject card)
     {
         target = card;
-        dir = new Vector3(Random.Range(1.0f, -1.0f), Random.Range(1.0f, -1.0f), 0);
-        dir = dir * 100;
+        dir = new Vector3(10, 10, 0);
+        dir = Quaternion.Euler(0, 0, Random.Range(0, 360)) * dir;
         enabled = true;
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-	    if (timer > 4)
+	    if (timer > 2)
         {
             timer -= Time.deltaTime;
         }
