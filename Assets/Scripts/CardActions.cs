@@ -100,18 +100,23 @@ public class CardActions : MonoBehaviour
 
         Debug.Log(reactor.ToString() + "'s dingo scares the wombat back into " + thrower.ToString() + "'s hand at the end of the turn!");
 
+        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
         // Place the card in a holder array and clear the field
         TurnManager.Instance.currentStage = Stage.Play;
         if (!reactor.isServer)
         {
             reactor.CmdChangeStage(Stage.Play);
             reactor.CmdUpdateBarkedCards(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.CmdBark(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             reactor.CmdClearField();
+            reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
             reactor.RpcUpdateBarkedCards(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.RpcBark(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Field.Instance.RpcClearField();
+            Pause.Instance.RpcPauseGame(kEffectTime);
         }
         // HideCards.Instance.HideCardsOfPlayer(reactor);
     }

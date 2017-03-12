@@ -23,7 +23,7 @@ public class Bark : MonoBehaviour
 
         wave = Instantiate(Resources.Load("Effects/Sound")) as GameObject;
         wave.transform.position = def;
-        if (wave.transform.position.x != 0)
+        if(Mathf.Abs(wave.transform.position.x) > 0.01f)
             wave.transform.Rotate(0, 0, 90);
 
         target.AddComponent<Animator>();

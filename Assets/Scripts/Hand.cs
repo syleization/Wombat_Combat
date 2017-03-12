@@ -4,7 +4,85 @@ using System.Collections.Generic;
 
 public class Hand : MonoBehaviour
 {
+    [SerializeField]
+    Material mDefaultMaterial;
     public List<Card> CardsInHand = new List<Card>();
+    
+    public void ClearGlow()
+    {
+        foreach (Card card in CardsInHand)
+        {
+            card.GetComponent<SpriteRenderer>().material = mDefaultMaterial; 
+        }
+    }
+
+    public void UpdateGlow(CardSubType subtype)
+    {
+        foreach(Card card in CardsInHand)
+        {
+            if(card.SubType == subtype)
+            {
+                card.GetComponent<SpriteRenderer>().material = GetMaterialOfSubType(subtype);
+            }
+            else
+            {
+                card.GetComponent<SpriteRenderer>().material = Resources.Load("Glow/NoGlow") as Material;
+            }
+        }
+    }
+
+    public void UpdateGlow(CardType type)
+    {
+        foreach (Card card in CardsInHand)
+        {
+            if (card.Type == type)
+            {
+                card.GetComponent<SpriteRenderer>().material = GetMaterialOfType(type);
+            }
+            else
+            {
+                card.GetComponent<SpriteRenderer>().material = Resources.Load("Glow/NoGlow") as Material;
+            }
+        }
+    }
+
+    Material GetMaterialOfSubType(CardSubType subtype)
+    {
+        switch (subtype)
+        {
+            case CardSubType.DonkeyKick:
+            case CardSubType.WombatCharge:
+            case CardSubType.WomboCombo:
+                return Resources.Load("Glow/AttackGlow") as Material;
+            case CardSubType.Bark:
+            case CardSubType.Bite:
+            case CardSubType.GooglyEyes:
+                return Resources.Load("Glow/DefenceGlow") as Material;
+            case CardSubType.Trampoline:
+            case CardSubType.Sinkhole:
+            case CardSubType.WombatCage:
+                return Resources.Load("Glow/TrapGlow") as Material;
+        }
+
+        Debug.Log("[Hand::GetMaterialOfSubType] Invalid parameter");
+        return null;
+    }
+
+    Material GetMaterialOfType(CardType type)
+    {
+        switch (type)
+        {
+            case CardType.Attack:
+                return Resources.Load("Glow/AttackGlow") as Material;
+            case CardType.Defence:
+                return Resources.Load("Glow/DefenceGlow") as Material;
+            case CardType.Trap:
+                return Resources.Load("Glow/TrapGlow") as Material;
+        }
+
+        Debug.Log("[Hand::GetMaterialOfSubType] Invalid parameter");
+        return null;
+    }
 
     public void ResetHandCardPositions(Card cardMoved, int cardsDealt)
     {
