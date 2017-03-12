@@ -50,20 +50,36 @@ public class CardActions : MonoBehaviour
         {
             thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
         }
-        
+
+        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
+
         Player leftOfThrowingPlayer = TurnManager.Instance.GetPlayerToTheLeftOf(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
         Player rightOfThrowingPlayer = TurnManager.Instance.GetPlayerToTheRightOf(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
 
+        Player target;
         if (Random.Range(0, 2) == 0)
         {
             Debug.Log("Wombat donkey kicks towards " + leftOfThrowingPlayer.ToString() + "!");
-            React(thrower, leftOfThrowingPlayer);
+            target = leftOfThrowingPlayer;
         }
         else
         {
             Debug.Log("Wombat donkey kicks towards " + rightOfThrowingPlayer.ToString() + "!");
-            React(thrower, rightOfThrowingPlayer);
+            target = rightOfThrowingPlayer;
         }
+
+        if (!thrower.isServer)
+        {
+            thrower.CmdAttack(CardSubType.DonkeyKick, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.CmdPauseGame(kEffectTime);
+        }
+        else
+        {
+            thrower.RpcAttack(CardSubType.DonkeyKick, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            Pause.Instance.RpcPauseGame(kEffectTime);
+        }
+
+        TheInstance.StartCoroutine(WaitToReact(kEffectTime, thrower, target));
     }
 
     public static void WombatCharge(Player thrower, Player target)
@@ -74,8 +90,19 @@ public class CardActions : MonoBehaviour
             thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
         }
 
+        if (!thrower.isServer)
+        {
+            thrower.CmdAttack(CardSubType.WombatCharge, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.CmdPauseGame(kEffectTime);
+        }
+        else
+        {
+            thrower.RpcAttack(CardSubType.WombatCharge, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            Pause.Instance.RpcPauseGame(kEffectTime);
+        }
+
         Debug.Log("Wombat charges towards " + target.ToString() + "!");
-        React(thrower, target);
+        TheInstance.StartCoroutine(WaitToReact(kEffectTime, thrower, target));
     }
 
     public static void WomboCombo(Player thrower, Player target)
@@ -86,8 +113,19 @@ public class CardActions : MonoBehaviour
             thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
         }
 
+        if (!thrower.isServer)
+        {
+            thrower.CmdAttack(CardSubType.WomboCombo, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.CmdPauseGame(kEffectTime);
+        }
+        else
+        {
+            thrower.RpcAttack(CardSubType.WomboCombo, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            Pause.Instance.RpcPauseGame(kEffectTime);
+        }
+
         Debug.Log("Two wombats jump at " + target.ToString() + "!");
-        React(thrower, target);
+        TheInstance.StartCoroutine(WaitToReact(kEffectTime, thrower, target));
     }
 
     public static void Bark(Player thrower, Player reactor)
@@ -164,7 +202,6 @@ public class CardActions : MonoBehaviour
         Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");
         // HideCards.Instance.HideCardsOfPlayer(killer);
     }
-
 
     static IEnumerator WaitToReact(float waitTime, Player thrower, Player reactor)
     {

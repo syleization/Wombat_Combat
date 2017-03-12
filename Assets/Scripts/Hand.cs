@@ -12,7 +12,8 @@ public class Hand : MonoBehaviour
     {
         foreach (Card card in CardsInHand)
         {
-            card.GetComponent<SpriteRenderer>().material = mDefaultMaterial; 
+            //card.GetComponent<SpriteRenderer>().material = mDefaultMaterial; 
+            card.GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
 
@@ -22,11 +23,12 @@ public class Hand : MonoBehaviour
         {
             if(card.SubType == subtype)
             {
-                card.GetComponent<SpriteRenderer>().material = GetMaterialOfSubType(subtype);
+                //card.GetComponent<SpriteRenderer>().material = GetMaterialOfSubType(subtype);
             }
             else
             {
-                card.GetComponent<SpriteRenderer>().material = Resources.Load("Glow/NoGlow") as Material;
+                //card.GetComponent<SpriteRenderer>().material = Resources.Load("Glow/NoGlow") as Material;
+                card.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
             }
         }
     }
@@ -37,11 +39,12 @@ public class Hand : MonoBehaviour
         {
             if (card.Type == type)
             {
-                card.GetComponent<SpriteRenderer>().material = GetMaterialOfType(type);
+                //card.GetComponent<SpriteRenderer>().material = GetMaterialOfType(type);
             }
             else
             {
-                card.GetComponent<SpriteRenderer>().material = Resources.Load("Glow/NoGlow") as Material;
+                //card.GetComponent<SpriteRenderer>().material = Resources.Load("Glow/NoGlow") as Material;
+                card.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
             }
         }
     }

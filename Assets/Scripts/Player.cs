@@ -306,6 +306,20 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
+    public void CmdAttack(CardSubType card, Turns defender, Turns attacker)
+    {
+        RpcAttack(card, defender, attacker);
+    }
+
+    [ClientRpc]
+    public void RpcAttack(CardSubType card, Turns defender, Turns attacker)
+    {
+        Effects.Attack(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject
+            , TurnManager.Instance.GetPlayerOfTurnEnum(defender)
+            , TurnManager.Instance.GetPlayerOfTurnEnum(attacker));
+    }
+
+    [Command]
     public void CmdCage(CardSubType card, Turns playerWhoNowOwnsCard)
     {
         RpcCage(card, playerWhoNowOwnsCard);
@@ -399,26 +413,27 @@ public class Player : NetworkBehaviour
         HandSize = 0;
     }
 
-    bool mGlowUpdate = false;
-
     void Update()
     {
-        if (mGlowUpdate == false)
-            return;
         // Check Merge Glow
         if (TurnManager.Instance.currentStage == Stage.Merge
                     && this.isLocalPlayer && Field.Instance.GetCard(0) != null
                    && this.CurrentActions > 0)
         {
             Hand.UpdateGlow(Field.Instance.GetCard(0).SubType);
-            StartCoroutine(GlowUpdateBoolSwitch(1.5f));
+        }
+        else
+        // Check react glow
+        if (TurnManager.Instance.currentStage == Stage.Reaction
+                   && CardActions.theReactor.isLocalPlayer
+            )
+        {
+            Hand.UpdateGlow(CardType.Defence);
+        }
+        else if (Hand != null)
+        {
+            Hand.ClearGlow();
         }
     }
 
-    IEnumerator GlowUpdateBoolSwitch(float waitTime)
-    {
-        mGlowUpdate = false;
-        yield return new WaitForSeconds(waitTime);
-        mGlowUpdate = true;
-    }
 }
