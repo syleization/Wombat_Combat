@@ -139,4 +139,12 @@ public class Effects : MonoBehaviour
 
         biteAnimation.GetComponent<Bite>().Initialize(card);
     }
+
+    public static void Cage(GameObject card, Player owner)
+    {
+        card.transform.position = Vector3.zero;
+        GameObject cageAnimation = Instantiate(Resources.Load("Effects/Cage")) as GameObject;
+
+        cageAnimation.GetComponent<Cage>().Initialize(card, PointBehind(owner));
+    }
 }
