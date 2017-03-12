@@ -28,6 +28,8 @@ public class RedAttack : MonoBehaviour
         transform.position = startPos;
         target.transform.position = startPos;
 
+        
+
         enabled = true;
     }
 
