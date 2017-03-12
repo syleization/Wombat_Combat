@@ -155,4 +155,12 @@ public class Effects : MonoBehaviour
 
         eyesAnimation.GetComponent<GooglyEyes>().Initialize(card, PointBehind(toAttack));
     }
+
+    public static void Bark(GameObject card, Player defender, Player attacker)
+    {
+        card.transform.position = Vector3.zero;
+        GameObject barkAnimation = Instantiate(Resources.Load("Effects/Bark")) as GameObject;
+
+        barkAnimation.GetComponent<Bark>().Initialize(card, PointBehind(defender), PointBehind(attacker));
+    }
 }

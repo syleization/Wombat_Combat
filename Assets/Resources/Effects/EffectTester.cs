@@ -174,5 +174,13 @@ public class EffectTester : MonoBehaviour {
             Player dir = GlobalSettings.Instance.LeftPlayer;
             Effects.GooglyEyes(card, dir);
         }
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.LeftPlayer;
+            Player def = GlobalSettings.Instance.RightPlayer;
+            Effects.Bark(card, def, atk);
+        }
     }
 }
