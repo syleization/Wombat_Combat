@@ -146,5 +146,33 @@ public class EffectTester : MonoBehaviour {
             Player owner = GlobalSettings.Instance.LeftPlayer;
             Effects.Cage(card, owner);
         }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player dir = GlobalSettings.Instance.TopPlayer;
+            Effects.GooglyEyes(card, dir);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player dir = GlobalSettings.Instance.BottomPlayer;
+            Effects.GooglyEyes(card, dir);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player dir = GlobalSettings.Instance.RightPlayer;
+            Effects.GooglyEyes(card, dir);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player dir = GlobalSettings.Instance.LeftPlayer;
+            Effects.GooglyEyes(card, dir);
+        }
     }
 }

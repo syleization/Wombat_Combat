@@ -147,4 +147,12 @@ public class Effects : MonoBehaviour
 
         cageAnimation.GetComponent<Cage>().Initialize(card, PointBehind(owner));
     }
+
+    public static void GooglyEyes(GameObject card, Player toAttack)
+    {
+        card.transform.position = Vector3.zero;
+        GameObject eyesAnimation = Instantiate(Resources.Load("Effects/Eyes")) as GameObject;
+
+        eyesAnimation.GetComponent<GooglyEyes>().Initialize(card, PointBehind(toAttack));
+    }
 }
