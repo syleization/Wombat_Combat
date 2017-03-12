@@ -291,6 +291,34 @@ public class Player : NetworkBehaviour
         Effects.Bite(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject);
     }
 
+    [Command]
+    public void CmdCage(CardSubType card, Turns playerWhoNowOwnsCard)
+    {
+        RpcCage(card, playerWhoNowOwnsCard);
+    }
+
+    [ClientRpc]
+    public void RpcCage(CardSubType card, Turns playerWhoNowOwnsCard)
+    {
+        Effects.Cage(
+            Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject,
+            TurnManager.Instance.GetPlayerOfTurnEnum(playerWhoNowOwnsCard));
+    }
+
+    [Command]
+    public void CmdGooglyEyes(CardSubType card, Turns targetPlayer)
+    {
+        RpcGooglyEyes(card, targetPlayer);
+    }
+
+    [ClientRpc]
+    public void RpcGooglyEyes(CardSubType card, Turns targetPlayer)
+    {
+        Effects.GooglyEyes(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject,
+            TurnManager.Instance.GetPlayerOfTurnEnum(targetPlayer));
+    }
+
+
     // Client Rpcs
     [ClientRpc]
     public void RpcUpdateBarkedCards(Turns owner)

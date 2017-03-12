@@ -39,118 +39,120 @@ public class TheGUI : NetworkBehaviour
             // Creates a box in the top middle to show the current stage
             GUI.Box(new Rect(Screen.width / 2 - 50, 0, 100, 30), "Stage: " + TurnManager.Instance.currentStage.ToString());
 
-            // Draw card at the start of your turn
-            if (TurnManager.Instance.currentStage == Stage.Draw && currentPlayer.isLocalPlayer)
+            if (Pause.Instance.IsPaused == false)
             {
-                // if they have a sinkhole active take it away
-                if (currentPlayer.IsSinkholeActive)
+                // Draw card at the start of your turn
+                if (TurnManager.Instance.currentStage == Stage.Draw && currentPlayer.isLocalPlayer)
                 {
-                    currentPlayer.IsSinkholeActive = false;
-
-                    if (!currentPlayer.isServer)
+                    // if they have a sinkhole active take it away
+                    if (currentPlayer.IsSinkholeActive)
                     {
-                        currentPlayer.CmdChangeSinkholeBool(false, CardSubType.None, Vector3.zero, Quaternion.identity);
+                        currentPlayer.IsSinkholeActive = false;
+
+                        if (!currentPlayer.isServer)
+                        {
+                            currentPlayer.CmdChangeSinkholeBool(false, CardSubType.None, Vector3.zero, Quaternion.identity);
+                        }
+                        else
+                        {
+                            currentPlayer.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), false, CardSubType.None, Vector3.zero, Quaternion.identity);
+                        }
                     }
-                    else
+                    // If a bark was used against the player put those cards back into their hand
+                    CardActions.PlaceBarkedCards(currentPlayer);
+
+                    // Reset action count to max
+                    currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), Player.MaxActions);
+
+                    currentPlayer.CurrentActions = Player.MaxActions;
+                    TurnManager.Instance.currentStage = Stage.Merge;
+                    currentPlayer.CmdChangeStage(Stage.Merge);
+
+                    // Add cards to hand and update hand sizes
+                    currentPlayer.CurrentHandSize = currentPlayer.Hand.CardsInHand.Count;
+
+                    while (currentPlayer.CurrentHandSize < currentPlayer.CurrentMaxHandSize)
                     {
-                        currentPlayer.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), false, CardSubType.None, Vector3.zero, Quaternion.identity);
+                        currentPlayer.Deck.MoveDealtCard();
+                        ++currentPlayer.CurrentHandSize;
+                    }
+                    ++currentPlayer.CurrentMaxHandSize;
+
+                    Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
+
+                    // Check if the player has defence cards
+                    currentPlayer.HasDefenceCards = currentPlayer.Hand.HasDefenceCards();
+                    currentPlayer.HasTrapCards = currentPlayer.Hand.HasTrapCards();
+
+                    if (!isServer)
+                    {
+                        currentPlayer.CmdChangeFieldSize();
+                        currentPlayer.CmdChangeHasDefenceCards(currentPlayer.HasDefenceCards);
+                        currentPlayer.CmdChangeHasTrapCards(currentPlayer.HasTrapCards);
                     }
                 }
-                // If a bark was used against the player put those cards back into their hand
-                CardActions.PlaceBarkedCards(currentPlayer);
-
-                // Reset action count to max
-                currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), Player.MaxActions);
-
-                currentPlayer.CurrentActions = Player.MaxActions;
-                TurnManager.Instance.currentStage = Stage.Merge;
-                currentPlayer.CmdChangeStage(Stage.Merge);
-
-                // Add cards to hand and update hand sizes
-                currentPlayer.CurrentHandSize = currentPlayer.Hand.CardsInHand.Count;
-
-                while (currentPlayer.CurrentHandSize < currentPlayer.CurrentMaxHandSize)
+                // Sifts through the stages and the last stage has an end turn button instead of an end stage button
+                else if (TurnManager.Instance.currentStage == Stage.Merge
+                    && currentPlayer.isLocalPlayer
+                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                    && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndStage"))
                 {
-                    currentPlayer.Deck.MoveDealtCard();
-                    ++currentPlayer.CurrentHandSize;
+                    // Do some kind of transition to visually show the stage has changed
+                    TurnManager.Instance.currentStage = Stage.Play;
+                    currentPlayer.CmdChangeStage(Stage.Play);
+
+                    Field.Instance.SendFieldBackToHand(currentPlayer);
+                    Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
+                    if (!isServer)
+                    {
+                        currentPlayer.CmdChangeFieldSize();
+                    }
                 }
-                ++currentPlayer.CurrentMaxHandSize;
-
-                Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
-
-                // Check if the player has defence cards
-                currentPlayer.HasDefenceCards = currentPlayer.Hand.HasDefenceCards();
-                currentPlayer.HasTrapCards = currentPlayer.Hand.HasTrapCards();
-
-                if (!isServer)
+                else if (TurnManager.Instance.currentStage == Stage.Play
+                    && currentPlayer.isLocalPlayer
+                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                    && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndTurn"))
                 {
-                    currentPlayer.CmdChangeFieldSize();
-                    currentPlayer.CmdChangeHasDefenceCards(currentPlayer.HasDefenceCards);
-                    currentPlayer.CmdChangeHasTrapCards(currentPlayer.HasTrapCards);
-                }
-            }
-            // Sifts through the stages and the last stage has an end turn button instead of an end stage button
-            else if (TurnManager.Instance.currentStage == Stage.Merge 
-                && currentPlayer.isLocalPlayer 
-                && !TurnManager.Instance.IsCurrentlyDisplayingBanner 
-                && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndStage"))
-            {
-                // Do some kind of transition to visually show the stage has changed
-                TurnManager.Instance.currentStage = Stage.Play;
-                currentPlayer.CmdChangeStage(Stage.Play);
+                    // Do some kind of end of turn transition to visually show it
+                    TurnManager.Instance.currentStage = Stage.Draw;
+                    currentPlayer.CmdChangeStage(Stage.Draw);
 
-                Field.Instance.SendFieldBackToHand(currentPlayer);
-                Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
-                if (!isServer)
+                    TurnManager.Instance.EndTurn();
+                }
+                else if (TurnManager.Instance.currentStage == Stage.Reaction
+                    && CardActions.theReactor.isLocalPlayer
+                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                    && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "Don'tReact"))
                 {
-                    currentPlayer.CmdChangeFieldSize();
+                    CardActions.DontReact();
                 }
-            }
-            else if (TurnManager.Instance.currentStage == Stage.Play 
-                && currentPlayer.isLocalPlayer 
-                && !TurnManager.Instance.IsCurrentlyDisplayingBanner 
-                && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndTurn"))
-            {
-                // Do some kind of end of turn transition to visually show it
-                TurnManager.Instance.currentStage = Stage.Draw;
-                currentPlayer.CmdChangeStage(Stage.Draw);
 
-                TurnManager.Instance.EndTurn();
-            }
-            else if (TurnManager.Instance.currentStage == Stage.Reaction 
-                && CardActions.theReactor.isLocalPlayer 
-                && !TurnManager.Instance.IsCurrentlyDisplayingBanner 
-                && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "Don'tReact"))
-            {
-                CardActions.DontReact();
-            }
-
-            if (TurnManager.Instance.currentStage == Stage.Merge
-                && currentPlayer.isLocalPlayer
-               && currentPlayer != null && Field.Instance.IsMergable()
-               && currentPlayer.CurrentActions > 0
-               && !TurnManager.Instance.IsCurrentlyDisplayingBanner
-               && GUI.Button(new Rect(Screen.width / 50.0f, Screen.height / 2, Screen.width / 10.0f, Screen.height / 15.0f), "Merge"))
-            {
-                // Add new power card to hand
-
-                Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
-
-                if (!isServer)
+                if (TurnManager.Instance.currentStage == Stage.Merge
+                    && currentPlayer.isLocalPlayer
+                   && currentPlayer != null && Field.Instance.IsMergable()
+                   && currentPlayer.CurrentActions > 0
+                   && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                   && GUI.Button(new Rect(Screen.width / 50.0f, Screen.height / 2, Screen.width / 10.0f, Screen.height / 15.0f), "Merge"))
                 {
-                    currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);
+                    // Add new power card to hand
+
+                    Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
+
+                    if (!isServer)
+                    {
+                        currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);
+                    }
+                    --currentPlayer.CurrentActions;
+                    --currentPlayer.CurrentHandSize;
+                    newCard.owner = currentPlayer;
+                    DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
+                    newCard.CurrentArea = "Hand";
+                    currentPlayer.Hand.CardsInHand.Add(newCard);
+
+                    // Clear field of used cards
+                    Field.Instance.ClearField();
                 }
-                --currentPlayer.CurrentActions;
-                --currentPlayer.CurrentHandSize;
-                newCard.owner = currentPlayer;
-                DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
-                newCard.CurrentArea = "Hand";
-                currentPlayer.Hand.CardsInHand.Add(newCard);
-
-                // Clear field of used cards
-                Field.Instance.ClearField();
             }
-
             DisplayPlayers();
         }
         else if(GameIsOver && GlobalSettings.Instance.GetLocalPlayer().Hand != null)

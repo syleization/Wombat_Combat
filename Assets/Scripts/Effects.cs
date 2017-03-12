@@ -76,19 +76,46 @@ public class Effects : MonoBehaviour
 
     public static Vector3 PointBehind(Player target)
     {
-        Camera cam = Camera.main;
-        GlobalSettings instance = GlobalSettings.Instance;
-        Vector3 result = new Vector3(0, 0, 0);
-        if (instance.TopPlayer == target)
-            result = cam.ViewportToWorldPoint(new Vector3(0.5f, 1, cam.nearClipPlane));
-        else if (instance.RightPlayer == target)
-            result = cam.ViewportToWorldPoint(new Vector3(1, 0.5f, cam.nearClipPlane));
-        else if (instance.BottomPlayer == target)
-            result = cam.ViewportToWorldPoint(new Vector3(0.5f, 0, cam.nearClipPlane));
-        else if (instance.LeftPlayer == target)
-            result = cam.ViewportToWorldPoint(new Vector3(0, 0.5f, cam.nearClipPlane));
-        result.z = -1;
-        return result;
+        // Alex's Testing
+        if (GameObject.Find("EffectTester"))
+        {
+            Camera cam = Camera.main;
+            GlobalSettings instance = GlobalSettings.Instance;
+            Vector3 result = new Vector3(0, 0, 0);
+
+            if (instance.TopPlayer == target)
+                result = cam.ViewportToWorldPoint(new Vector3(0.5f, 1, cam.nearClipPlane));
+            else if (instance.RightPlayer == target)
+                result = cam.ViewportToWorldPoint(new Vector3(1, 0.5f, cam.nearClipPlane));
+            else if (instance.BottomPlayer == target)
+                result = cam.ViewportToWorldPoint(new Vector3(0.5f, 0, cam.nearClipPlane));
+            else if (instance.LeftPlayer == target)
+                result = cam.ViewportToWorldPoint(new Vector3(0, 0.5f, cam.nearClipPlane));
+            result.z = -1;
+            return result;
+        }
+        else
+        {
+            Camera cam = Camera.main;
+            TurnManager instance = TurnManager.Instance;
+            Vector3 result = new Vector3(0, 0, 0);
+
+            Turns localPlayer = instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer());
+            // Top Player on the screen
+            if (instance.GetPlayerAcrossFrom(localPlayer) == target)
+                result = cam.ViewportToWorldPoint(new Vector3(0.5f, 1, cam.nearClipPlane));
+            // Right Player on the screen
+            else if (instance.GetPlayerToTheRightOfWithNull(localPlayer) == target)
+                result = cam.ViewportToWorldPoint(new Vector3(1, 0.5f, cam.nearClipPlane));
+            // Bottom Player on the screen
+            else if (instance.GetPlayerOfTurnEnum(localPlayer) == target)
+                result = cam.ViewportToWorldPoint(new Vector3(0.5f, 0, cam.nearClipPlane));
+            // Left Player on the screen
+            else if (instance.GetPlayerToTheLeftOfWithNull(localPlayer) == target)
+                result = cam.ViewportToWorldPoint(new Vector3(0, 0.5f, cam.nearClipPlane));
+            result.z = -1;
+            return result;
+        }
     }
 
     public static void SinkholeOn(Player player)

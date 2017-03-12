@@ -5,6 +5,12 @@ using UnityEngine.Networking;
 
 public class CardActions : MonoBehaviour
 {
+    private static CardActions TheInstance;
+    void Awake()
+    {
+        TheInstance = this;
+    }
+    const float kEffectTime = 3.0f;
     // Not a singleton, but no instance of this class should ever be constructed
     // It is basically a hub for static functions
     // Thrower will always be the local player
@@ -141,31 +147,47 @@ public class CardActions : MonoBehaviour
             killer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(killer), killer.CurrentActions);
             killer.CmdClearField();
             killer.CmdChangeStage(Stage.Play);
-            killer.CmdPauseGame(2.0f);
+            killer.CmdPauseGame(kEffectTime);
         }
         else
         {
             killer.RpcBite(tempSubType);
             Field.Instance.RpcClearField();
-            Pause.Instance.RpcPauseGame(2.0f);
+            Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
         Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");
         // HideCards.Instance.HideCardsOfPlayer(killer);
     }
 
+
+    static IEnumerator WaitToReact(float waitTime, Player thrower, Player reactor)
+    {
+        yield return new WaitForSeconds(waitTime);
+        React(thrower, reactor);
+    }
+
     public static void GooglyEyes(Player thrower, Player reactor)
     {
+        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
         --reactor.CurrentActions;
         Field.Instance.RemoveCard(1);
+
         if (!reactor.isServer)
         {
             reactor.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), reactor.CurrentActions);
+            reactor.CmdGooglyEyes(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.CmdPauseGame(kEffectTime);
+        }
+        else
+        {
+            reactor.RpcGooglyEyes(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
         Debug.Log(reactor.ToString() + "'s dingo convinced the wombat to attack " + thrower.ToString());
         //HideCards.Instance.HideCardsOfPlayer(reactor);
-        React(reactor, thrower);
+        TheInstance.StartCoroutine(WaitToReact(kEffectTime, reactor, thrower));
     }
 
     public static void Trampoline(Player thrower, Player reactor)
@@ -217,13 +239,13 @@ public class CardActions : MonoBehaviour
             reactor.CmdClearField();
             reactor.CmdChangeStage(Stage.Play);
             reactor.CmdChangeSinkholeBool(true, card, cardPosition, cardRotation);
-            reactor.CmdPauseGame(2.0f);
+            reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
             reactor.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), true, card, cardPosition, cardRotation);
             Field.Instance.RpcClearField();
-            Pause.Instance.RpcPauseGame(2.0f);
+            Pause.Instance.RpcPauseGame(kEffectTime);
             
         }
 
@@ -236,6 +258,8 @@ public class CardActions : MonoBehaviour
 
         // Retrieve the wombat and add it to your hand
         Card thrownCard = Field.Instance.GetCard(0);
+        CardSubType tempSubType = thrownCard.SubType;
+
         ++reactor.CurrentHandSize;
         reactor.Hand.CardsInHand.Add(thrownCard);
         // Change variables of card so it is now a card in the hand of the other player
@@ -249,10 +273,14 @@ public class CardActions : MonoBehaviour
         if(!reactor.isServer)
         {
             reactor.CmdRemoveCardFromField(0);
+            reactor.CmdCage(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
+            reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
             Field.Instance.RpcRemoveCardFromField(0);
+            reactor.RpcCage(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
+            Pause.Instance.RpcPauseGame(kEffectTime);
         }
         // Clear the field and reset the stage
         TurnManager.Instance.currentStage = Stage.Play;
