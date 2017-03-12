@@ -4,18 +4,11 @@ using System.Collections;
 public class Effects : MonoBehaviour
 {
 
-	public static void Attack(Player Sender, Player Reciever)
+	public static void Attack(GameObject card, Player defender, Player attacker)
     {
-        //Vector3 start = PointBehind(Sender);
-        //Quaternion rot = FaceAwayFromDirection(Sender);
-        GameObject temp = Instantiate(Resources.Load("Effects/RedAttack")) as GameObject; //, start, rot
-        RedAttack attack = temp.GetComponent<RedAttack>();
-        attack.Activate = false;
-        attack.transform.Rotate(new Vector3(0, 0, FaceAwayFromDirection(Sender)));
-        //attack.transform.Rotate(Vector3.forward, FaceAwayFromDirection(Sender));
-        attack.transform.position = PointBehind(Sender);
-        attack.TargetDirection = FaceDirection(Reciever);
-        attack.Activate = true;
+        GameObject attackAnimation = Instantiate(Resources.Load("Effects/RedAttack")) as GameObject;
+
+        attackAnimation.GetComponent<RedAttack>().Initialize(card, PointBehind(defender), PointBehind(attacker));
     }
 
     public static float FaceDirection(Player target)

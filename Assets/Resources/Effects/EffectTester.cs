@@ -14,89 +14,101 @@ public class EffectTester : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
             Player attacker = GlobalSettings.Instance.BottomPlayer;
             Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Effects.Attack(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
             Player attacker = GlobalSettings.Instance.TopPlayer;
             Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Effects.Attack(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.LeftPlayer;
-            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
             Player attacker = GlobalSettings.Instance.RightPlayer;
             Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Effects.Attack(card, defender, attacker);
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            TurnManager instance = TurnManager.Instance;
+            Player attacker = GlobalSettings.Instance.LeftPlayer;
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
             Player attacker = GlobalSettings.Instance.BottomPlayer;
-            Player defender = instance.GetPlayerToTheLeftOf(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.TopPlayer;
-            Player defender = instance.GetPlayerToTheLeftOf(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.LeftPlayer;
-            Player defender = instance.GetPlayerToTheLeftOf(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.RightPlayer;
-            Player defender = instance.GetPlayerToTheLeftOf(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
             Player attacker = GlobalSettings.Instance.BottomPlayer;
-            Player defender = instance.GetPlayerToTheRightOf(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.TopPlayer;
-            Player defender = instance.GetPlayerToTheRightOf(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.LeftPlayer;
-            Player defender = instance.GetPlayerToTheRightOf(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.V))
         {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.RightPlayer;
-            Player defender = instance.GetPlayerToTheRightOf(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(attacker, defender);
+            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
+            Effects.Attack(card, defender, attacker);
         }
         //if (Input.GetKeyDown(KeyCode.B))
         //{
