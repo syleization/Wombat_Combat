@@ -182,5 +182,29 @@ public class EffectTester : MonoBehaviour {
             Player def = GlobalSettings.Instance.RightPlayer;
             Effects.Bark(card, def, atk);
         }
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.RightPlayer;
+            Player def = GlobalSettings.Instance.LeftPlayer;
+            Effects.Bark(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.BottomPlayer;
+            Player def = GlobalSettings.Instance.TopPlayer;
+            Effects.Bark(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.TopPlayer;
+            Player def = GlobalSettings.Instance.BottomPlayer;
+            Effects.Bark(card, def, atk);
+        }
     }
 }
