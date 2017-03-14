@@ -109,28 +109,28 @@ public class Player : NetworkBehaviour
                     }
                 }
             }
-            else
+            else if(value != MaxHealth)
             {
                 if (isServer)
                 {
-                    RpcChangeHealthAmount(value);
+                    RpcChangeHealthAmount();
                 }
                 else
                 {
-                    CmdChangeHealthAmount(value);
+                    GlobalSettings.Instance.GetLocalPlayer().CmdChangeHealthAmount();
                 }
             }
         }
     }
     [Command]
-    public void CmdChangeHealthAmount(float value)
+    public void CmdChangeHealthAmount()
     {
-        RpcChangeHealthAmount(value);
+        RpcChangeHealthAmount();
     }
     [ClientRpc]
-    public void RpcChangeHealthAmount(float value)
+    public void RpcChangeHealthAmount()
     {
-        UI_PlayerInfo.Instance.ChangeHealthText(isLocalPlayer, value);
+        UI_PlayerInfo.Instance.ChangeHealthText(isLocalPlayer);
     }
     public const int MaxHealth = 15;
     public const int MaxActions = 4;

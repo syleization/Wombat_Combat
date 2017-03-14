@@ -40,16 +40,11 @@ public class UI_PlayerInfo : MonoBehaviour
         mAcrossPlayerTrapsText.text = "0";
     }
 
-    public void ChangeHealthText(bool isLocalPlayer, float value)
+    public void ChangeHealthText(bool isLocalPlayer)
     {
-        if(isLocalPlayer)
-        {
-            mCurrentPlayerHealthText.text = value.ToString();
-        }
-        else
-        {
-            mAcrossPlayerHealthText.text = value.ToString();
-        }
+        mCurrentPlayerHealthText.text = GlobalSettings.Instance.GetLocalPlayer().CurrentHealth.ToString();
+        Player across = TurnManager.Instance.GetPlayerAcrossFrom(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
+        mAcrossPlayerHealthText.text = across.CurrentHealth.ToString();
     }
 
     public void ChangeTrapsText(bool isLocalPlayer, float value)
