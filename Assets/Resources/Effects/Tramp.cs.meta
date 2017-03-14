@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ed88e80dedf3b2340b29a947123782b7
+timeCreated: 1489509739
+licenseType: Pro
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - target: {instanceID: 0}
+  - cardAnim: {fileID: 9100000, guid: e8425156ceefbb74886dfabe3735cc03, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

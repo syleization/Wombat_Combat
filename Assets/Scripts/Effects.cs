@@ -183,4 +183,12 @@ public class Effects : MonoBehaviour
 
         barkAnimation.GetComponent<Bark>().Initialize(card, PointBehind(defender), PointBehind(attacker));
     }
+
+    public static void Tramp(GameObject card, Player oldTarget, Player newTarget)
+    {
+        card.transform.position = Vector3.zero;
+        GameObject trampAnimation = Instantiate(Resources.Load("Effects/Tramp")) as GameObject;
+
+        trampAnimation.GetComponent<Tramp>().Initialize(card, PointBehind(oldTarget), PointBehind(newTarget));
+    }
 }

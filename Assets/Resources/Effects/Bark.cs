@@ -8,7 +8,6 @@ public class Bark : MonoBehaviour
     public Vector3 endPos;
     public RuntimeAnimatorController cardAnim;
     private GameObject wave;
-    private Vector3 scaleTarget = new Vector3(0.3f, 0.3f, 0.3f);
 
     void Awake()
     {
