@@ -51,31 +51,31 @@ public class EffectTester : MonoBehaviour {
             TurnManager instance = TurnManager.Instance;
             Player attacker = GlobalSettings.Instance.BottomPlayer;
             Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(card, defender, attacker);
+            Effects.WomboCombo(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
             GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player attacker = GlobalSettings.Instance.TopPlayer;
             Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(card, defender, attacker);
+            Effects.WomboCombo(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
             GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player attacker = GlobalSettings.Instance.RightPlayer;
             Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(card, defender, attacker);
+            Effects.WomboCombo(card, defender, attacker);
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
             GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             TurnManager instance = TurnManager.Instance;
-            Player attacker = GlobalSettings.Instance.BottomPlayer;
+            Player attacker = GlobalSettings.Instance.LeftPlayer;
             Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
-            Effects.Attack(card, defender, attacker);
+            Effects.WomboCombo(card, defender, attacker);
         }
 
         if (Input.GetKeyDown(KeyCode.Z))
@@ -249,6 +249,70 @@ public class EffectTester : MonoBehaviour {
             Player oldT = GlobalSettings.Instance.LeftPlayer;
             Player newT = GlobalSettings.Instance.RightPlayer;
             Effects.Tramp(card, oldT, newT);
+        }
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.LeftPlayer;
+            Player def = GlobalSettings.Instance.RightPlayer;
+            Effects.Charge(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F6))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.RightPlayer;
+            Player def = GlobalSettings.Instance.LeftPlayer;
+            Effects.Charge(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F7))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.BottomPlayer;
+            Player def = GlobalSettings.Instance.TopPlayer;
+            Effects.Charge(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.TopPlayer;
+            Player def = GlobalSettings.Instance.BottomPlayer;
+            Effects.Charge(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F9))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.LeftPlayer;
+            Player def = GlobalSettings.Instance.BottomPlayer;
+            Effects.Charge(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F10))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.RightPlayer;
+            Player def = GlobalSettings.Instance.TopPlayer;
+            Effects.Charge(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F11))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.BottomPlayer;
+            Player def = GlobalSettings.Instance.RightPlayer;
+            Effects.Charge(card, def, atk);
+        }
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+            Player atk = GlobalSettings.Instance.TopPlayer;
+            Player def = GlobalSettings.Instance.LeftPlayer;
+            Effects.Charge(card, def, atk);
         }
     }
 }

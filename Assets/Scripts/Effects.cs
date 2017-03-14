@@ -191,4 +191,18 @@ public class Effects : MonoBehaviour
 
         trampAnimation.GetComponent<Tramp>().Initialize(card, PointBehind(oldTarget), PointBehind(newTarget));
     }
+
+    public static void Charge(GameObject card, Player defender, Player attacker)
+    {
+        GameObject chargeAnimation = Instantiate(Resources.Load("Effects/WombatCharge")) as GameObject;
+
+        chargeAnimation.GetComponent<Charge>().Initialize(card, PointBehind(attacker), PointBehind(defender));
+    }
+
+    public static void WomboCombo(GameObject card, Player defender, Player attacker)
+    {
+        GameObject chargeAnimation = Instantiate(Resources.Load("Effects/WomboCombo")) as GameObject;
+
+        chargeAnimation.GetComponent<Charge>().Initialize(card, PointBehind(attacker), PointBehind(defender));
+    }
 }
