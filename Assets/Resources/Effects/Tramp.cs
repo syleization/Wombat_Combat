@@ -36,7 +36,32 @@ public class Tramp : MonoBehaviour {
             if (!flag)
             {
                 target.AddComponent<Animator>();
-                target.GetComponent<Animator>().runtimeAnimatorController = cardAnim;
+                Animator temp = target.GetComponent<Animator>();
+                temp.runtimeAnimatorController = cardAnim;
+
+                if(bouncePos.x == 0)
+                {
+                    if(bouncePos.y > 0)
+                    {
+                        temp.Play("trampolineUp");
+                    }
+                    else
+                    {
+                        temp.Play("trampoline");
+                    }
+                }
+                else
+                {
+                    if (bouncePos.x > 0)
+                    {
+                        temp.Play("trampolineRight");
+                    }
+                    else
+                    {
+                        temp.Play("trampolineLeft");
+                    }
+                }
+
                 flag = true;
             }            
         }
