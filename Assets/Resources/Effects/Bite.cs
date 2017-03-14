@@ -6,6 +6,7 @@ public class Bite : MonoBehaviour
     public GameObject target;
     public float timer = 3;
     private Vector3 dir;
+    private Vector3 scaleTarget = new Vector3(0.3f, 0.3f, 0.3f);
 
     void Awake()
     {
@@ -27,6 +28,11 @@ public class Bite : MonoBehaviour
 	    if (timer > 2)
         {
             timer -= Time.deltaTime;
+        }
+        if (timer > 1)
+        {
+            timer -= Time.deltaTime;
+            target.transform.localScale = Vector3.MoveTowards(target.transform.localScale, scaleTarget, 0.02f);
         }
         else if(timer > 0)
         {
