@@ -67,7 +67,7 @@ public class CardMove : MonoBehaviour
                         else if(Card.CurrentArea == "TrapZone")
                         {
                             Card.owner.Traps.ToggleActive(Card);
-                            CanvasManager.Instance.UpdateCanvas("Text");
+                            CanvasManager.Instance.UpdateCanvas("Trap");
                         }
                     }
                 }
@@ -293,7 +293,7 @@ public class CardMove : MonoBehaviour
                     else if (Card.CurrentArea == "TrapZone")
                     {
                         Card.owner.Traps.ToggleActive(Card);
-                        CanvasManager.Instance.UpdateCanvas("Text");
+                        CanvasManager.Instance.UpdateCanvas("Trap");
                     }
                 }
             }

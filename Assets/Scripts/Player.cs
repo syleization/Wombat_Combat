@@ -11,6 +11,29 @@ public class Player : NetworkBehaviour
     public bool HasDefenceCards = false;
     [SyncVar]
     public bool HasTrapCards = false;
+    private int TrapAmount;
+    public int CurrentTrapAmount
+    {
+        set
+        {
+            UI_PlayerInfo.Instance.ChangeTrapsText(isLocalPlayer, value);
+            TrapAmount = value;
+        }
+        get
+        {
+            return TrapAmount;
+        }
+    }
+    [Command]
+    public void CmdChangeTrapAmount(int value)
+    {
+        RpcChangeTrapAmount(value);
+    }
+    [ClientRpc]
+    public void RpcChangeTrapAmount(int value)
+    {
+        CurrentTrapAmount = value;
+    }
     public Sinkhole PlayersSinkhole;
     public Hand Hand;
     public DeckOfCards Deck;
@@ -86,9 +109,30 @@ public class Player : NetworkBehaviour
                     }
                 }
             }
+            else
+            {
+                if (isServer)
+                {
+                    RpcChangeHealthAmount(value);
+                }
+                else
+                {
+                    CmdChangeHealthAmount(value);
+                }
+            }
         }
     }
-    private const int MaxHealth = 15;
+    [Command]
+    public void CmdChangeHealthAmount(float value)
+    {
+        RpcChangeHealthAmount(value);
+    }
+    [ClientRpc]
+    public void RpcChangeHealthAmount(float value)
+    {
+        UI_PlayerInfo.Instance.ChangeHealthText(isLocalPlayer, value);
+    }
+    public const int MaxHealth = 15;
     public const int MaxActions = 4;
     [SyncVar(hook ="OnAction")]
     public int PlayersCurrentActions;

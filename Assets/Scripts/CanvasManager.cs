@@ -30,6 +30,7 @@ public class CanvasManager : MonoBehaviour
         Trap.Initialize();
         CardTap = Instantiate(CardTap);
         CardTap.Initialize();
+        UI_PlayerInfo.Instance.Initialize();
     }
 
     public void Terminate()
