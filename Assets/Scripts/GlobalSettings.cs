@@ -8,6 +8,8 @@ public enum AreaPosition { Left, Top, Right, Bottom }
 public enum GameType { TwoPlayer, ThreePlayer, FourPlayer }
 public class GlobalSettings : NetworkBehaviour
 {
+    // TEMP
+    public bool NathanIsTesting = false;
     [Header("Game Settings")]
     public GameType TypeOfGame;
     [Header("Players")]
@@ -253,7 +255,9 @@ public class GlobalSettings : NetworkBehaviour
             Debug.Log("Player Not Registered");
         }
 
-       // CanStartGame = true;// A testing shortcut
+        if(NathanIsTesting)
+             CanStartGame = true;// A testing shortcut
+
         if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
         {
             CanStartGame = true;
