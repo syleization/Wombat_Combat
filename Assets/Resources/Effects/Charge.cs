@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Charge : MonoBehaviour
+public class Charge : Attack
 {
-    public GameObject target;
     public Vector3 atkPos;
     public Vector3 defPos;
     public GameObject dust;
@@ -22,7 +21,7 @@ public class Charge : MonoBehaviour
     {
         target = card;
         atkPos = atk * 2;
-        defPos = def * 2;
+        defPos = def * 0.5f;
 
         target.transform.position = atkPos;
 
@@ -64,12 +63,21 @@ public class Charge : MonoBehaviour
 
             target.transform.position = Vector3.MoveTowards(target.transform.position, defPos, 1.0f);
             mDust.transform.position = target.transform.position;
+
+            if (target.transform.position == defPos)
+                mDust.GetComponent<ParticleSystem>().Pause();
         }
         else
         {
-            Destroy(mDust);
-            Destroy(target);
-            Destroy(gameObject);
+            //Destroy(mDust);
+            //Destroy(target);
+            //Destroy(gameObject);
         }
+    }
+
+    public override void Terminate()
+    {
+        Destroy(mDust);
+        Destroy(gameObject);
     }
 }

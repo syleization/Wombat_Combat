@@ -3,8 +3,23 @@ using System.Collections;
 
 public class Effects : MonoBehaviour
 {
+    public static Attack activeAttack;
 
-	public static void Attack(GameObject card, Player defender, Player attacker)
+    public static Attack TheActiveAttack
+    {
+        set
+        {
+            activeAttack = value;
+        }
+        get
+        {
+            return activeAttack;
+        }
+    }
+
+    private Effects() { }
+
+    public static void Attack(GameObject card, Player defender, Player attacker)
     {
         GameObject attackAnimation = Instantiate(Resources.Load("Effects/RedAttack")) as GameObject;
 
@@ -38,34 +53,6 @@ public class Effects : MonoBehaviour
             return 90;
         return 0;
     }
-
-    //public static Quaternion FaceDirection(Player target)
-    //{
-    //    GlobalSettings instance = GlobalSettings.Instance;
-    //    if (instance.TopPlayer == target)
-    //        return new Quaternion(0, 0, 0, 0);
-    //    else if (instance.RightPlayer == target)
-    //        return new Quaternion(0, 0, .25f, 0);
-    //    else if (instance.BottomPlayer == target)
-    //        return new Quaternion(0, 0, .5f, 0);
-    //    else if (instance.LeftPlayer == target)
-    //        return new Quaternion(0, 0, .75f, 0);
-    //    return new Quaternion(0, 0, 0, 0);
-    //}
-
-    //public static Quaternion FaceAwayFromDirection(Player target)
-    //{
-    //    GlobalSettings instance = GlobalSettings.Instance;
-    //    if (instance.TopPlayer == target)
-    //        return new Quaternion(0, 0, .5f, 0);
-    //    else if (instance.RightPlayer == target)
-    //        return new Quaternion(0, 0, .75f, 0);
-    //    else if (instance.BottomPlayer == target)
-    //        return new Quaternion(0, 0, 0, 0);
-    //    else if (instance.LeftPlayer == target)
-    //        return new Quaternion(0, 0, .25f, 0);
-    //    return new Quaternion(0, 0, 0, 0);
-    //}
 
     public static Vector3 PointBehind(Player target)
     {
@@ -165,6 +152,13 @@ public class Effects : MonoBehaviour
         card.transform.position = Vector3.zero;
         GameObject cageAnimation = Instantiate(Resources.Load("Effects/Cage")) as GameObject;
 
+        if(TheActiveAttack != null)
+        {
+            card = TheActiveAttack.target;
+            TheActiveAttack.Terminate();
+            TheActiveAttack = null;
+        }
+
         cageAnimation.GetComponent<Cage>().Initialize(card, PointBehind(owner));
     }
 
@@ -197,6 +191,8 @@ public class Effects : MonoBehaviour
         GameObject chargeAnimation = Instantiate(Resources.Load("Effects/WombatCharge")) as GameObject;
 
         chargeAnimation.GetComponent<Charge>().Initialize(card, PointBehind(attacker), PointBehind(defender));
+
+        TheActiveAttack = chargeAnimation.GetComponent<Attack>();
     }
 
     public static void WomboCombo(GameObject card, Player defender, Player attacker)
@@ -204,5 +200,7 @@ public class Effects : MonoBehaviour
         GameObject chargeAnimation = Instantiate(Resources.Load("Effects/WomboCombo")) as GameObject;
 
         chargeAnimation.GetComponent<Charge>().Initialize(card, PointBehind(attacker), PointBehind(defender));
+
+        
     }
 }
