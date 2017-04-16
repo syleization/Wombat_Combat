@@ -44,7 +44,7 @@ public class CardPopUp : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(Input.touchCount == 1 && !TheCard.owner.IsHoldingCard && MobileStop == false && CardCanMoveNow == false)
+        if(Pause.Instance.IsPaused == false && Input.touchCount == 1 && !TheCard.owner.IsHoldingCard && MobileStop == false && CardCanMoveNow == false)
         {
             MobileStop = true;
             Touch touch = Input.GetTouch(0);

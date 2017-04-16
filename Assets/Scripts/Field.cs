@@ -161,4 +161,27 @@ public class Field : NetworkBehaviour
         Instance.CardsInField.Remove(card);
         Destroy(card.gameObject);
     }
+
+    // Don't put parameters if you want the card hidden forever
+    public void HideCards(float timer = 0)
+    {
+        foreach(Card card in CardsInField)
+        {
+            card.gameObject.SetActive(false);
+        }
+        if (timer != 0)
+        {
+            StartCoroutine(ShowCards(timer));
+        }
+    }
+
+    IEnumerator ShowCards(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        foreach (Card card in CardsInField)
+        {
+            card.gameObject.SetActive(true);
+        }
+    }
+
 }

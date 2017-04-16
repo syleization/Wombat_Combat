@@ -53,7 +53,7 @@ public class DeckOfCards : MonoBehaviour
 
     Card GetRandomBasicCard()
     {
-        switch(Random.Range(0, 7))
+        switch(Random.Range(4, 5))
         {
             case 6:
             case 0:
@@ -157,7 +157,7 @@ public class DeckOfCards : MonoBehaviour
 
     public static void TransformDealtCardToHand(Card newCard, int Spacing)
     {
-        newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f);
+        newCard.transform.position = new Vector3(((float)Spacing * 2) - 5, newCard.owner.Hand.transform.position.y, (float)Spacing * -0.01f - 0.01f);
         newCard.transform.rotation = new Quaternion(newCard.owner.Hand.transform.rotation.x, newCard.owner.Hand.transform.rotation.y, newCard.owner.Hand.transform.rotation.z, newCard.owner.Hand.transform.rotation.w);
     }
 }

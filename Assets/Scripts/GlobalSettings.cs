@@ -37,6 +37,12 @@ public class GlobalSettings : NetworkBehaviour
     private Field Fieldzone;
     [SerializeField]
     private TheGUI TheGUI;
+    [SerializeField]
+    public ParticleSystem AttackGlow;
+    [SerializeField]
+    public ParticleSystem DefenceGlow;
+    [SerializeField]
+    public ParticleSystem TrapGlow;
 
     [Header("Damages")]
     public const int Damage_DonkeyKick = 1;
@@ -64,6 +70,7 @@ public class GlobalSettings : NetworkBehaviour
         }
     }
 
+    #region Initialization
     void Awake()
     {
         TheInstance = this;
@@ -217,6 +224,7 @@ public class GlobalSettings : NetworkBehaviour
             newHand.transform.rotation = new Quaternion(0.0f, 0.0f, 90.0f, 0.0f);
         }
     }
+    #endregion
 
     public Player GetLocalPlayer()
     {

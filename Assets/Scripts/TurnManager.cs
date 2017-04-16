@@ -99,7 +99,7 @@ public class TurnManager : NetworkBehaviour
             }
             NetworkServer.Spawn(banner);
 
-            yield return new WaitForSeconds(4.0f);
+            yield return new WaitForSeconds(2.0f);
 
             Destroy(banner);
             NetworkServer.UnSpawn(banner);

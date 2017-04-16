@@ -42,7 +42,7 @@ public class CardActions : MonoBehaviour
             return Reactor;
         }
     }
-
+    #region Attacks
     public static void DonkeyKick(Player thrower)
     {
         --thrower.CurrentActions;
@@ -50,8 +50,6 @@ public class CardActions : MonoBehaviour
         {
             thrower.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), thrower.CurrentActions);
         }
-
-        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
 
         Player leftOfThrowingPlayer = TurnManager.Instance.GetPlayerToTheLeftOf(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
         Player rightOfThrowingPlayer = TurnManager.Instance.GetPlayerToTheRightOf(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
@@ -70,12 +68,12 @@ public class CardActions : MonoBehaviour
 
         if (!thrower.isServer)
         {
-            thrower.CmdAttack(CardSubType.DonkeyKick, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.CmdAttackDK(CardSubType.DonkeyKick, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             thrower.CmdPauseGame(kEffectTime);
         }
         else
         {
-            thrower.RpcAttack(CardSubType.DonkeyKick, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.RpcAttackDK(CardSubType.DonkeyKick, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
@@ -92,12 +90,12 @@ public class CardActions : MonoBehaviour
 
         if (!thrower.isServer)
         {
-            thrower.CmdAttack(CardSubType.WombatCharge, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.CmdAttackWC(CardSubType.WombatCharge, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             thrower.CmdPauseGame(kEffectTime);
         }
         else
         {
-            thrower.RpcAttack(CardSubType.WombatCharge, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.RpcAttackWC(CardSubType.WombatCharge, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
@@ -115,19 +113,20 @@ public class CardActions : MonoBehaviour
 
         if (!thrower.isServer)
         {
-            thrower.CmdAttack(CardSubType.WomboCombo, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.CmdAttackWomCom(CardSubType.WomboCombo, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             thrower.CmdPauseGame(kEffectTime);
         }
         else
         {
-            thrower.RpcAttack(CardSubType.WomboCombo, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.RpcAttackWomCom(CardSubType.WomboCombo, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
         Debug.Log("Two wombats jump at " + target.ToString() + "!");
         TheInstance.StartCoroutine(WaitToReact(kEffectTime, thrower, target));
     }
-
+    #endregion
+    #region Defence
     public static void Bark(Player thrower, Player reactor)
     {
         --reactor.CurrentActions;
@@ -145,14 +144,14 @@ public class CardActions : MonoBehaviour
         {
             reactor.CmdChangeStage(Stage.Play);
             reactor.CmdUpdateBarkedCards(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
-            reactor.CmdBark(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.CmdBark(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             reactor.CmdClearField();
             reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
             reactor.RpcUpdateBarkedCards(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
-            reactor.RpcBark(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.RpcBark(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Field.Instance.RpcClearField();
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
@@ -186,7 +185,7 @@ public class CardActions : MonoBehaviour
 
         if (!killer.isServer)
         {
-            killer.CmdBite();
+            killer.CmdBite(tempSubType);
             killer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(killer), killer.CurrentActions);
             killer.CmdClearField();
             killer.CmdChangeStage(Stage.Play);
@@ -194,19 +193,13 @@ public class CardActions : MonoBehaviour
         }
         else
         {
-            killer.RpcBite();
+            killer.RpcBite(tempSubType);
             Field.Instance.RpcClearField();
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
         Debug.Log(killer.ToString() + "'s wolverine bit the wombat and it ran away!");
         // HideCards.Instance.HideCardsOfPlayer(killer);
-    }
-
-    static IEnumerator WaitToReact(float waitTime, Player thrower, Player reactor)
-    {
-        yield return new WaitForSeconds(waitTime);
-        React(thrower, reactor);
     }
 
     public static void GooglyEyes(Player thrower, Player reactor)
@@ -218,12 +211,12 @@ public class CardActions : MonoBehaviour
         if (!reactor.isServer)
         {
             reactor.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), reactor.CurrentActions);
-            reactor.CmdGooglyEyes(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.CmdGooglyEyes(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
-            reactor.RpcGooglyEyes(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.RpcGooglyEyes(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
@@ -231,7 +224,8 @@ public class CardActions : MonoBehaviour
         //HideCards.Instance.HideCardsOfPlayer(reactor);
         TheInstance.StartCoroutine(WaitToReact(kEffectTime, reactor, thrower));
     }
-
+    #endregion
+    #region Traps
     public static void Trampoline(Player thrower, Player reactor)
     {
         Turns reactorTurn = TurnManager.Instance.GetTurnEnumOfPlayer(reactor);
@@ -262,7 +256,20 @@ public class CardActions : MonoBehaviour
     private static void TrampolineBounce(Player thrower, Player target)
     {
         // Remove the trampoline from the field
+        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
         Field.Instance.RemoveCard(1);
+
+        if (!thrower.isServer)
+        {
+            thrower.CmdTramp(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.CmdPauseGame(kEffectTime);
+        }
+        else
+        {
+            thrower.RpcTramp(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            Pause.Instance.RpcPauseGame(kEffectTime);
+        }
+
         React(thrower, target);
     }
 
@@ -315,13 +322,13 @@ public class CardActions : MonoBehaviour
         if(!reactor.isServer)
         {
             reactor.CmdRemoveCardFromField(0);
-            reactor.CmdCage(TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
+            reactor.CmdCage(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
             reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
             Field.Instance.RpcRemoveCardFromField(0);
-            reactor.RpcCage(TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
+            reactor.RpcCage(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
         // Clear the field and reset the stage
@@ -338,7 +345,8 @@ public class CardActions : MonoBehaviour
         }
         // HideCards.Instance.HideCardsOfPlayer(reactor);
     }
-
+    #endregion
+    #region Other
     static void React(Player thrower, Player reactor)
     {
         if(reactor.IsSinkholeActive == true)
@@ -369,7 +377,8 @@ public class CardActions : MonoBehaviour
 
             Thrower = thrower;
             Reactor = reactor;
-            if(thrower.isServer)
+  
+            if (thrower.isServer)
             {
                 thrower.RpcUpdateThrowerAndReactor(TurnManager.Instance.GetTurnEnumOfPlayer(thrower), TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
             }
@@ -387,12 +396,27 @@ public class CardActions : MonoBehaviour
         }
     }
 
+    static IEnumerator WaitToReact(float waitTime, Player thrower, Player reactor)
+    {
+        if (thrower.isServer)
+        {
+            thrower.RpcHideCardsFromField(0);
+        }
+        else
+        {
+            thrower.CmdHideCardsFromField(0);
+        }
+        yield return new WaitForSeconds(waitTime);
+        React(thrower, reactor);
+    }
+
     static void DealDamage(Player thrower, Player victim)
     {
         int damage = Field.Instance.CurrentDamageInField;
         Debug.Log(victim.ToString() + " was hit by " + thrower.ToString() + "'s wombat for " + damage + " damage!");
         victim.CurrentHealth -= damage;
 
+        ///////////////////// ADD EFFECTS.ATTACKEND ////////////////////////////////////
         // Wombat is no longer bouncing around
         TurnManager.Instance.currentStage = Stage.Play;
         Field.Instance.ClearField();
@@ -415,4 +439,5 @@ public class CardActions : MonoBehaviour
         //HideCards.Instance.HideCardsOfPlayer(Reactor);
         DealDamage(Thrower, Reactor);
     }
+    #endregion
 }

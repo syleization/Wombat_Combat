@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Networking;
 
 public class Player : NetworkBehaviour
@@ -16,7 +17,6 @@ public class Player : NetworkBehaviour
     {
         set
         {
-            UI_PlayerInfo.Instance.ChangeTrapsText(isLocalPlayer, value);
             TrapAmount = value;
         }
         get
@@ -25,14 +25,15 @@ public class Player : NetworkBehaviour
         }
     }
     [Command]
-    public void CmdChangeTrapAmount(int value)
+    public void CmdChangeTrapAmount(int value, Turns player)
     {
-        RpcChangeTrapAmount(value);
+        RpcChangeTrapAmount(value, player);
     }
     [ClientRpc]
-    public void RpcChangeTrapAmount(int value)
+    public void RpcChangeTrapAmount(int value, Turns player)
     {
-        CurrentTrapAmount = value;
+        TurnManager.Instance.GetPlayerOfTurnEnum(player).CurrentTrapAmount = value;
+        UI_PlayerInfo.Instance.ChangeTrapsText();
     }
     public Sinkhole PlayersSinkhole;
     public Hand Hand;
@@ -130,7 +131,7 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcChangeHealthAmount()
     {
-        UI_PlayerInfo.Instance.ChangeHealthText(isLocalPlayer);
+        UI_PlayerInfo.Instance.ChangeHealthText();
     }
     public const int MaxHealth = 15;
     public const int MaxActions = 4;
@@ -165,7 +166,7 @@ public class Player : NetworkBehaviour
     {
         GlobalSettings.Instance.AddNetworkPlayer(this);
     }
-
+    #region Networking
     // Player commands
     [Command]
     public void CmdChangeActions(Turns player, int value)
@@ -240,6 +241,18 @@ public class Player : NetworkBehaviour
     public void CmdRemoveCardFromField(int index)
     {
         Field.Instance.RpcRemoveCardFromField(index);
+    }
+
+    [Command]
+    public void CmdHideCardsFromField(float timer)
+    {
+        RpcHideCardsFromField(timer);
+    }
+
+    [ClientRpc]
+    public void RpcHideCardsFromField(float timer)
+    {
+        Field.Instance.HideCards(timer);
     }
 
     // TurnManager Commands
@@ -324,38 +337,39 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    public void CmdBite()
+    public void CmdBite(CardSubType card)
     {
-        RpcBite();
+        RpcBite(card);
     }
 
     [ClientRpc]
-    public void RpcBite()
+    public void RpcBite(CardSubType card)
     {
-        Effects.Bite();
+        Effects.Bite(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject);
     }
 
     [Command]
-    public void CmdBark(Turns defender, Turns attacker)
+    public void CmdBark(CardSubType card, Turns defender, Turns attacker)
     {
-        RpcBark(defender, attacker);
+        RpcBark(card, defender, attacker);
     }
 
     [ClientRpc]
-    public void RpcBark(Turns defender, Turns attacker)
+    public void RpcBark(CardSubType card, Turns defender, Turns attacker)
     {
-        Effects.Bark(TurnManager.Instance.GetPlayerOfTurnEnum(defender)
+        Effects.Bark(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject
+            , TurnManager.Instance.GetPlayerOfTurnEnum(defender)
             , TurnManager.Instance.GetPlayerOfTurnEnum(attacker));
     }
 
     [Command]
-    public void CmdAttack(CardSubType card, Turns defender, Turns attacker)
+    public void CmdAttackDK(CardSubType card, Turns defender, Turns attacker)
     {
-        RpcAttack(card, defender, attacker);
+        RpcAttackDK(card, defender, attacker);
     }
 
     [ClientRpc]
-    public void RpcAttack(CardSubType card, Turns defender, Turns attacker)
+    public void RpcAttackDK(CardSubType card, Turns defender, Turns attacker)
     {
         Effects.Attack(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject
             , TurnManager.Instance.GetPlayerOfTurnEnum(defender)
@@ -363,27 +377,85 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    public void CmdCage(Turns playerWhoNowOwnsCard)
+    public void CmdAttackWC(CardSubType card, Turns defender, Turns attacker)
     {
-        RpcCage(playerWhoNowOwnsCard);
+        RpcAttackWC(card, defender, attacker);
     }
 
     [ClientRpc]
-    public void RpcCage(Turns playerWhoNowOwnsCard)
+    public void RpcAttackWC(CardSubType card, Turns defender, Turns attacker)
     {
-        Effects.Cage(TurnManager.Instance.GetPlayerOfTurnEnum(playerWhoNowOwnsCard));
+        Effects.Charge(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject
+            , TurnManager.Instance.GetPlayerOfTurnEnum(defender)
+            , TurnManager.Instance.GetPlayerOfTurnEnum(attacker));
     }
 
     [Command]
-    public void CmdGooglyEyes(Turns targetPlayer)
+    public void CmdAttackWomCom(CardSubType card, Turns defender, Turns attacker)
     {
-        RpcGooglyEyes(targetPlayer);
+        RpcAttackWomCom(card, defender, attacker);
     }
 
     [ClientRpc]
-    public void RpcGooglyEyes(Turns targetPlayer)
+    public void RpcAttackWomCom(CardSubType card, Turns defender, Turns attacker)
     {
-        Effects.GooglyEyes(TurnManager.Instance.GetPlayerOfTurnEnum(targetPlayer));
+        Effects.WomboCombo(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject
+            , TurnManager.Instance.GetPlayerOfTurnEnum(defender)
+            , TurnManager.Instance.GetPlayerOfTurnEnum(attacker));
+    }
+
+    [Command]
+    public void CmdCage(CardSubType card, Turns playerWhoNowOwnsCard)
+    {
+        RpcCage(card, playerWhoNowOwnsCard);
+    }
+
+    [ClientRpc]
+    public void RpcCage(CardSubType card, Turns playerWhoNowOwnsCard)
+    {
+        Effects.Cage(
+            Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject,
+            TurnManager.Instance.GetPlayerOfTurnEnum(playerWhoNowOwnsCard));
+    }
+
+    [Command]
+    public void CmdTramp(CardSubType card, Turns defender, Turns attacker)
+    {
+        RpcTramp(card, defender, attacker);
+    }
+
+    [ClientRpc]
+    public void RpcTramp(CardSubType card, Turns defender, Turns attacker)
+    {
+        Effects.Tramp(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject
+            , TurnManager.Instance.GetPlayerOfTurnEnum(defender)
+            , TurnManager.Instance.GetPlayerOfTurnEnum(attacker));
+    }
+
+    [Command]
+    public void CmdGooglyEyes(CardSubType card, Turns targetPlayer)
+    {
+        RpcGooglyEyes(card, targetPlayer);
+    }
+
+    [ClientRpc]
+    public void RpcGooglyEyes(CardSubType card, Turns targetPlayer)
+    {
+        Effects.GooglyEyes(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject,
+            TurnManager.Instance.GetPlayerOfTurnEnum(targetPlayer));
+    }
+
+    [Command]
+    public void CmdMergeAnimation(CardSubType card, Turns targetPlayer)
+    {
+        RpcMergeAnimation(card, targetPlayer);
+    }
+
+    [ClientRpc]
+    public void RpcMergeAnimation(CardSubType card, Turns targetPlayer)
+    {
+        ///////////////EDIT FOR MERGE ANIMATION/////////////////////
+
     }
 
 
@@ -419,6 +491,7 @@ public class Player : NetworkBehaviour
         }
     }
 
+    #endregion
     void Awake()
     {
         CurrentActions = MaxActions;

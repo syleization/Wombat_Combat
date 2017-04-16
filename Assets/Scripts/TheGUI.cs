@@ -82,13 +82,10 @@ public class TheGUI : NetworkBehaviour
 
                     // Check if the player has defence cards
                     currentPlayer.HasDefenceCards = currentPlayer.Hand.HasDefenceCards();
-                    currentPlayer.HasTrapCards = currentPlayer.Hand.HasTrapCards();
-
                     if (!isServer)
                     {
                         currentPlayer.CmdChangeFieldSize();
                         currentPlayer.CmdChangeHasDefenceCards(currentPlayer.HasDefenceCards);
-                        currentPlayer.CmdChangeHasTrapCards(currentPlayer.HasTrapCards);
                     }
                 }
                 // Sifts through the stages and the last stage has an end turn button instead of an end stage button
@@ -136,6 +133,7 @@ public class TheGUI : NetworkBehaviour
                 {
                     // Add new power card to hand
 
+                    ///////////////EDIT FOR MERGE ANIMATION/////////////////////
                     Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
 
                     if (!isServer)

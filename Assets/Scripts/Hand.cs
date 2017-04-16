@@ -4,15 +4,17 @@ using System.Collections.Generic;
 
 public class Hand : MonoBehaviour
 {
-    [SerializeField]
-    Material mDefaultMaterial;
     public List<Card> CardsInHand = new List<Card>();
-    
+
+    #region Glow
     public void ClearGlow()
     {
         foreach (Card card in CardsInHand)
         {
-            //card.GetComponent<SpriteRenderer>().material = mDefaultMaterial; 
+            if(card.transform.childCount > 0)
+            {
+                Destroy(card.transform.GetChild(0).gameObject);
+            }
             card.GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
@@ -21,13 +23,17 @@ public class Hand : MonoBehaviour
     {
         foreach(Card card in CardsInHand)
         {
-            if(card.SubType == subtype)
+            if(card.SubType == subtype && card.transform.childCount == 0)
             {
-                //card.GetComponent<SpriteRenderer>().material = GetMaterialOfSubType(subtype);
+                GameObject glowParticles = GetMaterialOfSubType(subtype);
+
+                glowParticles.transform.parent = card.transform;
+                glowParticles.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                glowParticles.transform.localRotation = glowParticles.transform.localRotation * Quaternion.Euler(Vector3.up * 180.0f);
+                glowParticles.transform.localPosition = new Vector3(0.0f, -1.0f, 18.8f);
             }
-            else
+            else if(card.SubType != subtype)
             {
-                //card.GetComponent<SpriteRenderer>().material = Resources.Load("Glow/NoGlow") as Material;
                 card.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
             }
         }
@@ -37,55 +43,60 @@ public class Hand : MonoBehaviour
     {
         foreach (Card card in CardsInHand)
         {
-            if (card.Type == type)
+            if (card.Type == type && card.transform.childCount == 0)
             {
-                //card.GetComponent<SpriteRenderer>().material = GetMaterialOfType(type);
+                GameObject glowParticles = GetMaterialOfType(type);
+
+                glowParticles.transform.parent = card.transform;
+                glowParticles.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                glowParticles.transform.localRotation = glowParticles.transform.localRotation * Quaternion.Euler(Vector3.up * 180.0f);
+                glowParticles.transform.localPosition = new Vector3(0.0f, -1.0f, 18.8f);
             }
-            else
+            else if(card.Type != type)
             {
-                //card.GetComponent<SpriteRenderer>().material = Resources.Load("Glow/NoGlow") as Material;
                 card.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
             }
         }
     }
 
-    Material GetMaterialOfSubType(CardSubType subtype)
+    GameObject GetMaterialOfSubType(CardSubType subtype)
     {
         switch (subtype)
         {
             case CardSubType.DonkeyKick:
             case CardSubType.WombatCharge:
             case CardSubType.WomboCombo:
-                return Resources.Load("Glow/AttackGlow") as Material;
+                return Instantiate(GlobalSettings.Instance.AttackGlow).gameObject;
             case CardSubType.Bark:
             case CardSubType.Bite:
             case CardSubType.GooglyEyes:
-                return Resources.Load("Glow/DefenceGlow") as Material;
+                return Instantiate(GlobalSettings.Instance.DefenceGlow).gameObject;
             case CardSubType.Trampoline:
             case CardSubType.Sinkhole:
             case CardSubType.WombatCage:
-                return Resources.Load("Glow/TrapGlow") as Material;
+                return Instantiate(GlobalSettings.Instance.TrapGlow).gameObject;
         }
 
         Debug.Log("[Hand::GetMaterialOfSubType] Invalid parameter");
         return null;
     }
 
-    Material GetMaterialOfType(CardType type)
+    GameObject GetMaterialOfType(CardType type)
     {
         switch (type)
         {
             case CardType.Attack:
-                return Resources.Load("Glow/AttackGlow") as Material;
+                return Instantiate(GlobalSettings.Instance.AttackGlow).gameObject;
             case CardType.Defence:
-                return Resources.Load("Glow/DefenceGlow") as Material;
+                return Instantiate(GlobalSettings.Instance.DefenceGlow).gameObject;
             case CardType.Trap:
-                return Resources.Load("Glow/TrapGlow") as Material;
+                return Instantiate(GlobalSettings.Instance.TrapGlow).gameObject;
         }
 
         Debug.Log("[Hand::GetMaterialOfSubType] Invalid parameter");
         return null;
     }
+    #endregion
 
     public void ResetHandCardPositions(Card cardMoved, int cardsDealt)
     {
