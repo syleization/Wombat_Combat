@@ -137,21 +137,20 @@ public class CardActions : MonoBehaviour
 
         Debug.Log(reactor.ToString() + "'s dingo scares the wombat back into " + thrower.ToString() + "'s hand at the end of the turn!");
 
-        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
         // Place the card in a holder array and clear the field
         TurnManager.Instance.currentStage = Stage.Play;
         if (!reactor.isServer)
         {
             reactor.CmdChangeStage(Stage.Play);
             reactor.CmdUpdateBarkedCards(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
-            reactor.CmdBark(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.CmdBark(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             reactor.CmdClearField();
             reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
             reactor.RpcUpdateBarkedCards(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
-            reactor.RpcBark(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.RpcBark(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Field.Instance.RpcClearField();
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
@@ -180,12 +179,11 @@ public class CardActions : MonoBehaviour
     {
         --killer.CurrentActions;
         TurnManager.Instance.currentStage = Stage.Play;
-        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
         Field.Instance.ClearField();
 
         if (!killer.isServer)
         {
-            killer.CmdBite(tempSubType);
+            killer.CmdBite();
             killer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(killer), killer.CurrentActions);
             killer.CmdClearField();
             killer.CmdChangeStage(Stage.Play);
@@ -193,7 +191,7 @@ public class CardActions : MonoBehaviour
         }
         else
         {
-            killer.RpcBite(tempSubType);
+            killer.RpcBite();
             Field.Instance.RpcClearField();
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
@@ -204,19 +202,18 @@ public class CardActions : MonoBehaviour
 
     public static void GooglyEyes(Player thrower, Player reactor)
     {
-        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
         --reactor.CurrentActions;
         Field.Instance.RemoveCard(1);
 
         if (!reactor.isServer)
         {
             reactor.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), reactor.CurrentActions);
-            reactor.CmdGooglyEyes(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.CmdGooglyEyes(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
-            reactor.RpcGooglyEyes(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            reactor.RpcGooglyEyes(TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
@@ -256,17 +253,16 @@ public class CardActions : MonoBehaviour
     private static void TrampolineBounce(Player thrower, Player target)
     {
         // Remove the trampoline from the field
-        CardSubType tempSubType = Field.Instance.GetCard(0).SubType;
         Field.Instance.RemoveCard(1);
 
         if (!thrower.isServer)
         {
-            thrower.CmdTramp(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.CmdTramp(TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             thrower.CmdPauseGame(kEffectTime);
         }
         else
         {
-            thrower.RpcTramp(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
+            thrower.RpcTramp(TurnManager.Instance.GetTurnEnumOfPlayer(target), TurnManager.Instance.GetTurnEnumOfPlayer(thrower));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
 
@@ -307,7 +303,6 @@ public class CardActions : MonoBehaviour
 
         // Retrieve the wombat and add it to your hand
         Card thrownCard = Field.Instance.GetCard(0);
-        CardSubType tempSubType = thrownCard.SubType;
 
         ++reactor.CurrentHandSize;
         reactor.Hand.CardsInHand.Add(thrownCard);
@@ -322,13 +317,13 @@ public class CardActions : MonoBehaviour
         if(!reactor.isServer)
         {
             reactor.CmdRemoveCardFromField(0);
-            reactor.CmdCage(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
+            reactor.CmdCage(TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
             reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
             Field.Instance.RpcRemoveCardFromField(0);
-            reactor.RpcCage(tempSubType, TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
+            reactor.RpcCage(TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
         // Clear the field and reset the stage

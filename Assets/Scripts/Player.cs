@@ -337,28 +337,27 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    public void CmdBite(CardSubType card)
+    public void CmdBite()
     {
-        RpcBite(card);
+        RpcBite();
     }
 
     [ClientRpc]
-    public void RpcBite(CardSubType card)
+    public void RpcBite()
     {
-        Effects.Bite(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject);
+        Effects.Bite();
     }
 
     [Command]
-    public void CmdBark(CardSubType card, Turns defender, Turns attacker)
+    public void CmdBark(Turns defender, Turns attacker)
     {
-        RpcBark(card, defender, attacker);
+        RpcBark(defender, attacker);
     }
 
     [ClientRpc]
-    public void RpcBark(CardSubType card, Turns defender, Turns attacker)
+    public void RpcBark(Turns defender, Turns attacker)
     {
-        Effects.Bark(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject
-            , TurnManager.Instance.GetPlayerOfTurnEnum(defender)
+        Effects.Bark(TurnManager.Instance.GetPlayerOfTurnEnum(defender)
             , TurnManager.Instance.GetPlayerOfTurnEnum(attacker));
     }
 
@@ -405,44 +404,40 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    public void CmdCage(CardSubType card, Turns playerWhoNowOwnsCard)
+    public void CmdCage(Turns playerWhoNowOwnsCard)
     {
-        RpcCage(card, playerWhoNowOwnsCard);
+        RpcCage(playerWhoNowOwnsCard);
     }
 
     [ClientRpc]
-    public void RpcCage(CardSubType card, Turns playerWhoNowOwnsCard)
+    public void RpcCage(Turns playerWhoNowOwnsCard)
     {
-        Effects.Cage(
-            Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject,
-            TurnManager.Instance.GetPlayerOfTurnEnum(playerWhoNowOwnsCard));
+        Effects.Cage(TurnManager.Instance.GetPlayerOfTurnEnum(playerWhoNowOwnsCard));
     }
 
     [Command]
-    public void CmdTramp(CardSubType card, Turns defender, Turns attacker)
+    public void CmdTramp(Turns defender, Turns attacker)
     {
-        RpcTramp(card, defender, attacker);
+        RpcTramp(defender, attacker);
     }
 
     [ClientRpc]
-    public void RpcTramp(CardSubType card, Turns defender, Turns attacker)
+    public void RpcTramp(Turns defender, Turns attacker)
     {
-        Effects.Tramp(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject
-            , TurnManager.Instance.GetPlayerOfTurnEnum(defender)
+        Effects.Tramp(TurnManager.Instance.GetPlayerOfTurnEnum(defender)
             , TurnManager.Instance.GetPlayerOfTurnEnum(attacker));
     }
 
     [Command]
-    public void CmdGooglyEyes(CardSubType card, Turns targetPlayer)
+    public void CmdGooglyEyes(Turns targetPlayer)
     {
-        RpcGooglyEyes(card, targetPlayer);
+        RpcGooglyEyes(targetPlayer);
     }
 
     [ClientRpc]
-    public void RpcGooglyEyes(CardSubType card, Turns targetPlayer)
+    public void RpcGooglyEyes(Turns targetPlayer)
     {
-        Effects.GooglyEyes(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card)).gameObject,
-            TurnManager.Instance.GetPlayerOfTurnEnum(targetPlayer));
+        Effects.GooglyEyes(TurnManager.Instance.GetPlayerOfTurnEnum(targetPlayer));
     }
 
     [Command]

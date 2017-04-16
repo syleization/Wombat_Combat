@@ -59,5 +59,10 @@ public class Pause : NetworkBehaviour
     {
         StartPauseTimer(waitTime);
     }
-    
+    public void Lock()
+    {
+        IsDoneWaiting = false;
+        enabled = false;
+    }
+
 }
