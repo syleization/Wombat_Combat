@@ -24,6 +24,14 @@ public class Effects : MonoBehaviour
         GameObject attackAnimation = Instantiate(Resources.Load("Effects/RedAttack")) as GameObject;
 
         attackAnimation.GetComponent<RedAttack>().Initialize(card, PointBehind(defender), PointBehind(attacker));
+
+        if (TheActiveAttack != null)
+        {
+            Destroy(TheActiveAttack.target);
+            TheActiveAttack.Terminate();
+        }
+
+        TheActiveAttack = attackAnimation.GetComponent<Attack>();
     }
 
     public static float FaceDirection(Player target)
@@ -139,49 +147,102 @@ public class Effects : MonoBehaviour
     }
 
     // Send in already instantiated card
-    public static void Bite(GameObject card)
+    public static void Bite()
     {
-        card.transform.position = Vector3.zero;
         GameObject biteAnimation = Instantiate(Resources.Load("Effects/Bite")) as GameObject;
+
+        GameObject card;
+        if (TheActiveAttack != null)
+        {
+            card = TheActiveAttack.target;
+            TheActiveAttack.Terminate();
+            TheActiveAttack = null;
+        }
+        else
+        {
+            card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+        }
 
         biteAnimation.GetComponent<Bite>().Initialize(card);
     }
 
-    public static void Cage(GameObject card, Player owner)
+    public static void Cage(Player owner)
     {
-        card.transform.position = Vector3.zero;
         GameObject cageAnimation = Instantiate(Resources.Load("Effects/Cage")) as GameObject;
 
+        GameObject card;
         if(TheActiveAttack != null)
         {
             card = TheActiveAttack.target;
             TheActiveAttack.Terminate();
             TheActiveAttack = null;
         }
+        else
+        {
+            card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+        }
 
         cageAnimation.GetComponent<Cage>().Initialize(card, PointBehind(owner));
     }
 
-    public static void GooglyEyes(GameObject card, Player toAttack)
+    public static void GooglyEyes(Player toAttack)
     {
-        card.transform.position = Vector3.zero;
         GameObject eyesAnimation = Instantiate(Resources.Load("Effects/Eyes")) as GameObject;
+
+        GameObject card;
+        if (TheActiveAttack != null)
+        {
+            card = TheActiveAttack.target;
+            TheActiveAttack.Terminate();
+            TheActiveAttack = null;
+        }
+        else
+        {
+            card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+        }
 
         eyesAnimation.GetComponent<GooglyEyes>().Initialize(card, PointBehind(toAttack));
     }
 
-    public static void Bark(GameObject card, Player defender, Player attacker)
+    public static void Bark(Player defender, Player attacker)
     {
-        card.transform.position = Vector3.zero;
         GameObject barkAnimation = Instantiate(Resources.Load("Effects/Bark")) as GameObject;
+
+        GameObject card;
+        if (TheActiveAttack != null)
+        {
+            card = TheActiveAttack.target;
+            TheActiveAttack.Terminate();
+            TheActiveAttack = null;
+        }
+        else
+        {
+            card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+        }
 
         barkAnimation.GetComponent<Bark>().Initialize(card, PointBehind(defender), PointBehind(attacker));
     }
 
-    public static void Tramp(GameObject card, Player oldTarget, Player newTarget)
+    public static void Tramp(Player oldTarget, Player newTarget)
     {
-        card.transform.position = Vector3.zero;
         GameObject trampAnimation = Instantiate(Resources.Load("Effects/Tramp")) as GameObject;
+
+        GameObject card;
+        if (TheActiveAttack != null)
+        {
+            card = TheActiveAttack.target;
+            TheActiveAttack.Terminate();
+            TheActiveAttack = null;
+        }
+        else
+        {
+            card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            card.transform.position = Vector3.zero;
+        }
 
         trampAnimation.GetComponent<Tramp>().Initialize(card, PointBehind(oldTarget), PointBehind(newTarget));
     }
@@ -192,6 +253,12 @@ public class Effects : MonoBehaviour
 
         chargeAnimation.GetComponent<Charge>().Initialize(card, PointBehind(attacker), PointBehind(defender));
 
+        if (TheActiveAttack != null)
+        {
+            Destroy(TheActiveAttack.target);
+            TheActiveAttack.Terminate();
+        }
+
         TheActiveAttack = chargeAnimation.GetComponent<Attack>();
     }
 
@@ -201,6 +268,23 @@ public class Effects : MonoBehaviour
 
         chargeAnimation.GetComponent<Charge>().Initialize(card, PointBehind(attacker), PointBehind(defender));
 
-        
+        if (TheActiveAttack != null)
+        {
+            Destroy(TheActiveAttack.target);
+            TheActiveAttack.Terminate();
+        }
+
+        TheActiveAttack = chargeAnimation.GetComponent<Attack>();
+    }
+
+    public static void AttackEnd()
+    {
+        if (TheActiveAttack != null)
+        {
+            GameObject endAnimation = Instantiate(Resources.Load("Effects/EndAttack")) as GameObject;
+            endAnimation.GetComponent<AtkEnd>().Initialize(TheActiveAttack);
+            TheActiveAttack.Terminate();
+            TheActiveAttack = null;
+        }
     }
 }

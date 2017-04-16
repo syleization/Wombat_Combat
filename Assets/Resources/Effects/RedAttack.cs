@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RedAttack : MonoBehaviour
+public class RedAttack : Attack
 {
-    public GameObject target;
     public float timer = 3;
     public Vector3 atkPos;
-    public Vector3 defPos;
     public float totalSpins = 1080;
     private float currentSpins = 0;
     private Vector3 rot = new Vector3(0, 0, 10);
@@ -23,7 +21,7 @@ public class RedAttack : MonoBehaviour
     {
         target = card;
         atkPos = atk * 2;
-        defPos = def * 0.5f;
+        endPos = def * 0.5f;
 
         transform.position = atkPos;
         target.transform.position = atkPos;
@@ -51,13 +49,18 @@ public class RedAttack : MonoBehaviour
         {
             timer -= Time.deltaTime;
 
-            transform.position = Vector3.MoveTowards(transform.position, defPos + offset, 2.0f);
-            target.transform.position = Vector3.MoveTowards(target.transform.position, defPos, 2.0f);
+            transform.position = Vector3.MoveTowards(transform.position, endPos + offset, 2.0f);
+            target.transform.position = Vector3.MoveTowards(target.transform.position, endPos, 2.0f);
         }
         else
         {
-            Destroy(gameObject);
-            Destroy(target);
+            //Destroy(gameObject);
+            //Destroy(target);
         }
+    }
+
+    public override void Terminate()
+    {
+        Destroy(gameObject);
     }
 }

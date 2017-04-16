@@ -4,7 +4,6 @@ using System.Collections;
 public class Charge : Attack
 {
     public Vector3 atkPos;
-    public Vector3 defPos;
     public GameObject dust;
     public GameObject mDust;
     private bool flag = false;
@@ -21,7 +20,7 @@ public class Charge : Attack
     {
         target = card;
         atkPos = atk * 2;
-        defPos = def * 0.5f;
+        endPos = def * 0.5f;
 
         target.transform.position = atkPos;
 
@@ -61,10 +60,10 @@ public class Charge : Attack
 
             mDust.GetComponent<ParticleSystem>().emissionRate = 100;
 
-            target.transform.position = Vector3.MoveTowards(target.transform.position, defPos, 1.0f);
+            target.transform.position = Vector3.MoveTowards(target.transform.position, endPos, 1.0f);
             mDust.transform.position = target.transform.position;
 
-            if (target.transform.position == defPos)
+            if (target.transform.position == endPos)
                 mDust.GetComponent<ParticleSystem>().Pause();
         }
         else

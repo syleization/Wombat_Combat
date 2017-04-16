@@ -4,7 +4,7 @@ using System.Collections;
 public class AtkEnd : MonoBehaviour
 {
     public GameObject target;
-    public Vector3 atkPos;
+    public Vector3 endPos;
 
     void Awake()
     {
@@ -12,10 +12,10 @@ public class AtkEnd : MonoBehaviour
     }
 
     // Use this for initialization
-    public void Initialize(GameObject card, Vector3 atk, Vector3 def)
+    public void Initialize(Attack input)
     {
-        target = card;
-        atkPos = atk * 2;
+        target = input.target;
+        endPos = input.endPos * 4;
 
         enabled = true;
     }
@@ -23,14 +23,14 @@ public class AtkEnd : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-	    if(target.transform.position != atkPos)
+	    if(target.transform.position != endPos)
         {
-            target.transform.position = Vector3.MoveTowards(target.transform.position, atkPos, 0.25f);
+            target.transform.position = Vector3.MoveTowards(target.transform.position, endPos, 0.5f);
         }
         else
         {
             Destroy(target);
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 }

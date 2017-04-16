@@ -9,6 +9,7 @@ public class Tramp : MonoBehaviour {
     public Vector3 bouncePos;
     public RuntimeAnimatorController cardAnim;
     private bool flag = false;
+    private bool centered = false;
     private Vector3 rot = new Vector3(0, 0, 10);
 
     void Awake()
@@ -29,7 +30,13 @@ public class Tramp : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if(timer > 2.5f)
+        if (!centered)
+        {
+            target.transform.position = Vector3.MoveTowards(target.transform.position, Vector3.zero, 0.5f);
+            if (target.transform.position == Vector3.zero)
+                centered = true;
+        }
+        else if(timer > 2.5f)
         {
             timer -= Time.deltaTime;
 
