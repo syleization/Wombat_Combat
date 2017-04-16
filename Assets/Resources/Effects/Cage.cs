@@ -18,7 +18,7 @@ public class Cage : MonoBehaviour {
     {
         target = card;
         endPos = owner * 2;
-        transform.position = new Vector3(target.transform.position.x, transform.position.y, -2);
+        transform.position = new Vector3(target.transform.position.x, target.transform.position.y, -2);
         enabled = true;
     }
 

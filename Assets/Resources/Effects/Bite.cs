@@ -17,6 +17,7 @@ public class Bite : MonoBehaviour
 	public void Initialize(GameObject card)
     {
         target = card;
+        transform.position = target.transform.position;
         dir = new Vector3(10, 10, 0);
         dir = Quaternion.Euler(0, 0, Random.Range(0, 360)) * dir;
         enabled = true;
