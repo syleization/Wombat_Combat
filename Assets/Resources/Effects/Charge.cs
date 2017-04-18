@@ -9,6 +9,7 @@ public class Charge : Attack
     private bool flag = false;
     public float timer = 1.5f;
     private float dustSpeed = 0.2f;
+    private Vector3 offset = new Vector3(0, 0, -1);
 
     void Awake()
     {
@@ -37,10 +38,10 @@ public class Charge : Attack
     void Update()
     {
         if (flag == false)
-        if (target.transform.position != Vector3.zero)
+        if (target.transform.position != offset)
         {
-            target.transform.position = Vector3.MoveTowards(target.transform.position, Vector3.zero, 0.25f);
-            mDust.transform.position = Vector3.MoveTowards(mDust.transform.position, Vector3.zero, dustSpeed);
+            target.transform.position = Vector3.MoveTowards(target.transform.position, offset, 0.25f);
+            mDust.transform.position = Vector3.MoveTowards(mDust.transform.position, offset, dustSpeed);
             return;
         }
         else

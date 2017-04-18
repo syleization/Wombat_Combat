@@ -11,6 +11,7 @@ public class Tramp : MonoBehaviour {
     private bool flag = false;
     private bool centered = false;
     private Vector3 rot = new Vector3(0, 0, 10);
+    private Vector3 offset = new Vector3(0, 0, -1);
 
     void Awake()
     {
@@ -24,6 +25,8 @@ public class Tramp : MonoBehaviour {
         endPos = hit * 2;
         bouncePos = bounce;
 
+        target.transform.parent = gameObject.transform;
+
         enabled = true;
     }
 
@@ -32,8 +35,9 @@ public class Tramp : MonoBehaviour {
     {
         if (!centered)
         {
-            target.transform.position = Vector3.MoveTowards(target.transform.position, Vector3.zero, 0.5f);
-            if (target.transform.position == Vector3.zero)
+            target.transform.position = Vector3.MoveTowards(target.transform.position, offset, 0.5f);
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, offset, 0.5f);
+            if (target.transform.position == offset)
                 centered = true;
         }
         else if(timer > 2.5f)

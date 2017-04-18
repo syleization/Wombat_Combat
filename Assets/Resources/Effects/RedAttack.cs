@@ -36,8 +36,8 @@ public class RedAttack : Attack
         {
             timer -= Time.deltaTime;
 
-            transform.position = Vector3.MoveTowards(transform.position, Vector3.zero + offset, 1.0f);
-            target.transform.position = Vector3.MoveTowards(target.transform.position, Vector3.zero, 1.0f);
+            transform.position = Vector3.MoveTowards(transform.position, offset, 1.0f);
+            target.transform.position = Vector3.MoveTowards(target.transform.position, offset, 1.0f);
         }
         else if (currentSpins < totalSpins)
         {
