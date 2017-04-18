@@ -487,6 +487,7 @@ public class Player : NetworkBehaviour
     }
 
     #endregion
+
     void Awake()
     {
         CurrentActions = MaxActions;

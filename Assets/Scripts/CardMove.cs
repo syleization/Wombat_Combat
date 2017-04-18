@@ -627,11 +627,16 @@ public class CardMove : MonoBehaviour
                     SnapBackToHand();
                     ++cardUsed.owner.CurrentHandSize;
                 }
-                Card.owner.HasTrapCards = Card.owner.Traps.HasTraps();
-
-                if (!Card.owner.isServer)
+                else
                 {
-                    Card.owner.CmdChangeHasTrapCards(Card.owner.HasTrapCards);
+                    Card.owner.HasTrapCards = Card.owner.Traps.HasTraps();
+
+                    --Card.owner.CurrentActions;
+                    if (!Card.owner.isServer)
+                    {
+                        Card.owner.CmdChangeHasTrapCards(Card.owner.HasTrapCards);
+                        Card.owner.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(Card.owner), Card.owner.CurrentActions);
+                    }
                 }
             }
             else
