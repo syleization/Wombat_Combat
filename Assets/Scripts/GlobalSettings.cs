@@ -43,6 +43,8 @@ public class GlobalSettings : NetworkBehaviour
     public ParticleSystem DefenceGlow;
     [SerializeField]
     public ParticleSystem TrapGlow;
+    [SerializeField]
+    ButtonManager ButtonManagingSystem;
 
     [Header("Damages")]
     public const int Damage_DonkeyKick = 1;
@@ -74,6 +76,12 @@ public class GlobalSettings : NetworkBehaviour
     void Awake()
     {
         TheInstance = this;
+
+        if (ButtonManagingSystem)
+        {
+            ButtonManagingSystem = Instantiate(ButtonManagingSystem);
+        }
+
         AllCards.Add(Attack_DonkeyKick);
         AllCards.Add(Attack_WombatCharge);
         AllCards.Add(Attack_WomboCombo);
@@ -354,6 +362,20 @@ public class GlobalSettings : NetworkBehaviour
     void OnGUI()
     {
         if(isServer && CanStartGame && GUI.Button(new Rect(Screen.width - 130, Screen.height / 2, 120, 20), "Start Game"))
+        {
+            CanStartGame = false;
+            RpcInitialize();
+        }
+    }
+
+    public bool CanInitialize()
+    {
+        return isServer && CanStartGame ? true : false;
+    }
+
+    public void RequestInitialize()
+    {
+        if(isServer && CanStartGame)
         {
             CanStartGame = false;
             RpcInitialize();
