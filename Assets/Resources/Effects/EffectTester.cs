@@ -288,5 +288,9 @@ public class EffectTester : MonoBehaviour {
         {
             Effects.AttackEnd();
         }
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            Effects.Merge();
+        }
     }
 }
