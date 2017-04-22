@@ -81,7 +81,7 @@ public class Hand : MonoBehaviour
         return null;
     }
 
-    GameObject GetMaterialOfType(CardType type)
+    public static GameObject GetMaterialOfType(CardType type)
     {
         switch (type)
         {
