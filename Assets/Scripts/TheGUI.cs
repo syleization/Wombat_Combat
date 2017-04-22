@@ -7,6 +7,7 @@ public class TheGUI : NetworkBehaviour
     Player left, right, across;
     [SyncVar]
     public bool Active = false;
+    bool isMerging = false;
     public bool isActive
     {
         set
@@ -129,26 +130,35 @@ public class TheGUI : NetworkBehaviour
                    && currentPlayer != null && Field.Instance.IsMergable()
                    && currentPlayer.CurrentActions > 0
                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                   && isMerging == false
                    && GUI.Button(new Rect(Screen.width / 50.0f, Screen.height / 2, Screen.width / 10.0f, Screen.height / 15.0f), "Merge"))
                 {
                     // Add new power card to hand
-
+                    isMerging = true;
                     ///////////////EDIT FOR MERGE ANIMATION/////////////////////
                     Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
+                    newCard.gameObject.SetActive(false);
 
                     if (!isServer)
                     {
                         currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);
+                        currentPlayer.CmdPauseGame(CardActions.kMergeEffectTime);
+                    }
+                    else
+                    {
+                        Pause.Instance.RpcPauseGame(CardActions.kMergeEffectTime);
                     }
                     --currentPlayer.CurrentActions;
                     --currentPlayer.CurrentHandSize;
-                    newCard.owner = currentPlayer;
-                    DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
-                    newCard.CurrentArea = "Hand";
-                    currentPlayer.Hand.CardsInHand.Add(newCard);
+                    
+                    StartCoroutine(WaitToPlaceMergedCardIntoHand(CardActions.kMergeEffectTime, currentPlayer, newCard));
+                    //newCard.owner = currentPlayer;
+                    //DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
+                    //newCard.CurrentArea = "Hand";
+                    //currentPlayer.Hand.CardsInHand.Add(newCard);
 
-                    // Clear field of used cards
-                    Field.Instance.ClearField();
+                    //// Clear field of used cards
+                    //Field.Instance.ClearField();
                 }
             }
             DisplayPlayers();
@@ -178,6 +188,22 @@ public class TheGUI : NetworkBehaviour
                 GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Winner!");
             }
         }
+    }
+
+    IEnumerator WaitToPlaceMergedCardIntoHand(float waitTime, Player currentPlayer, Card newCard)
+    {
+        yield return new WaitForSeconds(waitTime);
+        
+        newCard.owner = currentPlayer;
+        DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
+        newCard.CurrentArea = "Hand";
+        currentPlayer.Hand.CardsInHand.Add(newCard);
+
+        // Clear field of used cards
+        Field.Instance.ClearField();
+
+        isMerging = false;
+        newCard.gameObject.SetActive(true);
     }
 
     void DisplayPlayers()

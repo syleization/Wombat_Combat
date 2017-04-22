@@ -441,16 +441,15 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    public void CmdMergeAnimation(CardSubType card, Turns targetPlayer)
+    public void CmdMergeAnimation(CardSubType originalCards, CardSubType finalCard, Turns targetPlayer)
     {
-        RpcMergeAnimation(card, targetPlayer);
+        RpcMergeAnimation(originalCards, finalCard, targetPlayer);
     }
 
     [ClientRpc]
-    public void RpcMergeAnimation(CardSubType card, Turns targetPlayer)
+    public void RpcMergeAnimation(CardSubType originalCards, CardSubType finalCard, Turns targetPlayer)
     {
-        ///////////////EDIT FOR MERGE ANIMATION/////////////////////
-
+        Effects.Merge(originalCards, finalCard, targetPlayer);
     }
 
 
@@ -527,7 +526,8 @@ public class Player : NetworkBehaviour
         // Check Merge Glow
         if (TurnManager.Instance.currentStage == Stage.Merge
                     && this.isLocalPlayer && Field.Instance.GetCard(0) != null
-                   && this.CurrentActions > 0)
+                   && this.CurrentActions > 0
+                   && Field.Instance.CardsInField.Count != 2)
         {
             Hand.UpdateGlow(Field.Instance.GetCard(0).SubType);
         }

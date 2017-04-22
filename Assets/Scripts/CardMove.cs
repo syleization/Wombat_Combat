@@ -170,8 +170,15 @@ public class CardMove : MonoBehaviour
                                         Field.Instance.CardsInField.Add(Card);
                                         // Remove card from previous spot
                                         Card.owner.Hand.CardsInHand.Remove(Card);
-
-                                        if (TurnManager.Instance.currentStage == Stage.Play)
+                                         // Check to remove glow in merge stage
+                                        if(TurnManager.Instance.currentStage == Stage.Merge)
+                                        {
+                                            if(Card.transform.childCount != 0)
+                                            {
+                                                Destroy(Card.transform.GetChild(0).gameObject);
+                                            }
+                                        }
+                                        else if (TurnManager.Instance.currentStage == Stage.Play)
                                         {
                                             if (Card.SubType == CardSubType.DonkeyKick)
                                             {
@@ -396,7 +403,15 @@ public class CardMove : MonoBehaviour
                                         // Remove card from previous spot
                                         Card.owner.Hand.CardsInHand.Remove(Card);
 
-                                        if (TurnManager.Instance.currentStage == Stage.Play)
+                                        // Check to remove glow in merge stage
+                                        if(TurnManager.Instance.currentStage == Stage.Merge)
+                                        {
+                                            if(Card.transform.childCount != 0)
+                                            {
+                                                Destroy(Card.transform.GetChild(0).gameObject);
+                                            }
+                                        }
+                                        else if (TurnManager.Instance.currentStage == Stage.Play)
                                         {
                                             if (Card.SubType == CardSubType.DonkeyKick)
                                             {
