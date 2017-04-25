@@ -404,6 +404,18 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
+    public void CmdAttackEnd()
+    {
+        RpcAttackEnd();
+    }
+
+    [ClientRpc]
+    public void RpcAttackEnd()
+    {
+        Effects.AttackEnd();
+    }
+
+    [Command]
     public void CmdCage(Turns playerWhoNowOwnsCard)
     {
         RpcCage(playerWhoNowOwnsCard);

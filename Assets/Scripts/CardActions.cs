@@ -420,12 +420,14 @@ public class CardActions : MonoBehaviour
 
         if (!local.isServer)
         {
+            local.CmdAttackEnd();
             local.CmdTakeDamage(TurnManager.Instance.GetTurnEnumOfPlayer(victim), damage);
             local.CmdClearField();
             local.CmdChangeStage(Stage.Play);
         }
         else
         {
+            local.RpcAttackEnd();
             Field.Instance.RpcClearField();
         }
     }

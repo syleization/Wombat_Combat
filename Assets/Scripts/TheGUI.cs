@@ -143,10 +143,12 @@ public class TheGUI : NetworkBehaviour
                     {
                         currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);
                         currentPlayer.CmdPauseGame(CardActions.kMergeEffectTime);
+                        currentPlayer.CmdMergeAnimation(Field.Instance.GetCard(0).SubType, newCard.SubType, TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer));
                     }
                     else
                     {
                         Pause.Instance.RpcPauseGame(CardActions.kMergeEffectTime);
+                        currentPlayer.RpcMergeAnimation(Field.Instance.GetCard(0).SubType, newCard.SubType, TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer));
                     }
                     --currentPlayer.CurrentActions;
                     --currentPlayer.CurrentHandSize;
