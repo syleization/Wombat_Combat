@@ -288,9 +288,17 @@ public class EffectTester : MonoBehaviour {
         {
             Effects.AttackEnd();
         }
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            Effects.Merge();
+            Effects.Merge(CardSubType.DonkeyKick, CardSubType.WombatCharge, Turns.BottomPlayer);
+        }
+        if (Input.GetKeyDown(KeyCode.Comma))
+        {
+            Effects.Merge(CardSubType.Bark, CardSubType.Bite, Turns.BottomPlayer);
+        }
+        if (Input.GetKeyDown(KeyCode.Period))
+        {
+            Effects.Merge(CardSubType.Trampoline, CardSubType.Sinkhole, Turns.BottomPlayer);
         }
     }
 }

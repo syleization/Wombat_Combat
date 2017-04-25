@@ -288,9 +288,9 @@ public class Effects : MonoBehaviour
         }
     }
 
-    public static void Merge()
+    public static void Merge(CardSubType originalCards, CardSubType finalCard, Turns targetPlayer)
     {
         GameObject mergeAnimation = Instantiate(Resources.Load("Effects/MergeObj")) as GameObject;
-        mergeAnimation.GetComponent<Merge>().Initialize(CardSubType.DonkeyKick, CardSubType.WombatCharge, Turns.BottomPlayer);
+        mergeAnimation.GetComponent<Merge>().Initialize(originalCards, finalCard, targetPlayer);
     }
 }
