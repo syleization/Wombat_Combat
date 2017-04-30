@@ -32,7 +32,9 @@ public class RedAttack : Attack
     // Update is called once per frame
     void Update()
     {
-        if(timer > 2)
+        if (stop) return;
+
+        if (timer > 2)
         {
             timer -= Time.deltaTime;
 
@@ -54,8 +56,7 @@ public class RedAttack : Attack
         }
         else
         {
-            //Destroy(gameObject);
-            //Destroy(target);
+            stop = true;
         }
     }
 

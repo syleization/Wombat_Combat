@@ -196,7 +196,6 @@ public class Effects : MonoBehaviour
         {
             card = TheActiveAttack.target;
             TheActiveAttack.Terminate();
-            TheActiveAttack = null;
         }
         else
         {
@@ -204,6 +203,7 @@ public class Effects : MonoBehaviour
             card.transform.position = Vector3.zero;
         }
 
+        TheActiveAttack = eyesAnimation.GetComponent<Attack>();
         eyesAnimation.GetComponent<GooglyEyes>().Initialize(card, PointBehind(toAttack));
     }
 
@@ -236,7 +236,6 @@ public class Effects : MonoBehaviour
         {
             card = TheActiveAttack.target;
             TheActiveAttack.Terminate();
-            TheActiveAttack = null;
         }
         else
         {
@@ -244,6 +243,7 @@ public class Effects : MonoBehaviour
             card.transform.position = Vector3.zero;
         }
 
+        TheActiveAttack = trampAnimation.GetComponent<Attack>();
         trampAnimation.GetComponent<Tramp>().Initialize(card, PointBehind(oldTarget), PointBehind(newTarget));
     }
 

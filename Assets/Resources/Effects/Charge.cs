@@ -20,7 +20,7 @@ public class Charge : Attack
     public void Initialize(GameObject card, Vector3 atk, Vector3 def)
     {
         target = card;
-        atkPos = atk * 2;
+        atkPos = atk * 1.2f; //? * 2 ?
         endPos = def * 0.5f;
 
         target.transform.position = atkPos;
@@ -37,18 +37,22 @@ public class Charge : Attack
     // Update is called once per frame
     void Update()
     {
+        if (stop) return;
+
         if (flag == false)
-        if (target.transform.position != offset)
         {
-            target.transform.position = Vector3.MoveTowards(target.transform.position, offset, 0.25f);
-            mDust.transform.position = Vector3.MoveTowards(mDust.transform.position, offset, dustSpeed);
-            return;
-        }
-        else
-        {
-            flag = true;
-            mDust.GetComponent<ParticleSystem>().emissionRate = 50;
-            return;
+            if (target.transform.position != offset)
+            {
+                target.transform.position = Vector3.MoveTowards(target.transform.position, offset, 0.25f);
+                mDust.transform.position = Vector3.MoveTowards(mDust.transform.position, offset, dustSpeed);
+                return;
+            }
+            else
+            {
+                flag = true;
+                mDust.GetComponent<ParticleSystem>().emissionRate = 50;
+                return;
+            }
         }
 
         if (timer > 1)
@@ -69,9 +73,7 @@ public class Charge : Attack
         }
         else
         {
-            //Destroy(mDust);
-            //Destroy(target);
-            //Destroy(gameObject);
+            stop = true;
         }
     }
 

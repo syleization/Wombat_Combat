@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tramp : MonoBehaviour {
-
-    public GameObject target;
+public class Tramp : Attack {
+    
     public float timer = 3;
-    public Vector3 endPos;
     public Vector3 bouncePos;
     public RuntimeAnimatorController cardAnim;
     private bool flag = false;
@@ -22,7 +20,7 @@ public class Tramp : MonoBehaviour {
     public void Initialize(GameObject card, Vector3 bounce, Vector3 hit)
     {
         target = card;
-        endPos = hit * 2;
+        endPos = hit * 0.5f;
         bouncePos = bounce;
 
         target.transform.parent = gameObject.transform;
@@ -33,6 +31,8 @@ public class Tramp : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (stop) return;
+
         if (!centered)
         {
             target.transform.position = Vector3.MoveTowards(target.transform.position, offset, 0.5f);
@@ -99,10 +99,20 @@ public class Tramp : MonoBehaviour {
             target.transform.position = Vector3.MoveTowards(target.transform.position, endPos, 1.0f);
             target.transform.Rotate(rot);
         }
+        else if (target.transform.rotation.eulerAngles.z >= rot.z)
+        {
+            target.transform.Rotate(rot);
+        }
         else
         {
-            Destroy(target);
-            Destroy(gameObject);
+            target.transform.rotation = Quaternion.identity;
+            stop = true;
         }
+    }
+
+    public override void Terminate()
+    {
+        target.transform.parent = null;
+        Destroy(gameObject);
     }
 }
