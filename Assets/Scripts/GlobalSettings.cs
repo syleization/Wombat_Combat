@@ -8,8 +8,26 @@ public enum AreaPosition { Left, Top, Right, Bottom }
 public enum GameType { TwoPlayer, ThreePlayer, FourPlayer }
 public class GlobalSettings : NetworkBehaviour
 {
+    /*
+     case 0:
+                    return GlobalSettings.Instance.Attack_DonkeyKick;
+                case 1:
+                    return GlobalSettings.Instance.Attack_WombatCharge;
+                case 2:
+                    return GlobalSettings.Instance.Defence_Bark;
+                case 3:
+                    return GlobalSettings.Instance.Defence_Bite;
+                case 4:
+                    return GlobalSettings.Instance.Trap_Sinkhole;
+                case 5:
+                    return GlobalSettings.Instance.Trap_Trampoline;
+         */
     // TEMP
+    [Header("Nathan's Testing")]
+    [Tooltip("0 & 6: Donkey Kick 1: Wombat Charge 2: Bark 3: Bite 4: Sinkhole 5: Trampoline")]
     public bool NathanIsTesting = false;
+    public int NathanTestCardMin;
+    public int NathanTestCardMax;
     [Header("Game Settings")]
     public GameType TypeOfGame;
     [Header("Players")]

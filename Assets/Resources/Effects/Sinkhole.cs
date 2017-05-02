@@ -52,9 +52,21 @@ public class Sinkhole : MonoBehaviour {
         }
 	}
 
-    public void EatCard(GameObject input)
+    public void EatCard(Vector3 cardPosition, Quaternion cardRotation)
     {
-        input.transform.position = new Vector3(input.transform.position.x, input.transform.position.y, -2.5f);
-        cards.Add(new data(input, fallTime));
+        GameObject card;
+        if (Effects.TheActiveAttack != null)
+        {
+            card = Effects.TheActiveAttack.target;
+            Effects.TheActiveAttack.Terminate();
+            Effects.TheActiveAttack = null;
+        }
+        else
+        {
+            card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+        }
+        card.transform.rotation = cardRotation;
+        card.transform.position = new Vector3(cardPosition.x, cardPosition.y, -2.5f);
+        cards.Add(new data(card, fallTime));
     }
 }

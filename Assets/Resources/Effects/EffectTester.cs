@@ -120,9 +120,9 @@ public class EffectTester : MonoBehaviour {
         //}
         if (Input.GetKeyDown(KeyCode.M))
         {
-            GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            //GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
             Sinkhole hole = FindObjectOfType<Sinkhole>();
-            hole.EatCard(card);
+            hole.EatCard(Vector3.zero, Quaternion.identity);
         }
         if (Input.GetKeyDown(KeyCode.G))
         {

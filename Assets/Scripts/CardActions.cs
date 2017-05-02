@@ -275,8 +275,8 @@ public class CardActions : MonoBehaviour
         reactor.IsSinkholeActive = true;
         TurnManager.Instance.currentStage = Stage.Play;
 
-        CardSubType card = Field.Instance.GetCard(0).SubType;
-        Vector3 cardPosition = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
+        //Vector3 cardPosition = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
+        Vector3 cardPosition = Field.Instance.GetCard(0).transform.position;
         Quaternion cardRotation = thrower.Hand.transform.rotation;
         
 
@@ -284,12 +284,12 @@ public class CardActions : MonoBehaviour
         {
             reactor.CmdClearField();
             reactor.CmdChangeStage(Stage.Play);
-            reactor.CmdChangeSinkholeBool(true, card, cardPosition, cardRotation);
+            reactor.CmdChangeSinkholeBool(true, cardPosition, cardRotation);
             reactor.CmdPauseGame(kEffectTime);
         }
         else
         {
-            reactor.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), true, card, cardPosition, cardRotation);
+            reactor.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), true, cardPosition, cardRotation);
             Field.Instance.RpcClearField();
             Pause.Instance.RpcPauseGame(kEffectTime);
             
@@ -348,19 +348,19 @@ public class CardActions : MonoBehaviour
         if(reactor.IsSinkholeActive == true)
         {
             Debug.Log(thrower.ToString() + "'s wombat fell into " + reactor.ToString() + "'s sinkhole!");
-            CardSubType card = Field.Instance.GetCard(0).SubType;
-            Vector3 cardPosition = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
+            //Vector3 cardPosition = new Vector3(thrower.Hand.transform.position.x, thrower.Hand.transform.position.y, -1.0f);
+            Vector3 cardPosition = Field.Instance.GetCard(0).transform.position;
             Quaternion cardRotation = thrower.Hand.transform.rotation;
 
             Field.Instance.ClearField();
             if (!thrower.isServer)
             {
-                thrower.CmdEatCard(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), card, cardPosition, cardRotation);
+                thrower.CmdEatCard(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), cardPosition, cardRotation);
                 thrower.CmdClearField();
             }
             else
             {
-                thrower.RpcEatCard(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), card, cardPosition, cardRotation);
+                thrower.RpcEatCard(TurnManager.Instance.GetTurnEnumOfPlayer(reactor), cardPosition, cardRotation);
                 Field.Instance.RpcClearField();
             }
         }

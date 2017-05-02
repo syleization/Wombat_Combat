@@ -181,10 +181,10 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    public void CmdChangeSinkholeBool(bool sinkhole, CardSubType card, Vector3 position, Quaternion rotation)
+    public void CmdChangeSinkholeBool(bool sinkhole, Vector3 position, Quaternion rotation)
     {
         IsSinkholeActive = sinkhole;
-        RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(this), sinkhole, card, position, rotation);
+        RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(this), sinkhole, position, rotation);
     }
 
     [Command]
@@ -324,16 +324,16 @@ public class Player : NetworkBehaviour
 
     // Effects Commands
     [Command]
-    public void CmdEatCard(Turns sinkhole, CardSubType card, Vector3 position, Quaternion rotation)
+    public void CmdEatCard(Turns sinkhole, Vector3 position, Quaternion rotation)
     {
-        RpcEatCard(sinkhole, card, position, rotation);
+        RpcEatCard(sinkhole, position, rotation);
     }
 
     [ClientRpc]
-    public void RpcEatCard(Turns sinkhole, CardSubType card, Vector3 position, Quaternion rotation)
+    public void RpcEatCard(Turns sinkhole, Vector3 position, Quaternion rotation)
     {
         Sinkhole temp = TurnManager.Instance.GetPlayerOfTurnEnum(sinkhole).PlayersSinkhole;
-        temp.EatCard(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card).gameObject, position, rotation) as GameObject);
+        temp.EatCard(position, rotation);
     }
 
     [Command]
@@ -436,8 +436,8 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcTramp(Turns defender, Turns attacker)
     {
-        Effects.Tramp(TurnManager.Instance.GetPlayerOfTurnEnum(defender)
-            , TurnManager.Instance.GetPlayerOfTurnEnum(attacker));
+        Effects.Tramp(TurnManager.Instance.GetPlayerOfTurnEnum(attacker)
+            , TurnManager.Instance.GetPlayerOfTurnEnum(defender));
     }
 
     [Command]
@@ -481,7 +481,7 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcUpdateSinkhole(Turns playerTurns, bool sinkholeActive, CardSubType card, Vector3 position, Quaternion rotation)
+    public void RpcUpdateSinkhole(Turns playerTurns, bool sinkholeActive, Vector3 position, Quaternion rotation)
     {
         Player player = TurnManager.Instance.GetPlayerOfTurnEnum(playerTurns);
         player.IsSinkholeActive = sinkholeActive;
@@ -489,7 +489,7 @@ public class Player : NetworkBehaviour
         if(player.IsSinkholeActive)
         {
             Effects.SinkholeOn(player);
-            player.PlayersSinkhole.EatCard(Instantiate(GlobalSettings.Instance.GetCardOfSubType(card).gameObject, position, rotation) as GameObject);
+            player.PlayersSinkhole.EatCard(position, rotation);
         }
         else
         {

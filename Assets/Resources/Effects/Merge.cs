@@ -177,8 +177,9 @@ public class Merge : MonoBehaviour
             default:
                 Destroy(finalCard.gameObject);
                 Destroy(glowParticles.gameObject);
-                Destroy(card1.gameObject);
-                Destroy(card2.gameObject);
+                // Was getting null reference errors here (Unity must have deleted them because their scale was 0)
+                //Destroy(card1.gameObject);
+                //Destroy(card2.gameObject);
                 foreach (LightningBoltScript item in bolts)
                 {
                     Destroy(item.gameObject);

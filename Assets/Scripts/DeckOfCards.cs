@@ -53,25 +53,51 @@ public class DeckOfCards : MonoBehaviour
 
     Card GetRandomBasicCard()
     {
-        switch(Random.Range(0, 7))
+        if (GlobalSettings.Instance.NathanIsTesting)
         {
-            case 6:
-            case 0:
-                return GlobalSettings.Instance.Attack_DonkeyKick;
-            case 1:
-                return GlobalSettings.Instance.Attack_WombatCharge;
-            case 2:
-                return GlobalSettings.Instance.Defence_Bark;
-            case 3:
-                return GlobalSettings.Instance.Defence_Bite;
-            case 4:
-                return GlobalSettings.Instance.Trap_Sinkhole;
-            case 5:
-                return GlobalSettings.Instance.Trap_Trampoline;
-            default:
-                Debug.Log("ERROR[DeckOfCards::GetRandomBasicCard] | Random range isnt returning a valid value");
-                break;
+            switch (Random.Range(GlobalSettings.Instance.NathanTestCardMin, GlobalSettings.Instance.NathanTestCardMax))
+            {
+                case 6:
+                case 0:
+                    return GlobalSettings.Instance.Attack_DonkeyKick;
+                case 1:
+                    return GlobalSettings.Instance.Attack_WombatCharge;
+                case 2:
+                    return GlobalSettings.Instance.Defence_Bark;
+                case 3:
+                    return GlobalSettings.Instance.Defence_Bite;
+                case 4:
+                    return GlobalSettings.Instance.Trap_Sinkhole;
+                case 5:
+                    return GlobalSettings.Instance.Trap_Trampoline;
+                default:
+                    Debug.Log("ERROR[DeckOfCards::GetRandomBasicCard] | Random range isnt returning a valid value");
+                    break;
+            }
         }
+        else
+        {
+            switch (Random.Range(0, 7))
+            {
+                case 6:
+                case 0:
+                    return GlobalSettings.Instance.Attack_DonkeyKick;
+                case 1:
+                    return GlobalSettings.Instance.Attack_WombatCharge;
+                case 2:
+                    return GlobalSettings.Instance.Defence_Bark;
+                case 3:
+                    return GlobalSettings.Instance.Defence_Bite;
+                case 4:
+                    return GlobalSettings.Instance.Trap_Sinkhole;
+                case 5:
+                    return GlobalSettings.Instance.Trap_Trampoline;
+                default:
+                    Debug.Log("ERROR[DeckOfCards::GetRandomBasicCard] | Random range isnt returning a valid value");
+                    break;
+            }
+        }
+
         return null;
     }
 

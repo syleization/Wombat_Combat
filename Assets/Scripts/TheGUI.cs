@@ -52,11 +52,11 @@ public class TheGUI : NetworkBehaviour
 
                         if (!currentPlayer.isServer)
                         {
-                            currentPlayer.CmdChangeSinkholeBool(false, CardSubType.None, Vector3.zero, Quaternion.identity);
+                            currentPlayer.CmdChangeSinkholeBool(false, Vector3.zero, Quaternion.identity);
                         }
                         else
                         {
-                            currentPlayer.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), false, CardSubType.None, Vector3.zero, Quaternion.identity);
+                            currentPlayer.RpcUpdateSinkhole(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), false, Vector3.zero, Quaternion.identity);
                         }
                     }
                     // If a bark was used against the player put those cards back into their hand
