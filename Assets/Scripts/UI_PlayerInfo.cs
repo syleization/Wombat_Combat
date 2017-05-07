@@ -67,18 +67,22 @@ public class UI_PlayerInfo : MonoBehaviour
 
         mLocalPlayerHealthText.text = GlobalSettings.Instance.GetLocalPlayer().CurrentHealth.ToString();
         Player across = TurnManager.Instance.GetPlayerAcrossFrom(localPlayer);
-        mAcrossPlayerHealthText.text = across.CurrentHealth.ToString();
+
+        if (across != null)
+        {
+            mAcrossPlayerHealthText.text = across.CurrentHealth.ToString();
+        }
 
         if (GlobalSettings.Instance.TypeOfGame != GameType.TwoPlayer)
         {
             Player leftOf = TurnManager.Instance.GetPlayerToTheLeftOf(localPlayer);
-            mAcrossPlayerHealthText.text = leftOf.CurrentHealth.ToString();
+            mLeftPlayerHealthText.text = leftOf.CurrentHealth.ToString();
         }
 
         if (GlobalSettings.Instance.TypeOfGame == GameType.FourPlayer)
         {
             Player rightOf = TurnManager.Instance.GetPlayerToTheRightOf(localPlayer);
-            mAcrossPlayerHealthText.text = rightOf.CurrentHealth.ToString();
+            mRightPlayerHealthText.text = rightOf.CurrentHealth.ToString();
         }
     }
 
@@ -88,18 +92,22 @@ public class UI_PlayerInfo : MonoBehaviour
 
         mLocalPlayerTrapsText.text = GlobalSettings.Instance.GetLocalPlayer().CurrentTrapAmount.ToString();
         Player across = TurnManager.Instance.GetPlayerAcrossFrom(localPlayer);
-        mAcrossPlayerTrapsText.text = across.CurrentTrapAmount.ToString();
+
+        if (across != null)
+        {
+            mAcrossPlayerTrapsText.text = across.CurrentTrapAmount.ToString();
+        }
 
         if (GlobalSettings.Instance.TypeOfGame != GameType.TwoPlayer)
         {
             Player leftOf = TurnManager.Instance.GetPlayerToTheLeftOf(localPlayer);
-            mAcrossPlayerTrapsText.text = leftOf.CurrentTrapAmount.ToString();
+            mLeftPlayerTrapsText.text = leftOf.CurrentTrapAmount.ToString();
         }
 
         if (GlobalSettings.Instance.TypeOfGame == GameType.FourPlayer)
         {
             Player rightOf = TurnManager.Instance.GetPlayerToTheRightOf(localPlayer);
-            mAcrossPlayerTrapsText.text = rightOf.CurrentTrapAmount.ToString();
+            mRightPlayerTrapsText.text = rightOf.CurrentTrapAmount.ToString();
         }
         //if (isLocalPlayer)
         //{

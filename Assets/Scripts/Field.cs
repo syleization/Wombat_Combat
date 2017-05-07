@@ -126,7 +126,8 @@ public class Field : NetworkBehaviour
     {
         foreach(Card c in CardsInField)
         {
-            Destroy(c.gameObject);
+            if(c != null)
+                Destroy(c.gameObject);
         }
         CardsInField.Clear();
         CurrentDamage = 0;

@@ -286,13 +286,12 @@ public class Player : NetworkBehaviour
             }
         }
     }
-
+    
     // Card Actions Commands
     [Command]
     public void CmdUpdateThrowerAndReactor(Turns thrower, Turns reactor)
     {
-        CardActions.theThrower = TurnManager.Instance.GetPlayerOfTurnEnum(thrower);
-        CardActions.theReactor = TurnManager.Instance.GetPlayerOfTurnEnum(reactor);
+        RpcUpdateThrowerAndReactor(thrower, reactor);
     }
 
     [ClientRpc]

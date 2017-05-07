@@ -415,7 +415,7 @@ public class CardActions : MonoBehaviour
         ///////////////////// ADD EFFECTS.ATTACKEND ////////////////////////////////////
         // Wombat is no longer bouncing around
         TurnManager.Instance.currentStage = Stage.Play;
-        Field.Instance.ClearField();
+        //Field.Instance.ClearField();
         Player local = victim.isLocalPlayer ? victim : thrower;
 
         if (!local.isServer)

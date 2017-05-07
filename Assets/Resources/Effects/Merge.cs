@@ -18,7 +18,6 @@ public class Merge : MonoBehaviour
     public float waitTime = 1;
     public float leaveSpeed = 1;
     private float lerper = 0;
-    private Turns owner;
     private GameObject glowParticles;
     private Card finalCard;
 
@@ -37,8 +36,6 @@ public class Merge : MonoBehaviour
 
     public void Initialize(CardSubType card, CardSubType final, Turns player)
     {
-        owner = player;
-
         card1 = Field.Instance.GetCard(0);
         card2 = Field.Instance.GetCard(1);
 
@@ -150,6 +147,8 @@ public class Merge : MonoBehaviour
                 if (card1.transform.localScale == Vector3.zero)
                 {
                     ++stage;
+                    Destroy(card1.gameObject);
+                    Destroy(card2.gameObject);
                     lerper = 0;
                 }
                 break;
@@ -177,9 +176,7 @@ public class Merge : MonoBehaviour
             default:
                 Destroy(finalCard.gameObject);
                 Destroy(glowParticles.gameObject);
-                // Was getting null reference errors here (Unity must have deleted them because their scale was 0)
-                //Destroy(card1.gameObject);
-                //Destroy(card2.gameObject);
+
                 foreach (LightningBoltScript item in bolts)
                 {
                     Destroy(item.gameObject);
