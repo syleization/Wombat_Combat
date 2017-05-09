@@ -32,6 +32,7 @@ public class Charge : Attack
             dustSpeed = 0.15f;
 
         enabled = true;
+        card.GetComponent<Card>().IsInHand = false;
     }
 
     // Update is called once per frame

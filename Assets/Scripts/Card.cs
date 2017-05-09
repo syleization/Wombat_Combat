@@ -21,7 +21,7 @@ public class Card : NetworkBehaviour
     public Sprite OriginalSprite;
     public bool GetCanTarget() { return CanTarget; }
 
-    void Start()
+    void Awake()
     {
         owner = TurnManager.Instance.GetCurrentPlayer();
         IsInHand = true;

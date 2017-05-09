@@ -27,6 +27,7 @@ public class RedAttack : Attack
         target.transform.position = atkPos;
 
         enabled = true;
+        card.GetComponent<Card>().IsInHand = false;
     }
 
     // Update is called once per frame

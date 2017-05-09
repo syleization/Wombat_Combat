@@ -552,6 +552,7 @@ public class CardMove : MonoBehaviour
 
     void PlayCard(Player target, Card cardUsed)
     {
+        cardUsed.IsInHand = false;
         CardSubType subTypeOfCard = cardUsed.SubType;
         --cardUsed.owner.CurrentHandSize;
         if (cardUsed.Type == CardType.Attack)

@@ -22,7 +22,7 @@ public class Effects : MonoBehaviour
     public static void Attack(GameObject card, Player defender, Player attacker)
     {
         GameObject attackAnimation = Instantiate(Resources.Load("Effects/RedAttack")) as GameObject;
-
+        
         attackAnimation.GetComponent<RedAttack>().Initialize(card, PointBehind(defender), PointBehind(attacker));
 
         if (TheActiveAttack != null)
