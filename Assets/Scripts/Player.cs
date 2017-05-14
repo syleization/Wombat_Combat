@@ -177,6 +177,12 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdTakeDamage(Turns player, int damage)
     {
+        RpcTakeDamage(player, damage);
+    }
+
+    [ClientRpc]
+    public void RpcTakeDamage(Turns player, int damage)
+    {
         TurnManager.Instance.GetPlayerOfTurnEnum(player).CurrentHealth -= damage;
     }
 

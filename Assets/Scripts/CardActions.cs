@@ -410,7 +410,6 @@ public class CardActions : MonoBehaviour
     {
         int damage = Field.Instance.CurrentDamageInField;
         Debug.Log(victim.ToString() + " was hit by " + thrower.ToString() + "'s wombat for " + damage + " damage!");
-        victim.CurrentHealth -= damage;
 
         ///////////////////// ADD EFFECTS.ATTACKEND ////////////////////////////////////
         // Wombat is no longer bouncing around
@@ -428,6 +427,7 @@ public class CardActions : MonoBehaviour
         else
         {
             local.RpcAttackEnd();
+            local.RpcTakeDamage(TurnManager.Instance.GetTurnEnumOfPlayer(victim), damage);
             Field.Instance.RpcClearField();
         }
     }
