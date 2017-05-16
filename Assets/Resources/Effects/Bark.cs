@@ -29,6 +29,8 @@ public class Bark : MonoBehaviour
         target.GetComponent<Animator>().runtimeAnimatorController = cardAnim;
 
         enabled = true;
+
+        SoundManager.Instance.PlaySound("Def - Bark");
     }
 
     // Update is called once per frame

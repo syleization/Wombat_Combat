@@ -20,6 +20,8 @@ public class Cage : MonoBehaviour {
         endPos = owner * 2;
         transform.position = new Vector3(target.transform.position.x, target.transform.position.y, -2);
         enabled = true;
+
+        SoundManager.Instance.PlaySound("Trap - Cage");
     }
 
     // Update is called once per frame

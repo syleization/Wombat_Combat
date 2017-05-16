@@ -33,6 +33,8 @@ public class Charge : Attack
 
         enabled = true;
         card.GetComponent<Card>().IsInHand = false;
+
+        SoundManager.Instance.PlaySound("Att - WombatCharge");
     }
 
     // Update is called once per frame

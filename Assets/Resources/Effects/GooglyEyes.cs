@@ -17,6 +17,8 @@ public class GooglyEyes : Attack
         endPos = destination * 0.5f;
         transform.position = new Vector3(target.transform.position.x, target.transform.position.y, -2);
         enabled = true;
+
+        SoundManager.Instance.PlaySound("Def - GooglyEyes");
     }
 
     // Update is called once per frame

@@ -26,6 +26,8 @@ public class Tramp : Attack {
         target.transform.parent = gameObject.transform;
 
         enabled = true;
+
+        SoundManager.Instance.PlaySound("Trap - Trampoline");
     }
 
     // Update is called once per frame

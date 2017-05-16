@@ -68,5 +68,7 @@ public class Sinkhole : MonoBehaviour {
         card.transform.rotation = cardRotation;
         card.transform.position = new Vector3(cardPosition.x, cardPosition.y, -2.5f);
         cards.Add(new data(card, fallTime));
+
+        SoundManager.Instance.PlaySound("Trap - Sinkhole");
     }
 }

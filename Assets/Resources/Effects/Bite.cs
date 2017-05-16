@@ -21,7 +21,9 @@ public class Bite : MonoBehaviour
         dir = new Vector3(10, 10, 0);
         dir = Quaternion.Euler(0, 0, Random.Range(0, 360)) * dir;
         enabled = true;
-	}
+
+        SoundManager.Instance.PlaySound("Def - Bite");
+    }
 	
 	// Update is called once per frame
 	void Update ()

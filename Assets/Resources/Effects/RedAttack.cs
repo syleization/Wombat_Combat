@@ -28,6 +28,8 @@ public class RedAttack : Attack
 
         enabled = true;
         card.GetComponent<Card>().IsInHand = false;
+
+        SoundManager.Instance.PlaySound("Att - DonkeyKick");
     }
 
     // Update is called once per frame
