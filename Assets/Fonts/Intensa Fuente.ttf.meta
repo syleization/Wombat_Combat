@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 896c0f8132114f84f82c6a5f43bf33ec
+timeCreated: 1494969448
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Intensa Fuente
+  fontNames:
+  - Intensa Fuente
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
