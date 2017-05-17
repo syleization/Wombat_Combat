@@ -42,19 +42,27 @@ public class TurnManager : NetworkBehaviour
     }
     [SerializeField]
     [SyncVar]
-    private Turns CurrentTurn = Turns.Null; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
+    private Turns theCurrentTurn = Turns.Null; // 0 for left player, 1 for top player, 2 for right player, 3 for bottom player
     [SerializeField]
     [SyncVar]
     private Stage CurrentStage = Stage.Draw;
-    public Turns currentTurn
+    public Turns CurrentTurn
     {
         get
         {
-            return CurrentTurn;
+            return theCurrentTurn;
         }
         set
         {
-            CurrentTurn = value;
+            theCurrentTurn = value;
+            if (isServer)
+            {
+                GlobalSettings.Instance.GetLocalPlayer().RpcShowActiveButton();
+            }
+            else
+            {
+                GlobalSettings.Instance.GetLocalPlayer().CmdShowActiveButton();
+            }
         }
     }
 
@@ -70,6 +78,7 @@ public class TurnManager : NetworkBehaviour
             if(isServer && value != Stage.Draw)
             {
                 //RpcDisplayBanner(value);
+                ButtonManager.Instance.HideActiveButton();
                 StartCoroutine(DisplayBanner(value));
             }
         }
@@ -104,6 +113,7 @@ public class TurnManager : NetworkBehaviour
             Destroy(banner);
             NetworkServer.UnSpawn(banner);
             IsDisplayingBanner = false;
+            ButtonManager.Instance.ShowActiveButton();
         }
     }
 
@@ -126,17 +136,17 @@ public class TurnManager : NetworkBehaviour
         {
             random = Random.Range(0, 4);
 
-        } while (GlobalSettings.Players[random] != null);
+        } while (GlobalSettings.Players[random] == null);
 
         switch(random)
         {
-            case 0: CurrentTurn = Turns.LeftPlayer;
+            case 0: theCurrentTurn = Turns.LeftPlayer;
                 break;
-            case 1: CurrentTurn = Turns.TopPlayer;
+            case 1: theCurrentTurn = Turns.TopPlayer;
                 break;
-            case 2: CurrentTurn = Turns.RightPlayer;
+            case 2: theCurrentTurn = Turns.RightPlayer;
                 break;
-            case 3: CurrentTurn = Turns.BottomPlayer;
+            case 3: theCurrentTurn = Turns.BottomPlayer;
                 // Rotate for bottom player is 0.0f which is how it starts off anyway
                 break;
             default:
@@ -149,7 +159,7 @@ public class TurnManager : NetworkBehaviour
     public void Terminate()
     {
         CurrentStage = Stage.Draw;
-        CurrentTurn = Turns.Null;
+        theCurrentTurn = Turns.Null;
         IsDisplayingBanner = false;
     }
 
@@ -161,7 +171,7 @@ public class TurnManager : NetworkBehaviour
 
         if (!isServer)
         {
-            prevPlayer.CmdChangeTurn(CurrentTurn);
+            prevPlayer.CmdChangeTurn(theCurrentTurn);
             prevPlayer.CmdChangeIsTurn();
         }
     }
@@ -175,7 +185,7 @@ public class TurnManager : NetworkBehaviour
                 p.IsTurn = false;
             }
         }
-        Player newTurn = GetPlayerToTheRightOf(CurrentTurn);
+        Player newTurn = GetPlayerToTheRightOf(theCurrentTurn);
         newTurn.IsTurn = true;
         UpdateCurrentTurn();
         //if (GlobalSettings.Instance.TypeOfGame == GameType.TwoPlayer)
@@ -201,12 +211,12 @@ public class TurnManager : NetworkBehaviour
 
     public Player GetPrevCurrentPlayer()
     {
-        return GetPlayerToTheLeftOf(CurrentTurn);
+        return GetPlayerToTheLeftOf(theCurrentTurn);
     }
 
     public Player GetNextCurrentPlayer()
     {
-        return GetPlayerToTheRightOf(CurrentTurn);
+        return GetPlayerToTheRightOf(theCurrentTurn);
     }
 
     private void UpdateCurrentTurn()
@@ -215,19 +225,19 @@ public class TurnManager : NetworkBehaviour
 
         if(GlobalSettings.Players[0] != null && temp == GlobalSettings.Players[0])
         {
-            CurrentTurn = Turns.LeftPlayer;
+            theCurrentTurn = Turns.LeftPlayer;
         }
         else if (GlobalSettings.Players[1] != null && temp == GlobalSettings.Players[1])
         {
-            CurrentTurn = Turns.TopPlayer;
+            theCurrentTurn = Turns.TopPlayer;
         }
         else if(GlobalSettings.Players[2] != null && temp == GlobalSettings.Players[2])
         {
-            CurrentTurn = Turns.RightPlayer;
+            theCurrentTurn = Turns.RightPlayer;
         }
         else if (GlobalSettings.Players[3] != null && temp == GlobalSettings.Players[3])
         {
-            CurrentTurn = Turns.BottomPlayer;
+            theCurrentTurn = Turns.BottomPlayer;
         }
     }
 

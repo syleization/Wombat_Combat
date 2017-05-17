@@ -21,6 +21,7 @@ public class Pause : NetworkBehaviour
 
     Timer WaitTimer = new Timer();
     bool IsDoneWaiting = true;
+    bool ActiveButtonHidenByPause;
     public bool IsPaused
     {
         get
@@ -37,6 +38,15 @@ public class Pause : NetworkBehaviour
     public void StartPauseTimer(float waitTime)
     {
         IsDoneWaiting = false;
+        if(ButtonManager.Instance.CurrentButtonIsActive == true)
+        {
+            ButtonManager.Instance.HideActiveButton();
+            ActiveButtonHidenByPause = true;
+        }
+        else
+        {
+            ActiveButtonHidenByPause = false;
+        }
         WaitTimer.Initialize(waitTime);
     }
 
@@ -50,6 +60,10 @@ public class Pause : NetworkBehaviour
 
     void DoneWaiting()
     {
+        if (ActiveButtonHidenByPause)
+        {
+            ButtonManager.Instance.ShowActiveButton();
+        }
         IsDoneWaiting = true;
     }
 

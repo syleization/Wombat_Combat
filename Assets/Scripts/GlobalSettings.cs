@@ -161,6 +161,7 @@ public class GlobalSettings : NetworkBehaviour
         SpawnPlayers();
 
         CanvasManager.Instance.Initialize();
+        ButtonManager.Instance.Initialize();
 
         if (isServer)
         {

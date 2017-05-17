@@ -6,6 +6,15 @@ using UnityEngine.UI;
 
 public class ButtonManager : NetworkBehaviour
 {
+    private ButtonManager() { }
+    static private ButtonManager TheInstance;
+    static public ButtonManager Instance
+    {
+        get
+        {
+            return TheInstance;
+        }
+    }
     // For in game buttons. Not used for connecting to the network
     public enum ButtonType
     {
@@ -13,7 +22,8 @@ public class ButtonManager : NetworkBehaviour
         Merge,
         EndTurn,
         StartGame,
-        DontReact
+        DontReact,
+        None
     }
     [SerializeField]
     ButtonType CurrentButton;
@@ -22,7 +32,14 @@ public class ButtonManager : NetworkBehaviour
         set
         {
             CurrentButton = value;
-            SwapButtons(GetButtonOfButtonType(value));
+            if (CurrentButton != ButtonType.None)
+            {
+                SwapButtons(GetButtonOfButtonType(value));
+            }
+            else
+            {
+                HideActiveButton();
+            }
         }
         get
         {
@@ -41,7 +58,22 @@ public class ButtonManager : NetworkBehaviour
     Button DontReactButton;
 
     Button CurrentActiveButton;
+    public bool CurrentButtonIsActive
+    {
+        get
+        {
+            return CurrentActiveButton.IsActive();
+        }
+    }
     Player LocalPlayer;
+
+    bool isMerging = false;
+
+    void Awake()
+    {
+        TheInstance = this;
+        enabled = false;
+    }
 
     void Start()
     {
@@ -51,26 +83,85 @@ public class ButtonManager : NetworkBehaviour
         StartGameButton.onClick.AddListener(StartGame);
         DontReactButton.onClick.AddListener(DontReact);
 
-        ChangeStageButton.gameObject.SetActive(false);
+        ChangeStageButton.gameObject.SetActive(true);
         MergeButton.gameObject.SetActive(false);
         EndTurnButton.gameObject.SetActive(false);
-        StartGameButton.gameObject.SetActive(true);
+        StartGameButton.gameObject.SetActive(false);
         DontReactButton.gameObject.SetActive(false);
 
-        CurrentActiveButton = StartGameButton;
+        CurrentActiveButton = ChangeStageButton;
+        CurrentButton = ButtonType.ChangeStage;
+        if(!isServer)
+        {
+            HideActiveButton();
+        }
+    }
+
+    // Should only be called once by globalsettings
+    public void Initialize()
+    {
+        // isLocalPlayer can't work until after all awakes and starts are called
+        if (LocalPlayer == null)
+        {
+            LocalPlayer = GlobalSettings.Instance.GetLocalPlayer();
+            InvokeRepeating("CheckDontReact", 1.0f, 2.0f);
+            InvokeRepeating("CheckMerge", 1.0f, 0.5f);
+            enabled = true;
+        }
     }
 
     void Update()
     {
-        // isLocalPlayer can't work until after all awakes and starts are called
-        LocalPlayer = GlobalSettings.Instance.GetLocalPlayer();
-        enabled = false;
+        if (LocalPlayer.IsTurn)
+        {
+            ShowActiveButton();
+            enabled = false;
+        }
+        else
+        {
+            foreach(Player p in GlobalSettings.Players)
+            {
+                if(p != null && p.IsTurn == true)
+                {
+                    enabled = false;
+                }
+            }
+        }
+    }
+    void CheckDontReact()
+    {
+        if (TurnManager.Instance.currentStage == Stage.Reaction
+                    && CardActions.theReactor.isLocalPlayer)
+        {
+            CurrentButtonType = ButtonType.DontReact;
+        }
+    }
+
+    void CheckMerge()
+    {
+        if (LocalPlayer != null && Field.Instance.IsMergable()
+                && LocalPlayer.CurrentActions > 0
+                && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                && isMerging == false)
+        {
+            CurrentButtonType = ButtonType.Merge;
+        }
+    }
+
+    public void HideActiveButton()
+    {
+        CurrentActiveButton.gameObject.SetActive(false);
+    }
+    public void ShowActiveButton()
+    {
+        CurrentActiveButton.gameObject.SetActive(true);
     }
 
     void SwapButtons(Button newButton)
     {
-        CurrentActiveButton.gameObject.SetActive(false);
-        newButton.gameObject.SetActive(true);
+        HideActiveButton();
+        CurrentActiveButton = newButton;
+        ShowActiveButton();
     }
 
     Button GetButtonOfButtonType(ButtonType type)
@@ -87,93 +178,107 @@ public class ButtonManager : NetworkBehaviour
                 return StartGameButton;
             case ButtonType.DontReact:
                 return DontReactButton;
+            case ButtonType.None:
+                return null;
         }
 
         Debug.Log("[ButtonManager::GetButtonOfButtonType] Invalid parameter");
-        return StartGameButton;
+        return null;
     }
 
-    void ChangeStage()
+    public void ChangeStage()
     {
-        if (Pause.Instance.IsPaused == false)
+        if (!TurnManager.Instance.IsCurrentlyDisplayingBanner)
         {
-            if (TurnManager.Instance.currentStage == Stage.Merge
-                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner)
-            {
-                // Do some kind of transition to visually show the stage has changed
-                TurnManager.Instance.currentStage = Stage.Play;
-                LocalPlayer.CmdChangeStage(Stage.Play);
+            // Do some kind of transition to visually show the stage has changed
+            TurnManager.Instance.currentStage = Stage.Play;
+            LocalPlayer.CmdChangeStage(Stage.Play);
 
-                Field.Instance.SendFieldBackToHand(LocalPlayer);
-                Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
-                if (!isServer)
-                {
-                    LocalPlayer.CmdChangeFieldSize();
-                }
+            Field.Instance.SendFieldBackToHand(LocalPlayer);
+            Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
+            if (!isServer)
+            {
+                LocalPlayer.CmdChangeFieldSize();
             }
+            CurrentButtonType = ButtonType.EndTurn;
         }
     }
 
-    void Merge()
+    public void Merge()
     {
-        if (Pause.Instance.IsPaused == false)
+        if (LocalPlayer != null && Field.Instance.IsMergable()
+                && LocalPlayer.CurrentActions > 0
+                && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                && isMerging == false)
         {
-            if (TurnManager.Instance.currentStage == Stage.Merge
-                  && LocalPlayer != null && Field.Instance.IsMergable()
-                  && LocalPlayer.CurrentActions > 0
-                  && !TurnManager.Instance.IsCurrentlyDisplayingBanner)
+            // Add new power card to hand
+            isMerging = true;
+            ///////////////EDIT FOR MERGE ANIMATION/////////////////////
+            Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
+            newCard.gameObject.SetActive(false);
+
+            if (!isServer)
             {
-                // Add new power card to hand
-
-                ///////////////EDIT FOR MERGE ANIMATION/////////////////////
-                Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
-
-                if (!isServer)
-                {
-                    LocalPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(LocalPlayer), LocalPlayer.CurrentActions - 1);
-                }
-                --LocalPlayer.CurrentActions;
-                --LocalPlayer.CurrentHandSize;
-                newCard.owner = LocalPlayer;
-                DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
-                newCard.CurrentArea = "Hand";
-                LocalPlayer.Hand.CardsInHand.Add(newCard);
-
-                // Clear field of used cards
-                Field.Instance.ClearField();
+                LocalPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(LocalPlayer), LocalPlayer.CurrentActions - 1);
+                LocalPlayer.CmdPauseGame(CardActions.kMergeEffectTime);
+                LocalPlayer.CmdMergeAnimation(Field.Instance.GetCard(0).SubType, newCard.SubType, TurnManager.Instance.GetTurnEnumOfPlayer(LocalPlayer));
             }
+            else
+            {
+                Pause.Instance.RpcPauseGame(CardActions.kMergeEffectTime);
+                LocalPlayer.RpcMergeAnimation(Field.Instance.GetCard(0).SubType, newCard.SubType, TurnManager.Instance.GetTurnEnumOfPlayer(LocalPlayer));
+            }
+            --LocalPlayer.CurrentActions;
+            --LocalPlayer.CurrentHandSize;
+
+            StartCoroutine(WaitToPlaceMergedCardIntoHand(CardActions.kMergeEffectTime, LocalPlayer, newCard));
         }
     }
 
-    void EndTurn()
+    IEnumerator WaitToPlaceMergedCardIntoHand(float waitTime, Player currentPlayer, Card newCard)
     {
-        if (Pause.Instance.IsPaused == false)
-        {
-            if (TurnManager.Instance.currentStage == Stage.Play
-                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner)
-            {
-                // Do some kind of end of turn transition to visually show it
-                TurnManager.Instance.currentStage = Stage.Draw;
-                LocalPlayer.CmdChangeStage(Stage.Draw);
+        yield return new WaitForSeconds(waitTime);
 
-                TurnManager.Instance.EndTurn();
-            }
+        newCard.owner = currentPlayer;
+        DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
+        newCard.CurrentArea = "Hand";
+        currentPlayer.Hand.CardsInHand.Add(newCard);
+
+        // Clear field of used cards
+        Field.Instance.ClearField();
+
+        isMerging = false;
+        newCard.gameObject.SetActive(true);
+        CurrentButtonType = ButtonType.ChangeStage;
+    }
+
+    public void EndTurn()
+    {
+        if (CurrentButtonType != ButtonType.None && !TurnManager.Instance.IsCurrentlyDisplayingBanner)
+        {
+            // Do some kind of end of turn transition to visually show it
+            TurnManager.Instance.currentStage = Stage.Draw;
+            LocalPlayer.CmdChangeStage(Stage.Draw);
+
+            TurnManager.Instance.EndTurn();
+            CurrentButtonType = ButtonType.None;
         }
     }
 
-    void StartGame()
+    public void StartGame()
     {
-        if (Pause.Instance.IsPaused == false && GlobalSettings.Instance.CanInitialize())
+        if (GlobalSettings.Instance.CanInitialize())
         {
             GlobalSettings.Instance.RequestInitialize();
+            CurrentButtonType = ButtonType.ChangeStage;
         }
     }
 
-    void DontReact()
+    public void DontReact()
     {
-        if (Pause.Instance.IsPaused == false)
+        if (!TurnManager.Instance.IsCurrentlyDisplayingBanner)
         {
-
+            CardActions.DontReact();
         }
     }
 }

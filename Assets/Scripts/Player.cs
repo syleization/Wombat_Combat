@@ -167,6 +167,34 @@ public class Player : NetworkBehaviour
         GlobalSettings.Instance.AddNetworkPlayer(this);
     }
     #region Networking
+    // Button Manager Commands & RPC
+    [Command]
+    public void CmdHideActiveButton()
+    {
+        RpcHideActiveButton();
+    }
+    [ClientRpc]
+    public void RpcHideActiveButton()
+    {
+        if(isLocalPlayer)
+        {
+            ButtonManager.Instance.HideActiveButton();
+        }
+    }
+    [Command]
+    public void CmdShowActiveButton()
+    {
+        RpcShowActiveButton();
+    }
+    [ClientRpc]
+    public void RpcShowActiveButton()
+    {
+        if (isLocalPlayer && IsTurn)
+        {
+            ButtonManager.Instance.ShowActiveButton();
+        }
+    }
+
     // Player commands
     [Command]
     public void CmdChangeActions(Turns player, int value)
@@ -271,7 +299,7 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdChangeTurn(Turns turn)
     {
-        TurnManager.Instance.currentTurn = turn;
+        TurnManager.Instance.CurrentTurn = turn;
     }
 
     [Command]
@@ -281,7 +309,7 @@ public class Player : NetworkBehaviour
         {
             if (p != null)
             {
-                if (TurnManager.Instance.GetTurnEnumOfPlayer(p) == TurnManager.Instance.currentTurn)
+                if (TurnManager.Instance.GetTurnEnumOfPlayer(p) == TurnManager.Instance.CurrentTurn)
                 {
                     p.IsTurn = true;
                 }
