@@ -66,6 +66,7 @@ public class SoundManager : MonoBehaviour
 
     private Transform camTransform;
     private AudioSource musicSource;
+    private ManagedSound currentSong;
 
     private void Initialize()
     {
@@ -120,6 +121,7 @@ public class SoundManager : MonoBehaviour
                     musicSource.Stop();
                     musicSource.clip = sound.clip;
                     musicSource.volume = volume;
+                    currentSong = sound;
                     musicSource.Play();
                     break;
                 case SoundType.Effect:
@@ -130,5 +132,29 @@ public class SoundManager : MonoBehaviour
             }
 
         }
+    }
+
+    public bool IsPlayingMusic()
+    {
+        return musicSource.isPlaying;
+    }
+
+    public void StopMusic()
+    {
+        musicSource.Stop();
+    }
+
+    public void StartMusic()
+    {
+        musicSource.Play();
+    }
+
+    public string CurrentSongName()
+    {
+        if (currentSong != null)
+        {
+            return currentSong.name;
+        }
+        return "";
     }
 }

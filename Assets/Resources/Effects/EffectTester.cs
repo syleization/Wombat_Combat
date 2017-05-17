@@ -110,17 +110,31 @@ public class EffectTester : MonoBehaviour {
             Player defender = instance.GetPlayerAcrossFrom(instance.GetTurnEnumOfPlayer(attacker));
             Effects.Attack(card, defender, attacker);
         }
-        //if (Input.GetKeyDown(KeyCode.B))
-        //{
-        //    Effects.SinkholeOn();
-        //}
-        //if (Input.GetKeyDown(KeyCode.N))
-        //{
-        //    Effects.SinkholeOff();
-        //}
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            if (FindObjectOfType<Sinkhole>() == null)
+            {
+                Instantiate(Resources.Load("Effects/Sinkhole"));
+            }
+            else
+            {
+                Destroy(FindObjectOfType<Sinkhole>().gameObject);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.M))
         {
-            //GameObject card = Instantiate(GlobalSettings.Instance.Attack_DonkeyKick).gameObject;
+            string curr = SoundManager.Instance.CurrentSongName();
+            if (curr == "Music - Battle")
+            {
+                SoundManager.Instance.PlaySound("Music - Main");
+            }
+            else
+            {
+                SoundManager.Instance.PlaySound("Music - Battle");
+            }
+        }
+            if (Input.GetKeyDown(KeyCode.N))
+        {
             Sinkhole hole = FindObjectOfType<Sinkhole>();
             hole.EatCard(Vector3.zero, Quaternion.identity);
         }
