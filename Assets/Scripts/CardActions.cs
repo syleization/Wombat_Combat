@@ -11,7 +11,7 @@ public class CardActions : MonoBehaviour
         TheInstance = this;
     }
     public const float kEffectTime = 3.0f;
-    public const float kMergeEffectTime = 4.0f;
+    public const float kMergeEffectTime = 5.0f;
     // Not a singleton, but no instance of this class should ever be constructed
     // It is basically a hub for static functions
     // Thrower will always be the local player

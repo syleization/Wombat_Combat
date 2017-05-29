@@ -12,6 +12,10 @@ public class ButtonManager : NetworkBehaviour
     {
         get
         {
+            if(TheInstance == null)
+            {
+                TheInstance = FindObjectOfType<ButtonManager>();
+            }
             return TheInstance;
         }
     }
@@ -57,6 +61,8 @@ public class ButtonManager : NetworkBehaviour
     [SerializeField]
     Button DontReactButton;
 
+    // Used for Do
+    Button PrevButton;
     Button CurrentActiveButton;
     public bool CurrentButtonIsActive
     {
@@ -72,7 +78,6 @@ public class ButtonManager : NetworkBehaviour
     void Awake()
     {
         TheInstance = this;
-        enabled = false;
     }
 
     void Start()
@@ -83,18 +88,25 @@ public class ButtonManager : NetworkBehaviour
         StartGameButton.onClick.AddListener(StartGame);
         DontReactButton.onClick.AddListener(DontReact);
 
-        ChangeStageButton.gameObject.SetActive(true);
+        ChangeStageButton.gameObject.SetActive(false);
         MergeButton.gameObject.SetActive(false);
         EndTurnButton.gameObject.SetActive(false);
         StartGameButton.gameObject.SetActive(false);
         DontReactButton.gameObject.SetActive(false);
 
-        CurrentActiveButton = ChangeStageButton;
-        CurrentButton = ButtonType.ChangeStage;
         if(!isServer)
         {
+            CurrentActiveButton = ChangeStageButton;
+            CurrentButton = ButtonType.ChangeStage;
             HideActiveButton();
         }
+        else
+        {
+            StartGameButton.gameObject.SetActive(true);
+            CurrentActiveButton = StartGameButton;
+            CurrentButton = ButtonType.StartGame;
+        }
+        enabled = false;
     }
 
     // Should only be called once by globalsettings
@@ -106,20 +118,22 @@ public class ButtonManager : NetworkBehaviour
             LocalPlayer = GlobalSettings.Instance.GetLocalPlayer();
             InvokeRepeating("CheckDontReact", 1.0f, 2.0f);
             InvokeRepeating("CheckMerge", 1.0f, 0.5f);
+            InvokeRepeating("CheckHide", 1.0f, 0.1f);
+            InvokeRepeating("CheckShow", 1.0f, 0.1f);
             enabled = true;
         }
     }
 
     void Update()
     {
-        if (LocalPlayer.IsTurn)
+        if (LocalPlayer != null && LocalPlayer.IsTurn)
         {
             ShowActiveButton();
             enabled = false;
         }
         else
         {
-            foreach(Player p in GlobalSettings.Players)
+            foreach (Player p in GlobalSettings.Players)
             {
                 if(p != null && p.IsTurn == true)
                 {
@@ -128,12 +142,20 @@ public class ButtonManager : NetworkBehaviour
             }
         }
     }
+
     void CheckDontReact()
     {
         if (TurnManager.Instance.currentStage == Stage.Reaction
                     && CardActions.theReactor.isLocalPlayer)
         {
             CurrentButtonType = ButtonType.DontReact;
+        }
+        else
+        {
+            if(CurrentButtonType == ButtonType.DontReact)
+            {
+                CurrentButtonType = ButtonType.ChangeStage;
+            }
         }
     }
 
@@ -145,6 +167,26 @@ public class ButtonManager : NetworkBehaviour
                 && isMerging == false)
         {
             CurrentButtonType = ButtonType.Merge;
+        }
+    }
+
+    void CheckHide()
+    {
+        if(CurrentActiveButton.IsActive() && LocalPlayer.IsTurn == false && TurnManager.Instance.currentStage != Stage.Reaction && Pause.Instance.IsPaused == false)
+        {
+            HideActiveButton();
+        }
+    }
+
+    void CheckShow()
+    {
+        if(CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && Pause.Instance.IsPaused == false)
+        {
+            if (CurrentButtonType == ButtonType.None)
+            {
+                CurrentButtonType = ButtonType.ChangeStage;
+            }
+            ShowActiveButton();
         }
     }
 
@@ -206,7 +248,7 @@ public class ButtonManager : NetworkBehaviour
 
     public void Merge()
     {
-        if (LocalPlayer != null && Field.Instance.IsMergable()
+        if (TurnManager.Instance.currentStage == Stage.Merge && LocalPlayer != null && Field.Instance.IsMergable()
                 && LocalPlayer.CurrentActions > 0
                 && !TurnManager.Instance.IsCurrentlyDisplayingBanner
                 && isMerging == false)
@@ -254,7 +296,7 @@ public class ButtonManager : NetworkBehaviour
 
     public void EndTurn()
     {
-        if (CurrentButtonType != ButtonType.None && !TurnManager.Instance.IsCurrentlyDisplayingBanner)
+        if (CurrentButtonType != ButtonType.None && !TurnManager.Instance.IsCurrentlyDisplayingBanner && TurnManager.Instance.currentStage == Stage.Play)
         {
             // Do some kind of end of turn transition to visually show it
             TurnManager.Instance.currentStage = Stage.Draw;
@@ -279,6 +321,8 @@ public class ButtonManager : NetworkBehaviour
         if (!TurnManager.Instance.IsCurrentlyDisplayingBanner)
         {
             CardActions.DontReact();
+            CurrentButtonType = ButtonType.ChangeStage;
+            HideActiveButton();
         }
     }
 }

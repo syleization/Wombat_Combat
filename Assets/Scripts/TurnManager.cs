@@ -55,14 +55,16 @@ public class TurnManager : NetworkBehaviour
         set
         {
             theCurrentTurn = value;
-            if (isServer)
-            {
-                GlobalSettings.Instance.GetLocalPlayer().RpcShowActiveButton();
-            }
-            else
-            {
-                GlobalSettings.Instance.GetLocalPlayer().CmdShowActiveButton();
-            }
+            //if (isServer)
+            //{
+            //    GlobalSettings.Instance.GetLocalPlayer().RpcShowActiveButton();
+            //    GlobalSettings.Instance.GetLocalPlayer().RpcHideActiveButton();
+            //}
+            //else
+            //{
+            //    GlobalSettings.Instance.GetLocalPlayer().CmdShowActiveButton();
+            //    GlobalSettings.Instance.GetLocalPlayer().CmdHideActiveButton();
+            //}
         }
     }
 
@@ -225,19 +227,19 @@ public class TurnManager : NetworkBehaviour
 
         if(GlobalSettings.Players[0] != null && temp == GlobalSettings.Players[0])
         {
-            theCurrentTurn = Turns.LeftPlayer;
+            CurrentTurn = Turns.LeftPlayer;
         }
         else if (GlobalSettings.Players[1] != null && temp == GlobalSettings.Players[1])
         {
-            theCurrentTurn = Turns.TopPlayer;
+            CurrentTurn = Turns.TopPlayer;
         }
         else if(GlobalSettings.Players[2] != null && temp == GlobalSettings.Players[2])
         {
-            theCurrentTurn = Turns.RightPlayer;
+            CurrentTurn = Turns.RightPlayer;
         }
         else if (GlobalSettings.Players[3] != null && temp == GlobalSettings.Players[3])
         {
-            theCurrentTurn = Turns.BottomPlayer;
+            CurrentTurn = Turns.BottomPlayer;
         }
     }
 
