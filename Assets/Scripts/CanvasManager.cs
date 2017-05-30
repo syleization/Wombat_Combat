@@ -36,8 +36,8 @@ public class CanvasManager : MonoBehaviour
     public void Terminate()
     {
         Trap.Terminate();
-        Destroy(Trap.gameObject);
-        Destroy(CardTap.gameObject);
+        //Destroy(Trap.gameObject);
+        //Destroy(CardTap.gameObject);
     }
 
     // Send null into second parameter if you arent using the cardtap canvas

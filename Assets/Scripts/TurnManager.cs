@@ -15,9 +15,14 @@ public class TurnManager : NetworkBehaviour
     [SerializeField]
     private GameObject ReactionBanner;
 
+    [SyncVar]
     private bool IsDisplayingBanner = false;
     public bool IsCurrentlyDisplayingBanner
     {
+        set
+        {
+            IsDisplayingBanner = true;
+        }
         get
         {
             return IsDisplayingBanner;
@@ -81,6 +86,7 @@ public class TurnManager : NetworkBehaviour
             {
                 //RpcDisplayBanner(value);
                 ButtonManager.Instance.HideActiveButton();
+                GlobalSettings.Instance.GetLocalPlayer().RpcHideActiveButton();
                 StartCoroutine(DisplayBanner(value));
             }
         }
@@ -91,6 +97,7 @@ public class TurnManager : NetworkBehaviour
         if (IsDisplayingBanner == false)
         {
             IsDisplayingBanner = true;
+
             GameObject banner;
 
             switch (stage)
@@ -115,7 +122,10 @@ public class TurnManager : NetworkBehaviour
             Destroy(banner);
             NetworkServer.UnSpawn(banner);
             IsDisplayingBanner = false;
-            ButtonManager.Instance.ShowActiveButton();
+            if (GlobalSettings.Instance.GetLocalPlayer().IsTurn)
+            {
+                ButtonManager.Instance.ShowActiveButton();
+            }
         }
     }
 

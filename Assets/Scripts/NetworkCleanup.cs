@@ -5,23 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class NetworkCleanup : MonoBehaviour
 {
-    public bool ShowGUI = false;
-
-    void OnGUI()
+    public void Activate()
     {
-        if(!ShowGUI)
-        {
-            return;
-        }
-
-        if (GUI.Button(new Rect(0.0f, 0.0f, (float)Screen.width / 6.0f, (float)Screen.height / 10.0f), "Disconnect"))
-        {
-            Terminate(GlobalSettings.Instance.GetLocalPlayer());
-        }
+        gameObject.SetActive(true);
     }
 
-    public void Terminate(Player player)
-    { 
+    public void Disconnect()
+    {
+        Player player = GlobalSettings.Instance.GetLocalPlayer();
         if(player != null && player.isServer)
         {
             NetworkManager.singleton.StopHost();

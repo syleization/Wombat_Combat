@@ -90,139 +90,140 @@ public class TheGUI : NetworkBehaviour
                     }
                 }
                 // Sifts through the stages and the last stage has an end turn button instead of an end stage button
-                else if (TurnManager.Instance.currentStage == Stage.Merge
-                    && currentPlayer.isLocalPlayer
-                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner
-                    && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndStage"))
-                {
-                    // Do some kind of transition to visually show the stage has changed
-                    TurnManager.Instance.currentStage = Stage.Play;
-                    currentPlayer.CmdChangeStage(Stage.Play);
+                //    else if (TurnManager.Instance.currentStage == Stage.Merge
+                //        && currentPlayer.isLocalPlayer
+                //        && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                //        && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndStage"))
+                //    {
+                //        // Do some kind of transition to visually show the stage has changed
+                //        TurnManager.Instance.currentStage = Stage.Play;
+                //        currentPlayer.CmdChangeStage(Stage.Play);
 
-                    Field.Instance.SendFieldBackToHand(currentPlayer);
-                    Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
-                    if (!isServer)
+                //        Field.Instance.SendFieldBackToHand(currentPlayer);
+                //        Field.Instance.ChangeMaxFieldSize(TurnManager.Instance.currentStage);
+                //        if (!isServer)
+                //        {
+                //            currentPlayer.CmdChangeFieldSize();
+                //        }
+                //    }
+                //    else if (TurnManager.Instance.currentStage == Stage.Play
+                //        && currentPlayer.isLocalPlayer
+                //        && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                //        && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndTurn"))
+                //    {
+                //        // Do some kind of end of turn transition to visually show it
+                //        TurnManager.Instance.currentStage = Stage.Draw;
+                //        currentPlayer.CmdChangeStage(Stage.Draw);
+
+                //        TurnManager.Instance.EndTurn();
+                //    }
+                //    else if (TurnManager.Instance.currentStage == Stage.Reaction
+                //        && CardActions.theReactor.isLocalPlayer
+                //        && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                //        && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "Don'tReact"))
+                //    {
+                //        CardActions.DontReact();
+                //    }
+
+                //    if (TurnManager.Instance.currentStage == Stage.Merge
+                //        && currentPlayer.isLocalPlayer
+                //       && currentPlayer != null && Field.Instance.IsMergable()
+                //       && currentPlayer.CurrentActions > 0
+                //       && !TurnManager.Instance.IsCurrentlyDisplayingBanner
+                //       && isMerging == false
+                //       && GUI.Button(new Rect(Screen.width / 50.0f, Screen.height / 2, Screen.width / 10.0f, Screen.height / 15.0f), "Merge"))
+                //    {
+                //        // Add new power card to hand
+                //        isMerging = true;
+                //        ///////////////EDIT FOR MERGE ANIMATION/////////////////////
+                //        Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
+                //        newCard.gameObject.SetActive(false);
+
+                //        if (!isServer)
+                //        {
+                //            currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);
+                //            currentPlayer.CmdPauseGame(CardActions.kMergeEffectTime);
+                //            currentPlayer.CmdMergeAnimation(Field.Instance.GetCard(0).SubType, newCard.SubType, TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer));
+                //        }
+                //        else
+                //        {
+                //            Pause.Instance.RpcPauseGame(CardActions.kMergeEffectTime);
+                //            currentPlayer.RpcMergeAnimation(Field.Instance.GetCard(0).SubType, newCard.SubType, TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer));
+                //        }
+                //        --currentPlayer.CurrentActions;
+                //        --currentPlayer.CurrentHandSize;
+
+                //        StartCoroutine(WaitToPlaceMergedCardIntoHand(CardActions.kMergeEffectTime, currentPlayer, newCard));
+                //        //newCard.owner = currentPlayer;
+                //        //DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
+                //        //newCard.CurrentArea = "Hand";
+                //        //currentPlayer.Hand.CardsInHand.Add(newCard);
+
+                //        //// Clear field of used cards
+                //        //Field.Instance.ClearField();
+                //    }
+                //}
+                //DisplayPlayers();
+            }
+            else if (GameIsOver && GlobalSettings.Instance.GetLocalPlayer().Hand != null)
+            {
+                foreach (Player p in GlobalSettings.Players)
+                {
+                    if (p != null)
                     {
-                        currentPlayer.CmdChangeFieldSize();
+                        p.ClearHand();
+                        Destroy(p.Hand.gameObject);
                     }
                 }
-                else if (TurnManager.Instance.currentStage == Stage.Play
-                    && currentPlayer.isLocalPlayer
-                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner
-                    && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "EndTurn"))
-                {
-                    // Do some kind of end of turn transition to visually show it
-                    TurnManager.Instance.currentStage = Stage.Draw;
-                    currentPlayer.CmdChangeStage(Stage.Draw);
 
-                    TurnManager.Instance.EndTurn();
-                }
-                else if (TurnManager.Instance.currentStage == Stage.Reaction
-                    && CardActions.theReactor.isLocalPlayer
-                    && !TurnManager.Instance.IsCurrentlyDisplayingBanner
-                    && GUI.Button(new Rect(Screen.width - Screen.width / 4.5f, Screen.height / 2, Screen.width / 5.0f, Screen.height / 15.0f), "Don'tReact"))
-                {
-                    CardActions.DontReact();
-                }
-
-                if (TurnManager.Instance.currentStage == Stage.Merge
-                    && currentPlayer.isLocalPlayer
-                   && currentPlayer != null && Field.Instance.IsMergable()
-                   && currentPlayer.CurrentActions > 0
-                   && !TurnManager.Instance.IsCurrentlyDisplayingBanner
-                   && isMerging == false
-                   && GUI.Button(new Rect(Screen.width / 50.0f, Screen.height / 2, Screen.width / 10.0f, Screen.height / 15.0f), "Merge"))
-                {
-                    // Add new power card to hand
-                    isMerging = true;
-                    ///////////////EDIT FOR MERGE ANIMATION/////////////////////
-                    Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
-                    newCard.gameObject.SetActive(false);
-
-                    if (!isServer)
-                    {
-                        currentPlayer.CmdChangeActions(TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer), currentPlayer.CurrentActions - 1);
-                        currentPlayer.CmdPauseGame(CardActions.kMergeEffectTime);
-                        currentPlayer.CmdMergeAnimation(Field.Instance.GetCard(0).SubType, newCard.SubType, TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer));
-                    }
-                    else
-                    {
-                        Pause.Instance.RpcPauseGame(CardActions.kMergeEffectTime);
-                        currentPlayer.RpcMergeAnimation(Field.Instance.GetCard(0).SubType, newCard.SubType, TurnManager.Instance.GetTurnEnumOfPlayer(currentPlayer));
-                    }
-                    --currentPlayer.CurrentActions;
-                    --currentPlayer.CurrentHandSize;
-                    
-                    StartCoroutine(WaitToPlaceMergedCardIntoHand(CardActions.kMergeEffectTime, currentPlayer, newCard));
-                    //newCard.owner = currentPlayer;
-                    //DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
-                    //newCard.CurrentArea = "Hand";
-                    //currentPlayer.Hand.CardsInHand.Add(newCard);
-
-                    //// Clear field of used cards
-                    //Field.Instance.ClearField();
-                }
+                Destroy(Field.Instance.gameObject);
             }
-            DisplayPlayers();
-        }
-        else if(GameIsOver && GlobalSettings.Instance.GetLocalPlayer().Hand != null)
-        {
-            foreach (Player p in GlobalSettings.Players)
+            // When the game is over you can now disconnect from the server or if you are the host shut down the server
+            else if (GameIsOver)
             {
-                if(p != null)
+                if (GlobalSettings.Instance.GetLocalPlayer().CurrentHealth == 0)
                 {
-                    p.ClearHand();
-                    Destroy(p.Hand.gameObject);
+                    GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Loser!");
+                }
+                else
+                {
+                    GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Winner!");
                 }
             }
-
-            Destroy(Field.Instance.gameObject);
         }
-        // When the game is over you can now disconnect from the server or if you are the host shut down the server
-        else if (GameIsOver)
-        {
-            if (GlobalSettings.Instance.GetLocalPlayer().CurrentHealth == 0)
-            {
-                GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Loser!");
-            }
-            else
-            {
-                GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Winner!");
-            }
-        }
-    }
 
-    IEnumerator WaitToPlaceMergedCardIntoHand(float waitTime, Player currentPlayer, Card newCard)
-    {
-        yield return new WaitForSeconds(waitTime);
-        
-        newCard.owner = currentPlayer;
-        DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
-        newCard.CurrentArea = "Hand";
-        currentPlayer.Hand.CardsInHand.Add(newCard);
+        //IEnumerator WaitToPlaceMergedCardIntoHand(float waitTime, Player currentPlayer, Card newCard)
+        //{
+        //    yield return new WaitForSeconds(waitTime);
 
-        // Clear field of used cards
-        Field.Instance.ClearField();
+        //    newCard.owner = currentPlayer;
+        //    DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
+        //    newCard.CurrentArea = "Hand";
+        //    currentPlayer.Hand.CardsInHand.Add(newCard);
 
-        isMerging = false;
-        newCard.gameObject.SetActive(true);
-    }
+        //    // Clear field of used cards
+        //    Field.Instance.ClearField();
 
-    void DisplayPlayers()
-    {
-        Player local = GlobalSettings.Instance.GetLocalPlayer();
-        GUI.Box(new Rect(Screen.width - 100, Screen.height - 20, 100, 20), "HS:" + local.CurrentHandSize.ToString() + " HP:" + local.CurrentHealth.ToString() + " A:" + local.CurrentActions.ToString());
-        if (across != null)
-        {
-            GUI.Box(new Rect(across.Hand.transform.position.x + (Screen.width * 0.5f) - 50, across.Hand.transform.position.y + 25, 100, 20), "HS:" + across.CurrentHandSize.ToString() + " HP:" + across.CurrentHealth.ToString() + " A:" + across.CurrentActions.ToString());
-        }
-        if (left != null)
-        {
-            GUI.Box(new Rect(left.Hand.transform.position.x, left.Hand.transform.position.y - (Screen.height * 0.5f), 50, 20), "HS:" + left.CurrentHandSize.ToString() + " HP:" + left.CurrentHealth.ToString() + " A:" + left.CurrentActions.ToString());
-        }
-        if (right != null)
-        {
-            GUI.Box(new Rect(right.Hand.transform.position.x, right.Hand.transform.position.y + (Screen.height * 0.5f), 50, 20), "HS:" + right.CurrentHandSize.ToString() + " HP:" + right.CurrentHealth.ToString() + " A:" + right.CurrentActions.ToString());
-        }
+        //    isMerging = false;
+        //    newCard.gameObject.SetActive(true);
+        //}
+
+        //void DisplayPlayers()
+        //{
+        //    Player local = GlobalSettings.Instance.GetLocalPlayer();
+        //    GUI.Box(new Rect(Screen.width - 100, Screen.height - 20, 100, 20), "HS:" + local.CurrentHandSize.ToString() + " HP:" + local.CurrentHealth.ToString() + " A:" + local.CurrentActions.ToString());
+        //    if (across != null)
+        //    {
+        //        GUI.Box(new Rect(across.Hand.transform.position.x + (Screen.width * 0.5f) - 50, across.Hand.transform.position.y + 25, 100, 20), "HS:" + across.CurrentHandSize.ToString() + " HP:" + across.CurrentHealth.ToString() + " A:" + across.CurrentActions.ToString());
+        //    }
+        //    if (left != null)
+        //    {
+        //        GUI.Box(new Rect(left.Hand.transform.position.x, left.Hand.transform.position.y - (Screen.height * 0.5f), 50, 20), "HS:" + left.CurrentHandSize.ToString() + " HP:" + left.CurrentHealth.ToString() + " A:" + left.CurrentActions.ToString());
+        //    }
+        //    if (right != null)
+        //    {
+        //        GUI.Box(new Rect(right.Hand.transform.position.x, right.Hand.transform.position.y + (Screen.height * 0.5f), 50, 20), "HS:" + right.CurrentHandSize.ToString() + " HP:" + right.CurrentHealth.ToString() + " A:" + right.CurrentActions.ToString());
+        //    }
+        //}
     }
 }

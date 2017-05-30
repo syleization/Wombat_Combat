@@ -130,7 +130,7 @@ public class GlobalSettings : NetworkBehaviour
         HudManager networkHud = FindObjectOfType<HudManager>();
         NetworkCleanup networkCleanup = FindObjectOfType<NetworkCleanup>();
 
-        networkCleanup.ShowGUI = true;
+        networkCleanup.Activate();
 #if UNITY_ANDROID
         networkHud.ShowGUI = false;
 #else
@@ -376,15 +376,6 @@ public class GlobalSettings : NetworkBehaviour
         const int amountOfCardTypes = 3;
 
         return AllCards[typeIndex * amountOfCardTypes  + levelIndex];
-    }
-
-    void OnGUI()
-    {
-        if(isServer && CanStartGame && GUI.Button(new Rect(Screen.width - 130, Screen.height / 2, 120, 20), "Start Game"))
-        {
-            CanStartGame = false;
-            RpcInitialize();
-        }
     }
 
     public bool CanInitialize()

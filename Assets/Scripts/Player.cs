@@ -176,10 +176,7 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcHideActiveButton()
     {
-        if(isLocalPlayer)
-        {
-            ButtonManager.Instance.HideActiveButton();
-        }
+        ButtonManager.Instance.HideActiveButton();
     }
     [Command]
     public void CmdShowActiveButton()
@@ -346,6 +343,13 @@ public class Player : NetworkBehaviour
     public void CmdEndGame()
     {
         GlobalSettings.Instance.RpcEndGame();
+    }
+
+    // TurnManager Commands
+    [Command]
+    public void CmdChangeIsDisplayingBanner(bool isDisplayingBanner)
+    {
+        TurnManager.Instance.IsCurrentlyDisplayingBanner = isDisplayingBanner;
     }
 
     // Pause Commands

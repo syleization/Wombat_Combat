@@ -180,7 +180,7 @@ public class ButtonManager : NetworkBehaviour
 
     void CheckShow()
     {
-        if(CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && Pause.Instance.IsPaused == false)
+        if(CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && Pause.Instance.IsPaused == false && !TurnManager.Instance.IsCurrentlyDisplayingBanner)
         {
             if (CurrentButtonType == ButtonType.None)
             {
