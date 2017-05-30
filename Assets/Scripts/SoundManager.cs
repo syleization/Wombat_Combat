@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
@@ -58,11 +59,44 @@ public class SoundManager : MonoBehaviour
     [Range(0, 1)]
     public float MasterVolume = 1;
 
+    public void SlideMasterVolume(Slider slider)
+    {
+        MasterVolume = slider.value;
+
+        if (MasterVolume > MusicVolume)
+        {
+            musicSource.volume = MusicVolume;
+        }
+        else
+        {
+            musicSource.volume = MasterVolume;
+        }
+    }
+
     [Range(0, 1)]
     public float MusicVolume = 1;
 
+    public void SlideMusicVolume(Slider slider)
+    {
+        MusicVolume = slider.value;
+
+        if (MasterVolume > MusicVolume)
+        {
+            musicSource.volume = MusicVolume;
+        }
+        else
+        {
+            musicSource.volume = MasterVolume;
+        }
+    }
+
     [Range(0, 1)]
     public float EffectVolume = 1;
+
+    public void SlideEffectVolume(Slider slider)
+    {
+        EffectVolume = slider.value;
+    }
 
     private Transform camTransform;
     private AudioSource musicSource;
