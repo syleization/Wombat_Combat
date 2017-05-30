@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class DontDestroy : MonoBehaviour
 {
     private bool created = false;
+    private int counter;
 
     private void Awake()
     {
@@ -13,6 +14,7 @@ public class DontDestroy : MonoBehaviour
         {
             DontDestroyOnLoad(transform.gameObject);
             created = true;
+            counter = 0;
         }
         else
         {
@@ -32,9 +34,10 @@ public class DontDestroy : MonoBehaviour
 
     private void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.buildIndex == 0)
+        if (scene.buildIndex == 0 && counter != 0)
         {
             Destroy(this.gameObject);
         }
+        ++counter;
     }
 }

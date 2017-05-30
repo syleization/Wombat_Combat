@@ -8,16 +8,13 @@ public class HudManager : MonoBehaviour
     NetworkManager manager;
     string Password;
  
-    void Awake()
-    {
-        HUD = this.gameObject.GetComponent<NetworkManagerHUD>();
-    }
+    private enum NetworkType { None, Client, Host }
+    NetworkType CurrentNetworkType;
 
-    void Start()
+    private void OnEnable()
     {
-        ToggleHUD();
-        Password = "";
-        manager = FindObjectOfType<NetworkManager>();
+        CurrentNetworkType = NetworkType.None;
+        SceneManager.sceneLoaded += ConfigureNetworkStuff;
     }
 
     public void ToggleHUD()
@@ -30,22 +27,43 @@ public class HudManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
+    void ConfigureNetworkStuff(Scene scene, LoadSceneMode mode)
+    {
+        if(scene.name == "Networking")
+        {
+            manager = FindObjectOfType<NetworkManager>();
+            
+            switch(CurrentNetworkType)
+            {
+                case NetworkType.Client:
+                    manager.StartClient();
+                    break;
+                case NetworkType.Host:
+                    manager.StartHost();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
     public void StartLANClient(string sceneName)
     {
         LoadScene(sceneName);
-        manager.StartClient();
+        CurrentNetworkType = NetworkType.Client;
     }
 
     public void StartLANHost(string sceneName)
     {
         LoadScene(sceneName);
-        manager.StartHost();
+        CurrentNetworkType = NetworkType.Host;
     }
 
     public void CancelSearch()
     {
         manager.StopHost();
     }
+
 #if UNITY_ANDROID
     public bool ShowGUI = true;
 

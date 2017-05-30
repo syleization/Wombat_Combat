@@ -133,8 +133,6 @@ public class GlobalSettings : NetworkBehaviour
         networkCleanup.Activate();
 #if UNITY_ANDROID
         networkHud.ShowGUI = false;
-#else
-        networkHud.ToggleHUD();
 #endif
 
         Players.Add(LeftPlayer);
