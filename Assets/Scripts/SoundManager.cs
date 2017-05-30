@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
@@ -102,9 +103,18 @@ public class SoundManager : MonoBehaviour
     private AudioSource musicSource;
     private ManagedSound currentSong;
 
+    private void OnEnabled()
+    {
+        SceneManager.sceneLoaded += FindCamera;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= FindCamera;
+    }
+
     private void Initialize()
     {
-        camTransform = Camera.main.transform;
         SoundDictionary = new Dictionary<string, ManagedSound>();
 
         foreach (ManagedSound item in SoundList)
@@ -120,6 +130,11 @@ public class SoundManager : MonoBehaviour
         }
 
         musicSource = GetComponent<AudioSource>();
+    }
+
+    private void FindCamera(Scene scene, LoadSceneMode mode)
+    {
+        camTransform = Camera.main.transform;
     }
 
     public void PlaySound(string key)
