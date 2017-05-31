@@ -99,19 +99,9 @@ public class SoundManager : MonoBehaviour
         EffectVolume = slider.value;
     }
 
-    private Transform camTransform;
     private AudioSource musicSource;
     private ManagedSound currentSong;
 
-    private void OnEnabled()
-    {
-        SceneManager.sceneLoaded += FindCamera;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= FindCamera;
-    }
 
     private void Initialize()
     {
@@ -130,11 +120,6 @@ public class SoundManager : MonoBehaviour
         }
 
         musicSource = GetComponent<AudioSource>();
-    }
-
-    private void FindCamera(Scene scene, LoadSceneMode mode)
-    {
-        camTransform = Camera.main.transform;
     }
 
     public void PlaySound(string key)
@@ -174,7 +159,7 @@ public class SoundManager : MonoBehaviour
                     musicSource.Play();
                     break;
                 case SoundType.Effect:
-                    AudioSource.PlayClipAtPoint(sound.clip, camTransform.position, volume);
+                    AudioSource.PlayClipAtPoint(sound.clip, Camera.main.transform.position, volume);
                     break;
                 default:
                     return;
