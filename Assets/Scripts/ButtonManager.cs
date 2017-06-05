@@ -102,7 +102,7 @@ public class ButtonManager : NetworkBehaviour
         }
         else
         {
-            StartGameButton.gameObject.SetActive(true);
+            StartGameButton.gameObject.SetActive(false);
             CurrentActiveButton = StartGameButton;
             CurrentButton = ButtonType.StartGame;
         }
@@ -180,7 +180,7 @@ public class ButtonManager : NetworkBehaviour
 
     void CheckShow()
     {
-        if(CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && Pause.Instance.IsPaused == false && !TurnManager.Instance.IsCurrentlyDisplayingBanner)
+        if((CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && Pause.Instance.IsPaused == false && !TurnManager.Instance.IsCurrentlyDisplayingBanner && CurrentActiveButton != StartGameButton))
         {
             if (CurrentButtonType == ButtonType.None)
             {
@@ -312,6 +312,7 @@ public class ButtonManager : NetworkBehaviour
         if (GlobalSettings.Instance.CanInitialize())
         {
             GlobalSettings.Instance.RequestInitialize();
+            HideActiveButton();
             CurrentButtonType = ButtonType.ChangeStage;
         }
     }

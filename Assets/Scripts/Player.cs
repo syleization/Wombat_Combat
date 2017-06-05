@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class Player : NetworkBehaviour
 {
@@ -166,7 +167,45 @@ public class Player : NetworkBehaviour
     {
         GlobalSettings.Instance.AddNetworkPlayer(this);
     }
+
     #region Networking
+
+    // NetworkCleanup Commands & RPC
+
+    void Disconnect()
+    {
+        GlobalSettings.Instance.Terminate();
+        TurnManager.Instance.Terminate();
+        SceneManager.LoadScene(0);
+    }
+
+    [Command]
+    public void CmdDisconnect()
+    {
+        RpcDisconnect();
+    }
+
+    [ClientRpc]
+    public void RpcDisconnect()
+    {
+        if(isServer == false)
+        {
+            Disconnect();
+        }
+        else
+        {
+            TheGUI gui = FindObjectOfType<TheGUI>();
+            gui.Active = false;
+            StartCoroutine(HostWaitTillClientsGetDisconnected(1.0f));
+        }
+    }
+
+    IEnumerator HostWaitTillClientsGetDisconnected(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        NetworkManager.singleton.StopHost();
+        Disconnect();
+    }
     // Button Manager Commands & RPC
     [Command]
     public void CmdHideActiveButton()

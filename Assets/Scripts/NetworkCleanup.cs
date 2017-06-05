@@ -13,13 +13,16 @@ public class NetworkCleanup : MonoBehaviour
     public void Disconnect()
     {
         Player player = GlobalSettings.Instance.GetLocalPlayer();
-        if(player != null && player.isServer)
+        if (player != null)
         {
-            NetworkManager.singleton.StopHost();
+            if (player.isServer)
+            {
+                player.RpcDisconnect();
+            }
+            else
+            {
+                player.CmdDisconnect();
+            }
         }
-
-        GlobalSettings.Instance.Terminate();
-        TurnManager.Instance.Terminate();
-        SceneManager.LoadScene(0);
     }
 }

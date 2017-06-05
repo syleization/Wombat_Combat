@@ -304,6 +304,10 @@ public class GlobalSettings : NetworkBehaviour
             CanStartGame = true;
         }
 
+        if (CanStartGame && isServer)
+        {
+            ButtonManager.Instance.ShowActiveButton();
+        }
     }
 
     public int GetDamageAmountOf(CardSubType type)

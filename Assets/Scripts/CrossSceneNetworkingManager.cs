@@ -41,7 +41,7 @@ public class CrossSceneNetworkingManager : MonoBehaviour
                     manager.StartMatchMaker();
                     manager.matchMaker.ListMatches(0, 20, "", false, 0, 0, manager.OnMatchList);
                     enabled = true;
-                    JoinGameTimer(10.0f);
+                    StartCoroutine(JoinGameTimer(10.0f));
                     break;
                 case NetworkType.Host:
                     manager.StartMatchMaker();
