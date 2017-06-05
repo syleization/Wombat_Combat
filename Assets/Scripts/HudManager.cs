@@ -1,20 +1,24 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using System;
+using System.Collections;
 
 public class HudManager : MonoBehaviour
 {
     NetworkManagerHUD HUD;
     NetworkManager manager;
-    string Password;
- 
+    string Password = "";
+    GameType CurrentGameType;
+
     private enum NetworkType { None, Client, Host }
     NetworkType CurrentNetworkType;
 
-    private void OnEnable()
+    private void Start()
     {
         CurrentNetworkType = NetworkType.None;
         SceneManager.sceneLoaded += ConfigureNetworkStuff;
+        enabled = false;
     }
 
     public void ToggleHUD()
@@ -29,17 +33,36 @@ public class HudManager : MonoBehaviour
 
     void ConfigureNetworkStuff(Scene scene, LoadSceneMode mode)
     {
-        if(scene.name == "Networking")
+        manager = null;
+        manager = FindObjectOfType<NetworkManager>();
+   
+        if (manager != null)
         {
-            manager = FindObjectOfType<NetworkManager>();
-            
-            switch(CurrentNetworkType)
+            manager.onlineScene = scene.name;
+
+            switch (CurrentNetworkType)
             {
                 case NetworkType.Client:
-                    manager.StartClient();
+                    // manager.StartClient();
+                    manager.StartMatchMaker();
+                    manager.matchMaker.ListMatches(0, 20, "", false, 0, 0, manager.OnMatchList);
+                    enabled = true;
+                    JoinGameTimer(10.0f);
                     break;
                 case NetworkType.Host:
-                    manager.StartHost();
+                    manager.StartMatchMaker();
+                    string matchName;
+                    if(manager.matches == null)
+                    {
+                        matchName = "0";
+                    }
+                    else
+                    {
+                        matchName = manager.matches.Count.ToString();
+                    }
+                    manager.matchMaker.CreateMatch(matchName, manager.matchSize, true, Password, "", "", 0, 0, manager.OnMatchCreate);
+                    
+                    // manager.StartHost();
                     break;
                 default:
                     break;
@@ -47,14 +70,44 @@ public class HudManager : MonoBehaviour
         }
     }
 
+    IEnumerator JoinGameTimer(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        // If a match is not found go back to start screen
+        enabled = false;
+        LoadScene("MainMenu");
+    }
+
+    void Update()
+    {
+        if (manager != null && manager.matches != null)
+        {
+            foreach (var match in manager.matches)
+            {
+                if (match.currentSize < (int)CurrentGameType)
+                {
+                    manager.matchName = match.name;
+                    manager.matchSize = (uint)match.currentSize;
+                    manager.matchMaker.JoinMatch(match.networkId, Password, "", "", 0, 0, manager.OnMatchJoined);
+                    enabled = false;
+                    StopAllCoroutines();
+                }
+            }
+        }
+    }
+    // 0 for TwoPlayer, 1 for ThreePlayer, 2 for FourPlayer
     public void StartLANClient(string sceneName)
     {
+        if (sceneName == "Networking")
+            CurrentGameType = GameType.TwoPlayer;
         LoadScene(sceneName);
         CurrentNetworkType = NetworkType.Client;
     }
 
     public void StartLANHost(string sceneName)
     {
+        if (sceneName == "Networking")
+            CurrentGameType = GameType.TwoPlayer;
         LoadScene(sceneName);
         CurrentNetworkType = NetworkType.Host;
     }

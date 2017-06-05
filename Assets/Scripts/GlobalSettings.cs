@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 
 public enum AreaPosition { Left, Top, Right, Bottom }
-public enum GameType { TwoPlayer, ThreePlayer, FourPlayer }
+public enum GameType { TwoPlayer = 2, ThreePlayer = 3, FourPlayer = 4 }
 public class GlobalSettings : NetworkBehaviour
 {
     /*

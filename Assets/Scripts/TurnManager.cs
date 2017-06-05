@@ -122,10 +122,10 @@ public class TurnManager : NetworkBehaviour
             Destroy(banner);
             NetworkServer.UnSpawn(banner);
             IsDisplayingBanner = false;
-            if (GlobalSettings.Instance.GetLocalPlayer().IsTurn)
-            {
-                ButtonManager.Instance.ShowActiveButton();
-            }
+            //if (GlobalSettings.Instance.GetLocalPlayer().IsTurn)
+            //{
+            //    ButtonManager.Instance.ShowActiveButton();
+            //}
         }
     }
 
