@@ -546,8 +546,8 @@ public class Player : NetworkBehaviour
         Hand = GetComponent<Hand>();
     }
 
-    Timer WaitToPlayTimer = new Timer();
-    bool doneWaiting = true;
+    //Timer WaitToPlayTimer = new Timer();
+   // bool doneWaiting = true;
 
     public bool HasPermission()
     {

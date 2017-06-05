@@ -127,13 +127,13 @@ public class GlobalSettings : NetworkBehaviour
     void Initialize()
     {
         Debug.Log("Initialize");
-        HudManager networkHud = FindObjectOfType<HudManager>();
         NetworkCleanup networkCleanup = FindObjectOfType<NetworkCleanup>();
 
         networkCleanup.Activate();
-#if UNITY_ANDROID
-        networkHud.ShowGUI = false;
-#endif
+//#if UNITY_ANDROID
+//        HudManager networkHud = FindObjectOfType<HudManager>();
+//        networkHud.ShowGUI = false;
+//#endif
 
         Players.Add(LeftPlayer);
         Players.Add(TopPlayer);

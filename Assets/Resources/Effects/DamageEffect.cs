@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class DamageEffect : MonoBehaviour
 {
-    private SpriteRenderer myRenderer;
+    //private SpriteRenderer myRenderer;
     private Animator myAnimator;
 
     void Start()
     {
-        myRenderer = GetComponent<SpriteRenderer>();
+        //myRenderer = GetComponent<SpriteRenderer>();
     }
 
     public void PlayDamageEffect(string text, Turns target)

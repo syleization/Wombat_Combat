@@ -4,10 +4,10 @@ using UnityEngine.Networking;
 
 public class TheGUI : NetworkBehaviour
 {
-    Player left, right, across;
+    //Player left, right, across;
     [SyncVar]
     public bool Active = false;
-    bool isMerging = false;
+    //bool isMerging = false;
     public bool isActive
     {
         set
@@ -20,9 +20,9 @@ public class TheGUI : NetworkBehaviour
 
     void Start()
     {
-        across = TurnManager.Instance.GetPlayerAcrossFrom(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
-        right = TurnManager.Instance.GetPlayerToTheRightOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
-        left = TurnManager.Instance.GetPlayerToTheLeftOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
+        //across = TurnManager.Instance.GetPlayerAcrossFrom(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
+       // right = TurnManager.Instance.GetPlayerToTheRightOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
+        //left = TurnManager.Instance.GetPlayerToTheLeftOfWithNull(TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer()));
         GameIsOver = false;
         
     }
