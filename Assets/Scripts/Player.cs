@@ -172,6 +172,12 @@ public class Player : NetworkBehaviour
 
     // NetworkCleanup Commands & RPC
 
+    [Command]
+    public void CmdDisconnect()
+    {
+        RpcDisconnect();
+    }
+
     void Disconnect()
     {
         GlobalSettings.Instance.Terminate();
@@ -179,17 +185,12 @@ public class Player : NetworkBehaviour
         SceneManager.LoadScene(0);
     }
 
-    [Command]
-    public void CmdDisconnect()
-    {
-        RpcDisconnect();
-    }
-
     [ClientRpc]
     public void RpcDisconnect()
     {
-        if(isServer == false)
+        if (isServer == false)
         {
+            NetworkManager.singleton.StopClient();
             Disconnect();
         }
         else
@@ -204,7 +205,23 @@ public class Player : NetworkBehaviour
     {
         yield return new WaitForSeconds(waitTime);
         NetworkManager.singleton.StopHost();
+        NetworkManager manager = FindObjectOfType<NetworkManager>();
+        NetworkManager.singleton.StartMatchMaker();
+        if (manager.matchMaker != null && manager.matchInfo != null)
+        {
+            Debug.Log("HERE");
+            manager.matchMaker.DestroyMatch(CrossSceneNetworkingManager.MatchId, 0, OnMatchDestroy);
+        }
+        NetworkManager.singleton.StopMatchMaker();
         Disconnect();
+    }
+
+    public void OnMatchDestroy(bool success, string extendedInfo)
+    {
+        if (success)
+        {
+            Disconnect();
+        }
     }
     // Button Manager Commands & RPC
     [Command]

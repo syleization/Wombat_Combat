@@ -325,7 +325,7 @@ public class CardMove : MonoBehaviour
             }
         }
     }
-
+   
     void OnMouseUp()
     {
         if (Pause.Instance.IsPaused == false)
