@@ -98,17 +98,18 @@ public class Player : NetworkBehaviour
             if(value <= 0)
             {
                 PlayersCurrentHealth = 0;
-                if (GlobalSettings.Instance.TypeOfGame == GameType.TwoPlayer)
+                if (isServer)
                 {
-                    if (isServer)
-                    {
-                        TheGUI gui = FindObjectOfType<TheGUI>();
-                        gui.GameIsOver = true;
-                    }
-                    else
-                    {
-                        GlobalSettings.Instance.GetLocalPlayer().CmdEndGame();
-                    }
+                    Pause.Instance.RpcPauseGame(100.0f);
+                    RpcChangeHealthAmount();
+                    TheGUI gui = FindObjectOfType<TheGUI>();
+                    gui.GameIsOver = true;
+                }
+                else
+                {
+                    CmdPauseGame(100.0f);
+                    GlobalSettings.Instance.GetLocalPlayer().CmdChangeHealthAmount();
+                    GlobalSettings.Instance.GetLocalPlayer().CmdEndGame();
                 }
             }
             else if(value != MaxHealth)

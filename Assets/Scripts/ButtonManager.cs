@@ -161,7 +161,7 @@ public class ButtonManager : NetworkBehaviour
 
     void CheckMerge()
     {
-        if (LocalPlayer != null && Field.Instance.IsMergable()
+        if (Pause.Instance.IsPaused == false && LocalPlayer != null && Field.Instance.IsMergable()
                 && LocalPlayer.CurrentActions > 0
                 && !TurnManager.Instance.IsCurrentlyDisplayingBanner
                 && isMerging == false)
@@ -172,7 +172,7 @@ public class ButtonManager : NetworkBehaviour
 
     void CheckHide()
     {
-        if(CurrentActiveButton.IsActive() && LocalPlayer.IsTurn == false && TurnManager.Instance.currentStage != Stage.Reaction && Pause.Instance.IsPaused == false)
+        if(Pause.Instance.IsPaused == false && CurrentActiveButton.IsActive() && LocalPlayer.IsTurn == false && TurnManager.Instance.currentStage != Stage.Reaction && Pause.Instance.IsPaused == false)
         {
             HideActiveButton();
         }
@@ -180,7 +180,7 @@ public class ButtonManager : NetworkBehaviour
 
     void CheckShow()
     {
-        if((CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && Pause.Instance.IsPaused == false && !TurnManager.Instance.IsCurrentlyDisplayingBanner && CurrentActiveButton != StartGameButton))
+        if(Pause.Instance.IsPaused == false && (CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && Pause.Instance.IsPaused == false && !TurnManager.Instance.IsCurrentlyDisplayingBanner && CurrentActiveButton != StartGameButton))
         {
             if (CurrentButtonType == ButtonType.None)
             {

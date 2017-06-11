@@ -165,65 +165,32 @@ public class TheGUI : NetworkBehaviour
                 //}
                 //DisplayPlayers();
             }
-            else if (GameIsOver && GlobalSettings.Instance.GetLocalPlayer().Hand != null)
-            {
-                foreach (Player p in GlobalSettings.Players)
-                {
-                    if (p != null)
-                    {
-                        p.ClearHand();
-                        Destroy(p.Hand.gameObject);
-                    }
-                }
-
-                Destroy(Field.Instance.gameObject);
-            }
-            // When the game is over you can now disconnect from the server or if you are the host shut down the server
-            else if (GameIsOver)
-            {
-                if (GlobalSettings.Instance.GetLocalPlayer().CurrentHealth == 0)
-                {
-                    GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Loser!");
-                }
-                else
-                {
-                    GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Winner!");
-                }
-            }
+           
         }
+        // When the game is over you can now disconnect from the server or if you are the host shut down the server
+        else if (GameIsOver)
+        {
+            if (GlobalSettings.Instance.GetLocalPlayer().CurrentHealth == 0)
+            {
+                GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Loser!");
+            }
+            else
+            {
+                GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Winner!");
+            }
+            StartCoroutine(WaitToEndGame(3.0f));
+        }
+    }
 
-        //IEnumerator WaitToPlaceMergedCardIntoHand(float waitTime, Player currentPlayer, Card newCard)
-        //{
-        //    yield return new WaitForSeconds(waitTime);
+    IEnumerator WaitToEndGame(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
 
-        //    newCard.owner = currentPlayer;
-        //    DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
-        //    newCard.CurrentArea = "Hand";
-        //    currentPlayer.Hand.CardsInHand.Add(newCard);
+        if (isServer)
+        {
+            NetworkCleanup endGame = FindObjectOfType<NetworkCleanup>();
 
-        //    // Clear field of used cards
-        //    Field.Instance.ClearField();
-
-        //    isMerging = false;
-        //    newCard.gameObject.SetActive(true);
-        //}
-
-        //void DisplayPlayers()
-        //{
-        //    Player local = GlobalSettings.Instance.GetLocalPlayer();
-        //    GUI.Box(new Rect(Screen.width - 100, Screen.height - 20, 100, 20), "HS:" + local.CurrentHandSize.ToString() + " HP:" + local.CurrentHealth.ToString() + " A:" + local.CurrentActions.ToString());
-        //    if (across != null)
-        //    {
-        //        GUI.Box(new Rect(across.Hand.transform.position.x + (Screen.width * 0.5f) - 50, across.Hand.transform.position.y + 25, 100, 20), "HS:" + across.CurrentHandSize.ToString() + " HP:" + across.CurrentHealth.ToString() + " A:" + across.CurrentActions.ToString());
-        //    }
-        //    if (left != null)
-        //    {
-        //        GUI.Box(new Rect(left.Hand.transform.position.x, left.Hand.transform.position.y - (Screen.height * 0.5f), 50, 20), "HS:" + left.CurrentHandSize.ToString() + " HP:" + left.CurrentHealth.ToString() + " A:" + left.CurrentActions.ToString());
-        //    }
-        //    if (right != null)
-        //    {
-        //        GUI.Box(new Rect(right.Hand.transform.position.x, right.Hand.transform.position.y + (Screen.height * 0.5f), 50, 20), "HS:" + right.CurrentHandSize.ToString() + " HP:" + right.CurrentHealth.ToString() + " A:" + right.CurrentActions.ToString());
-        //    }
-        //}
+            endGame.Disconnect();
+        }
     }
 }
