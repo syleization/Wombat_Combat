@@ -216,7 +216,7 @@ public class GlobalSettings : NetworkBehaviour
         newHand = Instantiate<Hand>(Handzone);
         local.Hand = newHand;
         newHand.transform.position = new Vector3(0.0f, -4.5f, 1.0f);
-        newHand.transform.rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
+        newHand.transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);
 
         // Instantiate the player's hand across from the local player
         Player across = TurnManager.Instance.GetPlayerAcrossFrom(TurnManager.Instance.GetTurnEnumOfPlayer(local));
@@ -225,7 +225,7 @@ public class GlobalSettings : NetworkBehaviour
             newHand = Instantiate<Hand>(Handzone);
             across.Hand = newHand;
             newHand.transform.position = new Vector3(0.0f, 4.5f, 1.0f);
-            newHand.transform.rotation = new Quaternion(0.0f, 0.0f, -180.0f, 0.0f);
+            newHand.transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);// 0.0f, 0.0f, -180.0f, 0.0f);
         }
 
         // Instantiate the player's hand to the left of the local player
@@ -234,8 +234,8 @@ public class GlobalSettings : NetworkBehaviour
         {
             newHand = Instantiate<Hand>(Handzone);
             left.Hand = newHand;
-            newHand.transform.position = new Vector3(-5.0f, 0.0f, 1.0f);
-            newHand.transform.rotation = new Quaternion(0.0f, 0.0f, -90.0f, 0.0f);
+            newHand.transform.position = new Vector3(-7.0f, 0.0f, 1.0f);
+            newHand.transform.rotation = Quaternion.AngleAxis(90.0f, Vector3.forward);
         }
 
         // Instantiate the player's hand to the right of the local player
@@ -245,8 +245,8 @@ public class GlobalSettings : NetworkBehaviour
         {
             newHand = Instantiate<Hand>(Handzone);
             right.Hand = newHand;
-            newHand.transform.position = new Vector3(5.0f, 0.0f, 1.0f);
-            newHand.transform.rotation = new Quaternion(0.0f, 0.0f, 90.0f, 0.0f);
+            newHand.transform.position = new Vector3(7.0f, 0.0f, 1.0f);
+            newHand.transform.rotation = Quaternion.AngleAxis(90.0f, Vector3.forward);
         }
     }
     #endregion
