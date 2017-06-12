@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class DamageEffect : MonoBehaviour
 {
-    public float LingerTime = 2.0f;
-
     public Animator myAnimator;
     public Text myText;
 
@@ -42,7 +40,7 @@ public class DamageEffect : MonoBehaviour
                 break;
         }
 
-        transform.position = location;
+        transform.position = new Vector3(location.x, location.y, transform.position.z);
 
         enabled = true;
     }

@@ -294,9 +294,9 @@ public class Effects : MonoBehaviour
         mergeAnimation.GetComponent<Merge>().Initialize(originalCards, finalCard, targetPlayer);
     }
 
-    public static void DamageEffect(Player player, string text)
+    public static void DamageEffect(Turns player, string text)
     {
         GameObject damageAnimation = Instantiate(Resources.Load("Effects/DamageEffect")) as GameObject;
-        damageAnimation.GetComponent<DamageEffect>().Initialize(text, TurnManager.Instance.GetTurnEnumOfPlayer(player), PointBehind(player) * 0.5f);
+        damageAnimation.GetComponent<DamageEffect>().Initialize(text, player, PointBehind(TurnManager.Instance.GetPlayerOfTurnEnum(player)) * 0.5f);
     }
 }

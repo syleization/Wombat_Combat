@@ -316,19 +316,19 @@ public class EffectTester : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
-            Effects.DamageEffect(GlobalSettings.Instance.BottomPlayer, "NERB");
+            Effects.DamageEffect(Turns.BottomPlayer, "NERB");
         }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            Effects.DamageEffect(GlobalSettings.Instance.TopPlayer, "is");
+            Effects.DamageEffect(Turns.TopPlayer, "is");
         }
         if (Input.GetKeyDown(KeyCode.Minus))
         {
-            Effects.DamageEffect(GlobalSettings.Instance.LeftPlayer, "Nathan");
+            Effects.DamageEffect(Turns.LeftPlayer, "Nathan");
         }
         if (Input.GetKeyDown(KeyCode.Equals))
         {
-            Effects.DamageEffect(GlobalSettings.Instance.RightPlayer, "a");
+            Effects.DamageEffect(Turns.RightPlayer, "a");
         }
     }
 }
