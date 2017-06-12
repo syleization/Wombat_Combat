@@ -296,7 +296,39 @@ public class Effects : MonoBehaviour
 
     public static void DamageEffect(Turns player, string text)
     {
+        int target = 0;
+
+        Player victim = TurnManager.Instance.GetPlayerOfTurnEnum(player);
+        Player local = GlobalSettings.Instance.GetLocalPlayer();
+        Turns localTurns = TurnManager.Instance.GetTurnEnumOfPlayer(local);
+
+        if (victim == null)
+        {
+            // no player
+            target = 0;
+        }
+        else if (victim == local)
+        {
+            // bottom player
+            target = 1;
+        }
+        else if (victim == TurnManager.Instance.GetPlayerAcrossFrom(localTurns))
+        {
+            // top player
+            target = 2;
+        }
+        else if (victim == TurnManager.Instance.GetPlayerToTheLeftOfWithNull(localTurns))
+        {
+            // left player
+            target = 3;
+        }
+        else if (victim == TurnManager.Instance.GetPlayerToTheRightOfWithNull(localTurns))
+        {
+            // right player
+            target = 4;
+        }
+        
         GameObject damageAnimation = Instantiate(Resources.Load("Effects/DamageEffect")) as GameObject;
-        damageAnimation.GetComponent<DamageEffect>().Initialize(text, player, PointBehind(TurnManager.Instance.GetPlayerOfTurnEnum(player)) * 0.5f);
+        damageAnimation.GetComponent<DamageEffect>().Initialize(text, target);
     }
 }

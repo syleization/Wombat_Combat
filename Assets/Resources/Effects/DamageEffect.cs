@@ -16,31 +16,28 @@ public class DamageEffect : MonoBehaviour
         enabled = false;
     }
 
-    public void Initialize(string text, Turns target, Vector3 location)
+    public void Initialize(string text, int target)
     {
         myText.text = text;
 
         switch (target)
         {
-            case Turns.LeftPlayer:
-                myAnimator.SetTrigger("Left");
-                break;
-            case Turns.TopPlayer:
-                myAnimator.SetTrigger("Top");
-                break;
-            case Turns.RightPlayer:
-                myAnimator.SetTrigger("Right");
-                break;
-            case Turns.BottomPlayer:
+            case 1:
                 myAnimator.SetTrigger("Bottom");
                 break;
-            case Turns.Null:
+            case 2:
+                myAnimator.SetTrigger("Top");
+                break;
+            case 3:
+                myAnimator.SetTrigger("Left");
+                break;
+            case 4:
+                myAnimator.SetTrigger("Right");
                 break;
             default:
+                myAnimator.SetTrigger("Bottom");
                 break;
         }
-
-        transform.position = new Vector3(location.x, location.y, transform.position.z);
 
         enabled = true;
     }

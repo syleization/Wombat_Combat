@@ -266,7 +266,7 @@ public class Player : NetworkBehaviour
     public void RpcTakeDamage(Turns player, int damage)
     {
         TurnManager.Instance.GetPlayerOfTurnEnum(player).CurrentHealth -= damage;
-        Effects.DamageEffect(player, damage.ToString());
+        Effects.DamageEffect(player, "-" + damage.ToString());
     }
 
     [Command]
