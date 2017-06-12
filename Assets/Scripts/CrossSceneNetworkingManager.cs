@@ -107,7 +107,7 @@ public class CrossSceneNetworkingManager : NetworkBehaviour
                 if (match.currentSize < (int)CurrentGameType)
                 {
                     manager.matchName = match.name;
-                    manager.matchSize = (uint)match.currentSize;
+                    manager.matchSize = (uint)CurrentGameType;
                     NetworkId  = match.networkId;
                     manager.matchMaker.JoinMatch(match.networkId, Password, "", "", 0, 0, manager.OnMatchJoined);
                     enabled = false;
@@ -116,19 +116,33 @@ public class CrossSceneNetworkingManager : NetworkBehaviour
             }
         }
     }
+
+    void DetermineGameType(string sceneName)
+    {
+        if (sceneName == "Networking")
+        {
+            CurrentGameType = GameType.TwoPlayer;
+        }
+        else if (sceneName == "ThreePlayer")
+        {
+            CurrentGameType = GameType.ThreePlayer;
+        }
+        else if (sceneName == "FourPlayer")
+        {
+            CurrentGameType = GameType.FourPlayer;
+        }
+    }
     // 0 for TwoPlayer, 1 for ThreePlayer, 2 for FourPlayer
     public void StartLANClient(string sceneName)
     {
-        if (sceneName == "Networking")
-            CurrentGameType = GameType.TwoPlayer;
+        DetermineGameType(sceneName);
         LoadScene(sceneName);
         CurrentNetworkType = NetworkType.Client;
     }
 
     public void StartLANHost(string sceneName)
     {
-        if (sceneName == "Networking")
-            CurrentGameType = GameType.TwoPlayer;
+        DetermineGameType(sceneName);
         LoadScene(sceneName);
         CurrentNetworkType = NetworkType.Host;
     }
