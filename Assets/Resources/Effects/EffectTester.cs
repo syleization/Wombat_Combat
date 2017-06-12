@@ -314,5 +314,21 @@ public class EffectTester : MonoBehaviour {
         {
             Effects.Merge(CardSubType.Trampoline, CardSubType.Sinkhole, Turns.BottomPlayer);
         }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            Effects.DamageEffect(GlobalSettings.Instance.BottomPlayer, "NERB");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            Effects.DamageEffect(GlobalSettings.Instance.TopPlayer, "is");
+        }
+        if (Input.GetKeyDown(KeyCode.Minus))
+        {
+            Effects.DamageEffect(GlobalSettings.Instance.LeftPlayer, "Nathan");
+        }
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            Effects.DamageEffect(GlobalSettings.Instance.RightPlayer, "a");
+        }
     }
 }

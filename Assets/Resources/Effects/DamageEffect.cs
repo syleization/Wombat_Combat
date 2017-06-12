@@ -1,20 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DamageEffect : MonoBehaviour
 {
-    //private SpriteRenderer myRenderer;
-    private Animator myAnimator;
+    public float LingerTime = 2.0f;
+
+    public Animator myAnimator;
+    public Text myText;
 
     void Start()
     {
-        //myRenderer = GetComponent<SpriteRenderer>();
+        //myAnimator = GetComponent<Animator>();
+        //myText = GetComponentInChildren<Text>();
+
+        enabled = false;
     }
 
-    public void PlayDamageEffect(string text, Turns target)
+    public void Initialize(string text, Turns target, Vector3 location)
     {
-        
+        myText.text = text;
 
         switch (target)
         {
@@ -35,5 +41,14 @@ public class DamageEffect : MonoBehaviour
             default:
                 break;
         }
+
+        transform.position = location;
+
+        enabled = true;
+    }
+
+    private void KillMe()
+    {
+        Destroy(gameObject);
     }
 }
