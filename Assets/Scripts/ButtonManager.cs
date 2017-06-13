@@ -172,7 +172,7 @@ public class ButtonManager : NetworkBehaviour
 
     void CheckHide()
     {
-        if(Pause.Instance.IsPaused == false && CurrentActiveButton.IsActive() && LocalPlayer.IsTurn == false && TurnManager.Instance.currentStage != Stage.Reaction && Pause.Instance.IsPaused == false)
+        if(Pause.Instance.IsPaused == false && CurrentActiveButton.IsActive() && LocalPlayer.IsTurn == false && TurnManager.Instance.currentStage != Stage.Reaction)
         {
             HideActiveButton();
         }
@@ -180,7 +180,7 @@ public class ButtonManager : NetworkBehaviour
 
     void CheckShow()
     {
-        if(Pause.Instance.IsPaused == false && (CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && Pause.Instance.IsPaused == false && !TurnManager.Instance.IsCurrentlyDisplayingBanner && CurrentActiveButton != StartGameButton))
+        if(Pause.Instance.IsPaused == false && CurrentActiveButton.IsActive() == false && LocalPlayer.IsTurn == true && !TurnManager.Instance.IsCurrentlyDisplayingBanner && CurrentActiveButton != StartGameButton)
         {
             if (CurrentButtonType == ButtonType.None)
             {
@@ -194,6 +194,7 @@ public class ButtonManager : NetworkBehaviour
     {
         CurrentActiveButton.gameObject.SetActive(false);
     }
+
     public void ShowActiveButton()
     {
         CurrentActiveButton.gameObject.SetActive(true);
