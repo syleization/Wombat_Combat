@@ -219,11 +219,13 @@ public class Player : NetworkBehaviour
 
     public void OnMatchDestroy(bool success, string extendedInfo)
     {
+        NetworkManager.singleton.OnDestroyMatch(success, extendedInfo);
         if (success)
         {
             Disconnect();
         }
     }
+
     // Button Manager Commands & RPC
     [Command]
     public void CmdHideActiveButton()

@@ -60,16 +60,6 @@ public class TurnManager : NetworkBehaviour
         set
         {
             theCurrentTurn = value;
-            //if (isServer)
-            //{
-            //    GlobalSettings.Instance.GetLocalPlayer().RpcShowActiveButton();
-            //    GlobalSettings.Instance.GetLocalPlayer().RpcHideActiveButton();
-            //}
-            //else
-            //{
-            //    GlobalSettings.Instance.GetLocalPlayer().CmdShowActiveButton();
-            //    GlobalSettings.Instance.GetLocalPlayer().CmdHideActiveButton();
-            //}
         }
     }
 

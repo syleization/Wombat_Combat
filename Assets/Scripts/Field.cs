@@ -7,6 +7,12 @@ public class Field : NetworkBehaviour
 {
     // As of now the functionality only supports one field - this may be enough though
     public List<Card> CardsInField = new List<Card>();
+
+    [SerializeField]
+    GameObject OneSquare;
+    [SerializeField]
+    GameObject TwoSquares;
+
     [SyncVar]
     private int MaxFieldSize;
     [SyncVar]
@@ -37,11 +43,17 @@ public class Field : NetworkBehaviour
             return TheInstance;
         }
     }
+    Player localPlayer;
 
     void Awake()
     {
         TheInstance = this;
+        TwoSquares = Instantiate(TwoSquares);
+        OneSquare = Instantiate(OneSquare);
         MaxFieldSize = 2;
+        TwoSquares.SetActive(true);
+        OneSquare.SetActive(false);
+        localPlayer = GlobalSettings.Instance.GetLocalPlayer();
     }
 
     [ClientRpc]
@@ -70,14 +82,33 @@ public class Field : NetworkBehaviour
         }
     }
 
+    void Update()
+    {
+        if (localPlayer.IsTurn == false && TurnManager.Instance.currentStage != Stage.Reaction)
+        {
+            TwoSquares.SetActive(false);
+            OneSquare.SetActive(false);
+        }
+    }
+
     public void ChangeMaxFieldSize(Stage currentStage)
     {
-        if(currentStage == Stage.Merge || currentStage == Stage.Reaction)
+        if(currentStage == Stage.Reaction)
         {
+            TwoSquares.SetActive(false);
+            OneSquare.SetActive(true);
+            MaxFieldSize = 2;
+        }
+        else if(currentStage == Stage.Merge)
+        {
+            TwoSquares.SetActive(true);
+            OneSquare.SetActive(false);
             MaxFieldSize = 2;
         }
         else if(currentStage == Stage.Play)
         {
+            TwoSquares.SetActive(false);
+            OneSquare.SetActive(true);
             MaxFieldSize = 1;
         }
     }
