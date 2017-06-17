@@ -34,6 +34,12 @@ public class UI_PlayerInfo : MonoBehaviour
     [SerializeField]
     Text mRightPlayerTrapsText;
 
+    public ParticleSystem leftPart;
+    public ParticleSystem topPart;
+    public ParticleSystem rightPart;
+    public ParticleSystem bottomPart;
+    private Turns activeTurn = Turns.Null;
+
     void Awake()
     {
         TheInstance = this;
@@ -133,5 +139,60 @@ public class UI_PlayerInfo : MonoBehaviour
         //{
         //    mAcrossPlayerTrapsText.text = value.ToString();
         //}
+    }
+
+    private void Update()
+    {
+        ChangeParticles();
+    }
+
+    private void ChangeParticles()
+    {
+        Turns currentTurn = TurnManager.Instance.CurrentTurn;
+
+        if (currentTurn == activeTurn)
+        {
+            return;
+        }
+
+        Player current = TurnManager.Instance.GetPlayerOfTurnEnum(currentTurn);
+
+        Player local = GlobalSettings.Instance.GetLocalPlayer();
+        Turns localTurn = TurnManager.Instance.GetTurnEnumOfPlayer(local);
+
+        Player across = TurnManager.Instance.GetPlayerAcrossFrom(localTurn);
+        Player leftOf = TurnManager.Instance.GetPlayerToTheLeftOfWithNull(localTurn);
+        Player rightOf = TurnManager.Instance.GetPlayerToTheRightOfWithNull(localTurn);
+
+        leftPart.Stop();
+        leftPart.Clear();
+
+        topPart.Stop();
+        topPart.Clear();
+
+        rightPart.Stop();
+        rightPart.Clear();
+
+        bottomPart.Stop();
+        bottomPart.Clear();
+
+        activeTurn = currentTurn;
+
+        if (current == local)
+        {
+            bottomPart.Play();
+        }
+        else if (current == across)
+        {
+            topPart.Play();
+        }
+        else if (current == leftOf)
+        {
+            leftPart.Play();
+        }
+        else if (current == rightOf)
+        {
+            rightPart.Play();
+        }
     }
 }
