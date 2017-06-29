@@ -327,6 +327,7 @@ public class CardActions : MonoBehaviour
             reactor.RpcCage(TurnManager.Instance.GetTurnEnumOfPlayer(reactor));
             Pause.Instance.RpcPauseGame(kEffectTime);
         }
+        TheInstance.StartCoroutine(ReShowCardFromCage(kEffectTime, thrownCard));
         // Clear the field and reset the stage
         TurnManager.Instance.currentStage = Stage.Play;
 
@@ -341,6 +342,13 @@ public class CardActions : MonoBehaviour
         }
         // HideCards.Instance.HideCardsOfPlayer(reactor);
     }
+
+    static IEnumerator ReShowCardFromCage(float waitTime, Card cardInCage)
+    {
+        yield return new WaitForSeconds(waitTime);
+        cardInCage.gameObject.SetActive(true);
+    }
+
     #endregion
     #region Other
     static void React(Player thrower, Player reactor)
