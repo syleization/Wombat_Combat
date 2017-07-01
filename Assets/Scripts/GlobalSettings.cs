@@ -39,6 +39,8 @@ public class GlobalSettings : NetworkBehaviour
     public string RightPlayerName;
     public Player BottomPlayer;
     public string BottomPlayerName;
+    [Tooltip("For effect tester and tutorial")]
+    public bool AddPlayers = false;
     [Header("Prefabs and Assets")]
     public Card Attack_WombatCharge;
     public Card Attack_DonkeyKick;
@@ -109,18 +111,13 @@ public class GlobalSettings : NetworkBehaviour
         AllCards.Add(Trap_Trampoline);
         AllCards.Add(Trap_Sinkhole);
         AllCards.Add(Trap_WombatCage);
-
-        // Alex's Testing
-        if (GameObject.Find("EffectTester"))
+        
+        if (AddPlayers)
         {
             Players.Add(LeftPlayer);
             Players.Add(TopPlayer);
             Players.Add(RightPlayer);
             Players.Add(BottomPlayer);
-        }
-        else
-        {
-            Debug.Log("Don't forget to get rid of the test code");
         }
     }
 

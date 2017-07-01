@@ -161,8 +161,14 @@ public class Player : NetworkBehaviour
             {
                 PlayersCurrentActions = MaxActions;
             }
+
+            if (init)
+            {
+                Effects.DamageEffect(TurnManager.Instance.GetTurnEnumOfPlayer(this), PlayersCurrentActions + " Actions Left!");
+            }
         }
     }
+    bool init = false;
 
     public override void OnStartClient()
     {
@@ -604,6 +610,7 @@ public class Player : NetworkBehaviour
         Deck.Initialize();
         Deck.owner = this;
         Hand = GetComponent<Hand>();
+        init = true;
     }
 
     //Timer WaitToPlayTimer = new Timer();
