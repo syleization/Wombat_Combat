@@ -41,6 +41,7 @@ public class GlobalSettings : NetworkBehaviour
     public string BottomPlayerName;
     [Tooltip("For effect tester and tutorial")]
     public bool ManualAddPlayers = false;
+    public bool TutorialHack = false;
     [Header("Prefabs and Assets")]
     public Card Attack_WombatCharge;
     public Card Attack_DonkeyKick;

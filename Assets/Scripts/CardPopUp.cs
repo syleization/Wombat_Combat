@@ -131,7 +131,7 @@ public class CardPopUp : MonoBehaviour
     {
         if (Pause.Instance.IsPaused) return;
 
-        if (cardIsDown && MouseIsWithinBounds() && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && TheCard.owner.isLocalPlayer && TheCard.CurrentArea != "TrapZone")
+        if (cardIsDown && MouseIsWithinBounds() && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && (TheCard.owner.isLocalPlayer || GlobalSettings.Instance.TutorialHack) && TheCard.CurrentArea != "TrapZone")
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
@@ -149,7 +149,7 @@ public class CardPopUp : MonoBehaviour
     {
         if (Pause.Instance.IsPaused) return;
 
-        if (!cardIsDown && !waitingForCard && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && TheCard.owner.isLocalPlayer && TheCard.CurrentArea != "TrapZone")
+        if (!cardIsDown && !waitingForCard && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && (TheCard.owner.isLocalPlayer || GlobalSettings.Instance.TutorialHack) && TheCard.CurrentArea != "TrapZone")
         {
             waitingForCard = true;
             StartCoroutine(WaitToPutCardDown(waitTime));
