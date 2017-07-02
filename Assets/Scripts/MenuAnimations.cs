@@ -1,11 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System.IO;
 
 public class MenuAnimations : MonoBehaviour
 {
     public GameObject Stuff;
     public Animator otherAnimator;
+
+    public Slider MasterSlider;
+    public Slider MusicSlider;
+    public Slider EffectSlider;
 
     public void PlayButton()
     {
@@ -17,6 +23,15 @@ public class MenuAnimations : MonoBehaviour
         if (otherAnimator.GetBool("IsSettings"))
         {
             otherAnimator.SetBool("IsSettings", false);
+
+            string saver = "";
+            saver += SoundManager.Instance.MasterVolume;
+            saver += ":";
+            saver += SoundManager.Instance.MusicVolume;
+            saver += ":";
+            saver += SoundManager.Instance.EffectVolume;
+
+            SaveLoad.WriteStringToFile(saver, SaveLoad.FolderName + "/" + SaveLoad.Filename);
         }
         else if (otherAnimator.GetBool("IsTwoPlayers"))
         {
@@ -39,6 +54,10 @@ public class MenuAnimations : MonoBehaviour
     public void SettingsButton()
     {
         otherAnimator.SetBool("IsSettings", true);
+
+        MasterSlider.value = SoundManager.Instance.MasterVolume;
+        MusicSlider.value = SoundManager.Instance.MusicVolume;
+        EffectSlider.value = SoundManager.Instance.EffectVolume;
     }
 
     public void TwoPlayers()

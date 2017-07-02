@@ -40,7 +40,7 @@ public class GlobalSettings : NetworkBehaviour
     public Player BottomPlayer;
     public string BottomPlayerName;
     [Tooltip("For effect tester and tutorial")]
-    public bool AddPlayers = false;
+    public bool ManualAddPlayers = false;
     [Header("Prefabs and Assets")]
     public Card Attack_WombatCharge;
     public Card Attack_DonkeyKick;
@@ -112,7 +112,7 @@ public class GlobalSettings : NetworkBehaviour
         AllCards.Add(Trap_Sinkhole);
         AllCards.Add(Trap_WombatCage);
         
-        if (AddPlayers)
+        if (ManualAddPlayers)
         {
             Players.Add(LeftPlayer);
             Players.Add(TopPlayer);
