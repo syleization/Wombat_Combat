@@ -26,6 +26,7 @@ Update() // only calls current textEvent tick
         void Start()
         {
             CurrentTextBox = -1;
+            Pause.Instance.StartPauseTimer(999999.0f);
             NextButton();
         }
 

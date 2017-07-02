@@ -68,6 +68,10 @@ public class ButtonManager : NetworkBehaviour
     {
         get
         {
+            if(CurrentActiveButton == null)
+            {
+                return false;
+            }
             return CurrentActiveButton.IsActive();
         }
     }
