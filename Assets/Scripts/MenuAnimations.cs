@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
+using UnityEngine.SceneManagement;
 
 public class MenuAnimations : MonoBehaviour
 {
@@ -12,6 +12,8 @@ public class MenuAnimations : MonoBehaviour
     public Slider MasterSlider;
     public Slider MusicSlider;
     public Slider EffectSlider;
+
+    public GameObject PopUp;
 
     public void PlayButton()
     {
@@ -73,5 +75,15 @@ public class MenuAnimations : MonoBehaviour
     public void FourPlayers()
     {
         otherAnimator.SetBool("IsFourPlayers", true);
+    }
+
+    public void ClosePopUp()
+    {
+        PopUp.SetActive(false);
+    }
+
+    public void GoToTutorial()
+    {
+        SceneManager.LoadScene("Tutorial");
     }
 }

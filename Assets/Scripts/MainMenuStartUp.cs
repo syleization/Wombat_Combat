@@ -10,12 +10,14 @@ public class MainMenuStartUp : MonoBehaviour
 
     private bool RunTutorial = false;
 
+    public GameObject PopUpUI;
+
     private void Start()
     {
         SoundManager.Instance.PlaySound(startMusic);
 
         FolderPath = SaveLoad.DocumentsPath(SaveLoad.FolderName);
-        Debug.Log(FolderPath);
+        //Debug.Log(FolderPath);
 
         if (Directory.Exists(FolderPath))
         {
@@ -48,11 +50,7 @@ public class MainMenuStartUp : MonoBehaviour
 
         if (RunTutorial)
         {
-            Debug.Log("Do the thing");
-        }
-        else
-        {
-            Debug.Log("Don't do the thing");
+            PopUpUI.SetActive(true);
         }
     }
 }
