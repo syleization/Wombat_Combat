@@ -43,7 +43,7 @@ public class Field : NetworkBehaviour
             return TheInstance;
         }
     }
-    Player localPlayer;
+    public Player localPlayer;
 
     void Awake()
     {
