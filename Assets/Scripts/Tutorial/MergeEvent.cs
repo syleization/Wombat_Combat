@@ -49,6 +49,7 @@ namespace Tutorial
         private void Exit()
         {
             tools.ClearHand();
+            tools.mergeFlag = 0;
             TutorialManager tutorialManager = FindObjectOfType<TutorialManager>();
             tutorialManager.NextButton();
         }

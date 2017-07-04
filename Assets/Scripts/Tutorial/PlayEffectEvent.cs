@@ -55,7 +55,7 @@ namespace Tutorial
                     break;
             }
             endTimer.Initialize(CardActions.kEffectTime);
-
+            GlobalSettings.Instance.TutorialHack = false;
         }
 
         public override void Tick()
@@ -77,6 +77,7 @@ namespace Tutorial
             {
                 Effects.AttackEnd();
             }
+            GlobalSettings.Instance.TutorialHack = true;
         }
     }
 }

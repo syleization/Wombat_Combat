@@ -78,6 +78,7 @@ public class TutorialTools : MonoBehaviour
         {
             Destroy(item.gameObject);
         }
+        playerHand.CardsInHand.Clear();
     }
 
     public void Merge()
@@ -87,6 +88,7 @@ public class TutorialTools : MonoBehaviour
             Field.Instance.ToggleTwoSquares(false);
             mergeBtn.SetActive(false);
             mergeFlag = 1;
+            GlobalSettings.Instance.TutorialHack = false;
 
             Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
             newCard.gameObject.SetActive(false);
@@ -111,5 +113,6 @@ public class TutorialTools : MonoBehaviour
         
         newCard.gameObject.SetActive(true);
         mergeFlag = 2;
+        GlobalSettings.Instance.TutorialHack = true;
     }
 }
