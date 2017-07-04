@@ -5,12 +5,27 @@ using UnityEngine;
 public class TutorialTools : MonoBehaviour
 {
     private bool init = false;
-    public int stage = 0;
+    public int mergeFlag = 0;
 
     public Player player;
     public Hand playerHand;
     public Field field;
     public GameObject mergeBtn;
+
+    private static TutorialTools TheInstance;
+    private TutorialTools() { }
+    public static TutorialTools Instance
+    {
+        get
+        {
+            if (TheInstance == null)
+            {
+                TheInstance = FindObjectOfType<TutorialTools>();
+            }
+
+            return TheInstance;
+        }
+    }
 
     private void Update()
     {
@@ -21,6 +36,8 @@ public class TutorialTools : MonoBehaviour
             player.Hand = playerHand;
             field.gameObject.SetActive(true);
             field.localPlayer = player;
+            field.ToggleTwoSquares(false);
+            mergeBtn.gameObject.SetActive(false);
             init = true;
         }
 
@@ -29,21 +46,21 @@ public class TutorialTools : MonoBehaviour
             GiveCard(GlobalSettings.Instance.Attack_DonkeyKick);
         }
 
-        switch (stage)
-        {
-            case 1:
-                if (field.IsMergable())
-                {
-                    mergeBtn.SetActive(true);
-                }
-                else
-                {
-                    mergeBtn.SetActive(false);
-                }
-                break;
-            default:
-                break;
-        }
+        //switch (stage)
+        //{
+        //    case 1:
+        //        if (field.IsMergable())
+        //        {
+        //            mergeBtn.SetActive(true);
+        //        }
+        //        else
+        //        {
+        //            mergeBtn.SetActive(false);
+        //        }
+        //        break;
+        //    default:
+        //        break;
+        //}
     }
 
     public void GiveCard(Card input)
@@ -61,7 +78,7 @@ public class TutorialTools : MonoBehaviour
         {
             Field.Instance.ToggleTwoSquares(false);
             mergeBtn.SetActive(false);
-            ++stage;
+            mergeFlag = 1;
 
             Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
             newCard.gameObject.SetActive(false);
@@ -85,5 +102,6 @@ public class TutorialTools : MonoBehaviour
         Field.Instance.ClearField();
         
         newCard.gameObject.SetActive(true);
+        mergeFlag = 2;
     }
 }

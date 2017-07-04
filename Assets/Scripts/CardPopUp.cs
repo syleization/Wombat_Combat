@@ -129,7 +129,7 @@ public class CardPopUp : MonoBehaviour
 #else
     void OnMouseEnter()
     {
-        if (Pause.Instance.IsPaused) return;
+        if (Pause.Instance.IsPaused && !GlobalSettings.Instance.TutorialHack) return;
 
         if (cardIsDown && MouseIsWithinBounds() && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && (TheCard.owner.isLocalPlayer || GlobalSettings.Instance.TutorialHack) && TheCard.CurrentArea != "TrapZone")
         {
@@ -147,7 +147,7 @@ public class CardPopUp : MonoBehaviour
 
     void OnMouseExit()
     {
-        if (Pause.Instance.IsPaused) return;
+        if (Pause.Instance.IsPaused && !GlobalSettings.Instance.TutorialHack) return;
 
         if (!cardIsDown && !waitingForCard && !TheCard.owner.IsHoldingCard && TheCard.IsInHand && (TheCard.owner.isLocalPlayer || GlobalSettings.Instance.TutorialHack) && TheCard.CurrentArea != "TrapZone")
         {
