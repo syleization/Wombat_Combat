@@ -95,32 +95,35 @@ public class Player : NetworkBehaviour
         set
         {
             PlayersCurrentHealth = value;
-            if(value <= 0)
+            if (GlobalSettings.Instance.TutorialScene == false)
             {
-                PlayersCurrentHealth = 0;
-                if (isServer)
+                if (value <= 0)
                 {
-                    Pause.Instance.RpcPauseGame(100.0f);
-                    RpcChangeHealthAmount();
-                    TheGUI gui = FindObjectOfType<TheGUI>();
-                    gui.GameIsOver = true;
+                    PlayersCurrentHealth = 0;
+                    if (isServer)
+                    {
+                        Pause.Instance.RpcPauseGame(100.0f);
+                        RpcChangeHealthAmount();
+                        TheGUI gui = FindObjectOfType<TheGUI>();
+                        gui.GameIsOver = true;
+                    }
+                    else
+                    {
+                        CmdPauseGame(100.0f);
+                        GlobalSettings.Instance.GetLocalPlayer().CmdChangeHealthAmount();
+                        GlobalSettings.Instance.GetLocalPlayer().CmdEndGame();
+                    }
                 }
-                else
+                else if (value != MaxHealth)
                 {
-                    CmdPauseGame(100.0f);
-                    GlobalSettings.Instance.GetLocalPlayer().CmdChangeHealthAmount();
-                    GlobalSettings.Instance.GetLocalPlayer().CmdEndGame();
-                }
-            }
-            else if(value != MaxHealth)
-            {
-                if (isServer)
-                {
-                    RpcChangeHealthAmount();
-                }
-                else
-                {
-                    GlobalSettings.Instance.GetLocalPlayer().CmdChangeHealthAmount();
+                    if (isServer)
+                    {
+                        RpcChangeHealthAmount();
+                    }
+                    else
+                    {
+                        GlobalSettings.Instance.GetLocalPlayer().CmdChangeHealthAmount();
+                    }
                 }
             }
         }

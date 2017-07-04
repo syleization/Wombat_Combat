@@ -83,6 +83,34 @@ public class UI_PlayerInfo : MonoBehaviour
         }
     }
 
+    public void TutorialUpdateHealthText()
+    {
+        if (GlobalSettings.Instance.TutorialScene)
+        {
+            Turns localPlayer = Turns.BottomPlayer;
+
+            mLocalPlayerHealthText.text = GlobalSettings.Instance.BottomPlayer.CurrentHealth.ToString();
+            Player across = TurnManager.Instance.GetPlayerAcrossFrom(localPlayer);
+            Player leftOf = TurnManager.Instance.GetPlayerToTheLeftOf(localPlayer);
+            Player rightOf = TurnManager.Instance.GetPlayerToTheRightOf(localPlayer);
+
+            if (across != null)
+            {
+                mAcrossPlayerHealthText.text = across.CurrentHealth.ToString();
+            }
+
+            if (leftOf != null)
+            {
+                mLeftPlayerHealthText.text = leftOf.CurrentHealth.ToString();
+            }
+
+            if (rightOf != null)
+            {
+                mRightPlayerHealthText.text = rightOf.CurrentHealth.ToString();
+            }
+        }
+    }
+
     public void ChangeHealthText()
     {
         Turns localPlayer = TurnManager.Instance.GetTurnEnumOfPlayer(GlobalSettings.Instance.GetLocalPlayer());

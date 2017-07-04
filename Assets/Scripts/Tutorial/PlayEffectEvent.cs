@@ -76,6 +76,9 @@ namespace Tutorial
             if(TheCardSubType == CardSubType.DonkeyKick || TheCardSubType == CardSubType.WombatCharge || TheCardSubType == CardSubType.Trampoline || TheCardSubType == CardSubType.GooglyEyes)
             {
                 Effects.AttackEnd();
+                Effects.DamageEffect(Turns.TopPlayer, "-1");
+                --GlobalSettings.Instance.TopPlayer.CurrentHealth;
+                UI_PlayerInfo.Instance.TutorialUpdateHealthText();
             }
             GlobalSettings.Instance.TutorialHack = true;
         }
