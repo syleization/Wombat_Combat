@@ -17,6 +17,8 @@ Update() // only calls current textEvent tick
 
         */
         [SerializeField]
+        TutorialTools Tools;
+        [SerializeField]
         Text TextGameObject;
         [SerializeField]
         List<TextEvent> TextEvents;

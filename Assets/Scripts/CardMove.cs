@@ -49,7 +49,7 @@ public class CardMove : MonoBehaviour
 
     void MobileOnMouseDown(Touch touch)
     {
-        if(Pause.Instance.IsPaused == false)
+        if(Pause.Instance.IsPaused == false || GlobalSettings.Instance.TutorialHack)
         {
             if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
                     || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
@@ -76,7 +76,7 @@ public class CardMove : MonoBehaviour
 
     void MobileOnMouseDrag(Touch touch)
     {
-        if (Pause.Instance.IsPaused == false)
+        if (Pause.Instance.IsPaused == false || GlobalSettings.Instance.TutorialHack)
         {
             if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
                 || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
@@ -96,7 +96,7 @@ public class CardMove : MonoBehaviour
 
     void MobileOnMouseUp(Touch touch)
     {
-        if (Pause.Instance.IsPaused == false)
+        if (Pause.Instance.IsPaused == false || GlobalSettings.Instance.TutorialHack)
         {
             if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             {
@@ -283,7 +283,7 @@ public class CardMove : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (Pause.Instance.IsPaused == false)
+        if (Pause.Instance.IsPaused == false || GlobalSettings.Instance.TutorialHack)
         {
             if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
@@ -309,7 +309,7 @@ public class CardMove : MonoBehaviour
 
     void OnMouseDrag()
     {
-        if (Pause.Instance.IsPaused == false)
+        if (Pause.Instance.IsPaused == false || GlobalSettings.Instance.TutorialHack)
         {
             if ((Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             || (TurnManager.Instance.currentStage == Stage.Reaction && Card.owner == CardActions.theReactor))
@@ -328,7 +328,7 @@ public class CardMove : MonoBehaviour
    
     void OnMouseUp()
     {
-        if (Pause.Instance.IsPaused == false)
+        if (Pause.Instance.IsPaused == false || GlobalSettings.Instance.TutorialHack)
         {
             if (Card.owner.HasPermission() && TurnManager.Instance.currentStage != Stage.Reaction && Card.CurrentArea != "TrapZone")
             {
