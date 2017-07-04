@@ -36,6 +36,10 @@ public class TutorialTools : MonoBehaviour
                 {
                     mergeBtn.SetActive(true);
                 }
+                else
+                {
+                    mergeBtn.SetActive(false);
+                }
                 break;
             default:
                 break;
@@ -49,5 +53,37 @@ public class TutorialTools : MonoBehaviour
         temp.CurrentArea = "Hand";
         playerHand.CardsInHand.Add(temp);
         DeckOfCards.TransformDealtCardToHand(temp, playerHand.CardsInHand.Count-1);
+    }
+
+    public void Merge()
+    {
+        if (Field.Instance.IsMergable())
+        {
+            Field.Instance.ToggleTwoSquares(false);
+            mergeBtn.SetActive(false);
+            ++stage;
+
+            Card newCard = Instantiate(GlobalSettings.Instance.GetMergeCard(Field.Instance.GetCard(0).Type, Field.Instance.GetCard(0).Level));
+            newCard.gameObject.SetActive(false);
+
+            Effects.Merge(Field.Instance.GetCard(0).SubType, newCard.SubType, Turns.BottomPlayer);
+
+            StartCoroutine(WaitToPlaceMergedCardIntoHand(CardActions.kMergeEffectTime, player, newCard));
+        }
+    }
+
+    IEnumerator WaitToPlaceMergedCardIntoHand(float waitTime, Player currentPlayer, Card newCard)
+    {
+        yield return new WaitForSeconds(waitTime);
+
+        newCard.owner = currentPlayer;
+        DeckOfCards.TransformDealtCardToHand(newCard, newCard.owner.Hand.CardsInHand.Count);
+        newCard.CurrentArea = "Hand";
+        currentPlayer.Hand.CardsInHand.Add(newCard);
+
+        // Clear field of used cards
+        Field.Instance.ClearField();
+        
+        newCard.gameObject.SetActive(true);
     }
 }

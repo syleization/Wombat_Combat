@@ -216,4 +216,13 @@ public class Field : NetworkBehaviour
         }
     }
 
+    public void ToggleOneSquare(bool input)
+    {
+        OneSquare.SetActive(input);
+    }
+
+    public void ToggleTwoSquares(bool input)
+    {
+        TwoSquares.SetActive(input);
+    }
 }
