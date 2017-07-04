@@ -72,6 +72,14 @@ public class TutorialTools : MonoBehaviour
         DeckOfCards.TransformDealtCardToHand(temp, playerHand.CardsInHand.Count-1);
     }
 
+    public void ClearHand()
+    {
+        foreach (Card item in playerHand.CardsInHand)
+        {
+            Destroy(item.gameObject);
+        }
+    }
+
     public void Merge()
     {
         if (Field.Instance.IsMergable())

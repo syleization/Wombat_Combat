@@ -7,7 +7,9 @@ namespace Tutorial
 {
     public class MergeEvent : TextEvent
     {
+        public CardSubType cardToMerge;
         private TutorialTools tools;
+        private Timer endTimer = new Timer();
 
         override public void Enter(Text textObject)
         {
@@ -15,8 +17,8 @@ namespace Tutorial
             
             tools = TutorialTools.Instance;
 
-            tools.GiveCard(GlobalSettings.Instance.Attack_DonkeyKick);
-            tools.GiveCard(GlobalSettings.Instance.Attack_DonkeyKick);
+            tools.GiveCard(GlobalSettings.Instance.GetCardOfSubType(cardToMerge));
+            tools.GiveCard(GlobalSettings.Instance.GetCardOfSubType(cardToMerge));
             tools.field.ToggleTwoSquares(true);
         }
 
@@ -35,13 +37,18 @@ namespace Tutorial
 
             if (tools.mergeFlag == 2)
             {
-                Exit();
                 tools.mergeFlag = 3;
+                endTimer.Initialize(2.0f);
+            }
+            else if (tools.mergeFlag == 3)
+            {
+                endTimer.TimerAction(Exit);
             }
         }
 
         private void Exit()
         {
+            tools.ClearHand();
             TutorialManager tutorialManager = FindObjectOfType<TutorialManager>();
             tutorialManager.NextButton();
         }
