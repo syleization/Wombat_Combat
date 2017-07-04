@@ -14,7 +14,14 @@ public class TrapZone : MonoBehaviour
             TrapCards[i] = null;
         }
         // Add reference to player to access
-        GlobalSettings.Instance.GetLocalPlayer().Traps = this;
+        if(GlobalSettings.Instance.TutorialScene)
+        {
+            GlobalSettings.Instance.BottomPlayer.Traps = this;
+        }
+        else
+        {
+            GlobalSettings.Instance.GetLocalPlayer().Traps = this;
+        }
     }
 
     public void Terminate()
@@ -86,8 +93,11 @@ public class TrapZone : MonoBehaviour
         {
             if(TrapCards[i] == null)
             {
-                Field.Instance.CardsInField.Remove(card);
-                Field.Instance.ResetFieldCardPositions();
+                if (GlobalSettings.Instance.TutorialScene == false)
+                {
+                    Field.Instance.CardsInField.Remove(card);
+                    Field.Instance.ResetFieldCardPositions();
+                }
                 card.owner.IsHoldingCard = false;
                 TrapCards[i] = card;
                 TrapCards[i].CurrentArea = "TrapZone";

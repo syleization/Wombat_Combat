@@ -28,6 +28,7 @@ public class GlobalSettings : NetworkBehaviour
     public bool NathanIsTesting = false;
     public int NathanTestCardMin;
     public int NathanTestCardMax;
+    public bool TutorialScene;
     [Header("Game Settings")]
     public GameType TypeOfGame;
     [Header("Players")]
@@ -124,6 +125,7 @@ public class GlobalSettings : NetworkBehaviour
 
     void Initialize()
     {
+        TutorialScene = false;
         Debug.Log("Initialize");
         NetworkCleanup networkCleanup = FindObjectOfType<NetworkCleanup>();
 
