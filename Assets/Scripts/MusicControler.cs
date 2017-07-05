@@ -8,6 +8,9 @@ public class MusicControler : MonoBehaviour
 
     private void OnEnable()
     {
-        SoundManager.Instance.PlaySound(Track);
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlaySound(Track);
+        }
     }
 }
