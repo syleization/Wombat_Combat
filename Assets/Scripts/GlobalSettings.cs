@@ -260,6 +260,10 @@ public class GlobalSettings : NetworkBehaviour
                 return p;
             }
         }
+        if(TutorialScene)
+        {
+            return BottomPlayer;
+        }
         Debug.Log("[GlobalSettings::GetLocalPlayer] No player is local to this client");
         return null;
     }

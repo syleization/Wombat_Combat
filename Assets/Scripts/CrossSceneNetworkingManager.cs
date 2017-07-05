@@ -47,32 +47,39 @@ public class CrossSceneNetworkingManager : NetworkBehaviour
         if (manager != null)
         {
             manager.onlineScene = scene.name;
-
-            switch (CurrentNetworkType)
+            manager.offlineScene = scene.name;
+            if (scene.name != "Tutorial")
             {
-                case NetworkType.Client:
-                    // manager.StartClient();
-                    manager.StartMatchMaker();
-                    manager.matchMaker.ListMatches(0, 20, "", false, 0, 0, manager.OnMatchList);
-                    enabled = true;
-                    StartCoroutine(JoinGameTimer(10.0f));
-                    break;
-                case NetworkType.Host:
-                    manager.StartMatchMaker();
-                    string matchName;
-                    if(manager.matches == null)
-                    {
-                        matchName = "0";
-                    }
-                    else
-                    {
-                        matchName = manager.matches.Count.ToString();
-                    }
-                    manager.matchMaker.CreateMatch(matchName, manager.matchSize, true, Password, "", "", 0, 0, OnMatchCreate);
-                    // manager.StartHost();
-                    break;
-                default:
-                    break;
+                switch (CurrentNetworkType)
+                {
+                    case NetworkType.Client:
+                        // manager.StartClient();
+                        manager.StartMatchMaker();
+                        manager.matchMaker.ListMatches(0, 20, "", false, 0, 0, manager.OnMatchList);
+                        enabled = true;
+                        StartCoroutine(JoinGameTimer(10.0f));
+                        break;
+                    case NetworkType.Host:
+                        manager.StartMatchMaker();
+                        string matchName;
+                        if (manager.matches == null)
+                        {
+                            matchName = "0";
+                        }
+                        else
+                        {
+                            matchName = manager.matches.Count.ToString();
+                        }
+                        manager.matchMaker.CreateMatch(matchName, manager.matchSize, true, Password, "", "", 0, 0, OnMatchCreate);
+                        // manager.StartHost();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                manager.StartHost();
             }
         }
         else

@@ -33,15 +33,18 @@ public class TrapCanvas : MonoBehaviour
     public void UpdateTrapAmount()
     {
         AmountOfTraps.text = Traps.GetTrapCardCount().ToString();
-        Player localPlayer = GlobalSettings.Instance.GetLocalPlayer();
+        if (GlobalSettings.Instance.TutorialScene == false)
+        {
+            Player localPlayer = GlobalSettings.Instance.GetLocalPlayer();
 
-        if(localPlayer && localPlayer.isServer)
-        {
-            localPlayer.RpcChangeTrapAmount(Traps.GetTrapCardCount(), TurnManager.Instance.GetTurnEnumOfPlayer(localPlayer));
-        }
-        else if (localPlayer)
-        {
-            localPlayer.CmdChangeTrapAmount(Traps.GetTrapCardCount(), TurnManager.Instance.GetTurnEnumOfPlayer(localPlayer));
+            if (localPlayer && localPlayer.isServer)
+            {
+                localPlayer.RpcChangeTrapAmount(Traps.GetTrapCardCount(), TurnManager.Instance.GetTurnEnumOfPlayer(localPlayer));
+            }
+            else if (localPlayer)
+            {
+                localPlayer.CmdChangeTrapAmount(Traps.GetTrapCardCount(), TurnManager.Instance.GetTurnEnumOfPlayer(localPlayer));
+            }
         }
     }
 
