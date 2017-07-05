@@ -172,11 +172,13 @@ public class TheGUI : NetworkBehaviour
         {
             if (GlobalSettings.Instance.GetLocalPlayer().CurrentHealth == 0)
             {
-                GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Loser!");
+                //GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Loser!");
+                UI_PlayerInfo.Instance.WinLoss.SetTrigger("Defeat");
             }
             else
             {
-                GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Winner!");
+                //GUI.Box(new Rect(Screen.width / 2 - Screen.width / 10.0f, Screen.height / 2 - Screen.width / 10.0f, Screen.width / 5.0f, Screen.height / 15.0f), "Winner!");
+                UI_PlayerInfo.Instance.WinLoss.SetTrigger("Victory");
             }
             StartCoroutine(WaitToEndGame(3.0f));
         }

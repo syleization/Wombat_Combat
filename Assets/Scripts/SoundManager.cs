@@ -190,4 +190,16 @@ public class SoundManager : MonoBehaviour
         }
         return "";
     }
+
+    public void ResetVolumes()
+    {
+        if (MasterVolume > MusicVolume)
+        {
+            musicSource.volume = MusicVolume;
+        }
+        else
+        {
+            musicSource.volume = MasterVolume;
+        }
+    }
 }

@@ -32,6 +32,7 @@ public class MainMenuStartUp : MonoBehaviour
                 SoundManager.Instance.MasterVolume = System.Single.Parse(data[0]);
                 SoundManager.Instance.MusicVolume = System.Single.Parse(data[1]);
                 SoundManager.Instance.EffectVolume = System.Single.Parse(data[2]);
+                SoundManager.Instance.ResetVolumes();
             }
             else
             {

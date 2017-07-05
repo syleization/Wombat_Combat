@@ -40,6 +40,8 @@ public class UI_PlayerInfo : MonoBehaviour
     public ParticleSystem bottomPart;
     private Turns activeTurn = Turns.Null;
 
+    public Animator WinLoss;
+
     void Awake()
     {
         TheInstance = this;
@@ -68,17 +70,14 @@ public class UI_PlayerInfo : MonoBehaviour
 
         if(across == null)
         {
-            Debug.Log("Across");
             mAcrossPlayerHealthText.transform.parent.gameObject.SetActive(false);
         }
         if (leftOf == null)
         {
-            Debug.Log("Left");
             mLeftPlayerHealthText.transform.parent.gameObject.SetActive(false);
         }
         if (rightOf == null)
         {
-            Debug.Log("Right");
             mRightPlayerHealthText.transform.parent.gameObject.SetActive(false);
         }
     }
