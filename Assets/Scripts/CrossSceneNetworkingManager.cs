@@ -47,9 +47,13 @@ public class CrossSceneNetworkingManager : NetworkBehaviour
         if (manager != null)
         {
             manager.onlineScene = scene.name;
-            manager.offlineScene = scene.name;
-            if (scene.name != "Tutorial")
+            if (scene.name == "Tutorial")
             {
+                manager.StartHost();
+                manager.offlineScene = scene.name;
+            }
+            else
+            { 
                 switch (CurrentNetworkType)
                 {
                     case NetworkType.Client:
@@ -76,10 +80,6 @@ public class CrossSceneNetworkingManager : NetworkBehaviour
                     default:
                         break;
                 }
-            }
-            else
-            {
-                manager.StartHost();
             }
         }
         else

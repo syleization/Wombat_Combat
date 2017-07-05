@@ -175,7 +175,20 @@ public class Player : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        GlobalSettings.Instance.AddNetworkPlayer(this);
+        Debug.Log("Here");
+        if(GlobalSettings.Instance.TutorialScene)
+        {
+            Debug.Log("here2");
+            if(GlobalSettings.Instance.RightPlayer != this && GlobalSettings.Instance.LeftPlayer != this && GlobalSettings.Instance.BottomPlayer != this && GlobalSettings.Instance.TopPlayer != this)
+            {
+                Debug.Log("here3");
+                Destroy(gameObject);
+            }
+        }
+        else
+        {
+            GlobalSettings.Instance.AddNetworkPlayer(this);
+        }
     }
 
     #region Networking
@@ -206,6 +219,7 @@ public class Player : NetworkBehaviour
         else
         {
             TheGUI gui = FindObjectOfType<TheGUI>();
+            if(gui)
             gui.Active = false;
             StartCoroutine(HostWaitTillClientsGetDisconnected(1.0f));
         }

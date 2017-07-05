@@ -269,48 +269,51 @@ public class GlobalSettings : NetworkBehaviour
     }
     public void AddNetworkPlayer(Player player)
     {
-        ++CurrentPlayerCount;
-        if (BottomPlayer == null)
+        if (TutorialScene == false)
         {
-            BottomPlayer = player;
-        }
-        else if (TopPlayer == null)
-        {
-            TopPlayer = player;
-        }
-        else if (LeftPlayer == null)
-        {
-            LeftPlayer = player;
-        }
-        else if(RightPlayer == null)
-        {
-            RightPlayer = player;
-        }
-        else
-        {
-            --CurrentPlayerCount;
-            Debug.Log("Player Not Registered");
-        }
+            ++CurrentPlayerCount;
+            if (BottomPlayer == null)
+            {
+                BottomPlayer = player;
+            }
+            else if (TopPlayer == null)
+            {
+                TopPlayer = player;
+            }
+            else if (LeftPlayer == null)
+            {
+                LeftPlayer = player;
+            }
+            else if (RightPlayer == null)
+            {
+                RightPlayer = player;
+            }
+            else
+            {
+                --CurrentPlayerCount;
+                Debug.Log("Player Not Registered");
+            }
 
-        if(NathanIsTesting)
-             CanStartGame = true;// A testing shortcut
+            if (NathanIsTesting)
+                CanStartGame = true;// A testing shortcut
 
-        if(TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
-        {
-            CanStartGame = true;
-        }
-        else if(TypeOfGame == GameType.ThreePlayer && CurrentPlayerCount == 3)
-        {
-            CanStartGame = true;
-        }
-        else if(TypeOfGame == GameType.FourPlayer && CurrentPlayerCount == 4)
-        {
-            CanStartGame = true;
-        }
+            if (TypeOfGame == GameType.TwoPlayer && CurrentPlayerCount == 2)
+            {
+                CanStartGame = true;
+            }
+            else if (TypeOfGame == GameType.ThreePlayer && CurrentPlayerCount == 3)
+            {
+                CanStartGame = true;
+            }
+            else if (TypeOfGame == GameType.FourPlayer && CurrentPlayerCount == 4)
+            {
+                CanStartGame = true;
+            }
 
-        if (CanStartGame && isServer)
-        {
-            ButtonManager.Instance.ShowActiveButton();
+            if (CanStartGame && isServer)
+            {
+                ButtonManager.Instance.ShowActiveButton();
+            }
         }
     }
 

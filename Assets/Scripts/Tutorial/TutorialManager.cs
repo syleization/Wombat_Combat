@@ -73,8 +73,6 @@ Update() // only calls current textEvent tick
 
         public void MainMenuButton()
         {
-            var manager = FindObjectOfType<UnityEngine.Networking.NetworkManager>();
-            manager.StopHost();
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
     }
