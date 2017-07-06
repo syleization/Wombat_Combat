@@ -53,6 +53,11 @@ public class MenuAnimations : MonoBehaviour
         }
     }
 
+    public void cards()
+    {
+        otherAnimator.SetTrigger("isCards");
+    }
+
     public void SettingsButton()
     {
         otherAnimator.SetBool("IsSettings", true);
